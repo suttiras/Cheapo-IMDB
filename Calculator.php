@@ -23,7 +23,6 @@
 			if ($_GET["inputexpr"] != "")
 			{
 				$subject = str_replace(" ", "", $_GET["inputexpr"]);
-				//echo $subject;
 			
 				//check invalid characters
 				if (!preg_match('/^[\d\s\.\-\+\/\*]+$/', $subject))
@@ -41,14 +40,8 @@
 					
 					if (strlen($subject) == strlen($matchedpattern[0]))
 						{
-							//new for --
 							$newequation = str_replace("--","+",$matchedpattern[0]);
-							//
-							//echo $matchedpattern[0];
-							//eval("\$result = $matchedpattern[0];");
 							eval("\$result = $newequation;");
-							//echo $result;
-							//echo "</br>";
 							
 							if (is_numeric($result))
 							{
