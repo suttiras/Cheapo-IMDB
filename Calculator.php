@@ -15,34 +15,41 @@
 			if ($_GET["inputexpr"] != "")
 			{
 				$subject = str_replace(" ", "", $_GET["inputexpr"]);
-			
+				
 				//check invalid characters
 			
 				if (!preg_match('/^[\d\s\.\-\+\/\*]+$/', $subject))
 				{
-					echo "Invalid input expression! ";
+					echo "</br>Invalid input expression! There is an invalid character.";
 					echo $subject;
 				}
 			
 				//check if there are digits in between decimals
 			
 				else if (preg_match("/[0-9]*[\.][0-9]*[\.]/", $subject))
-					echo "Invalid input expression! There is an issue with your decimal. $subject";
+					echo "</br>Invalid input expression! There is an issue with your decimal. $subject";
 				
 				else {
 				preg_match("/([-]?([0-9]+)[\/\.\+\*-]?)*([-]?[0-9])+/", $subject, $matchedpattern);
 				//echo "Going to evaluate expression! </br>";
 				//echo "matchedpattern is $matchedpattern[0]";
 				echo '</br>';
-				echo "subject is $subject";
+				//echo "subject is $subject";
 				if (strlen($subject) == strlen($matchedpattern[0]))
 				{
 					//echo "</br> matchedpattern and subject are the same!";
-					eval("\$result = $matchedpattern[0];");
+					$evaluate = str_replace("--", "+", $matchedpattern[0]);
+					
+					//eval("\$result = $matchedpattern[0];");
+					eval("\$result = $evaluate;");
 					if (is_numeric($result))
-						echo "</br> Result is: $result";
+						echo "</br> $subject = $result";
 					else	
-						echo "Invalid input expression!";
+						echo "</br>Invalid input expression!";
+				}
+				else
+				{
+					echo "</br>Invalid input expression!";
 				}
 				}
 			/*
