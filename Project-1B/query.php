@@ -11,10 +11,15 @@ Example: <tt>SELECT * FROM Actor WHERE id=10;</tt><br />
 <input type="submit" value="Submit" />
 
 <?php
-$db_connection = mysql_connect("localhost", "cs143", "");
-mysql_select_db("TEST", $db_connection);
-
-mysql_close($db_connection);
+if ($_GET["query"] != "")
+{
+	$db_connection = mysql_connect("localhost", "cs143", "");
+	mysql_select_db("TEST", $db_connection);
+	//$sanitized_name = mysql_real_escape_string($query, $db_connection);
+	$rs = mysql_query($query, $db_connection);
+	echo $rs;
+	mysql_close($db_connection);
+}
 ?>
 </form>
 </p>
