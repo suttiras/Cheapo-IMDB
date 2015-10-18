@@ -66,8 +66,6 @@ INSERT INTO MovieActor(2, -2, "Po");
 
 INSERT INTO MovieActor(2, 1, "Po");
 
-
-
 INSERT INTO Review VALUES("Roger Ebert", "2015-10-18T01:04:25+00:00",1000,0,"This movie is an atrocity!");
 --violates the Review CHECK constraint of having a rating between 1 and 5.
 
@@ -77,3 +75,8 @@ INSERT INTO Review VALUES("Roger Ebert", "2015-10-18T01:04:25+00:00",0,2,"This m
 INSERT INTO Review VALUES("Roger Ebert", "2015-10-18T01:04:25+00:00",5,5,"This movie is outstanding!");
 --violates the Review FOREIGN KEY constraint since there is no movie in Movie where the ID is 5.
 
+INSERT INTO MaxPersonID VALUES (-69000);
+--violates the Review CHECK constraint of having an id > 0.
+
+INSERT INTO MaxMovieID VALUES (-4750);
+--violates the Review CHECK constraint of having an id > 0.
