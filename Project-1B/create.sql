@@ -14,7 +14,10 @@ dod DATE)ENGINE = INNODB;
 
 CREATE TABLE MovieGenre(mid INT, genre VARCHAR(20) NOT NULL, CHECK (mid > 0))ENGINE = INNODB;
 
-CREATE TABLE MovieDirector(mid INT, did INT, CHECK (mid > 0), CHECK (did > 0))ENGINE = INNODB;
+CREATE TABLE MovieDirector(mid INT, did INT, CHECK (mid > 0), CHECK (did > 0),
+FOREIGN KEY (did) references Director(id),
+FOREIGN KEY (mid) references Movie(id)
+)ENGINE = INNODB;
 
 CREATE TABLE MovieActor(mid INT, aid INT, role VARCHAR(50) NOT NULL,
 CHECK (mid > 0),
