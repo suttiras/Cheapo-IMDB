@@ -10,7 +10,8 @@ CHECK (sex = 'Female' OR sex = 'Male')
 )ENGINE = INNODB;
 
 CREATE TABLE Director(id INT PRIMARY KEY, last VARCHAR(20) NOT NULL, first VARCHAR(20) NOT NULL, dob DATE NOT NULL, 
-dod DATE)ENGINE = INNODB;
+dod DATE,
+CHECK (id > 0))ENGINE = INNODB;
 
 CREATE TABLE MovieGenre(mid INT, genre VARCHAR(20) NOT NULL, CHECK (mid > 0),
 FOREIGN KEY (mid) references Movie(id)
@@ -34,8 +35,8 @@ CHECK (mid > 0),
 FOREIGN KEY (mid) references Movie(id)
 )ENGINE = INNODB;
 
-CREATE TABLE MaxPersonID(id INT)ENGINE = INNODB;
-CREATE TABLE MaxMovieID(id INT)ENGINE = INNODB;
+CREATE TABLE MaxPersonID(id INT, CHECK (id > 0))ENGINE = INNODB;
+CREATE TABLE MaxMovieID(id INT, CHECK (id > 0))ENGINE = INNODB;
 
 INSERT INTO MaxPersonID VALUES (69000);
 INSERT INTO MaxMovieID VALUES (4750);
