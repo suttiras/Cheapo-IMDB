@@ -1,13 +1,14 @@
 --Let's start with a brand new database for all of these violation cases
 
 INSERT INTO Movie VALUES(1, "Aladdin", 1992, "G","Walt Disney Studios");
+INSERT INTO Movie VALUES(2, "Kung Fu Panda", 2008, "G","DreamWorks Studios");
 INSERT INTO Movie VALUES(1, "The Simpsons Movie", 2007, "PG","20th Century Fox");
---violates the PRIMARY KEY constraint since ID's for both movies are the same.
+--violates the PRIMARY KEY constraint since ID's for both movies Aladdin and The Simpsons Movie are the same.
 
-INSERT INTO Movie VALUES(2, "The Simpsons Movie", -69, "PG","20th Century Fox");
+INSERT INTO Movie VALUES(3, "The Simpsons Movie", -69, "PG","20th Century Fox");
 --violates the CHECK constraint since the year is less than 1.
 
-INSERT INTO Movie VALUES(-2, "The Simpsons Movie", -69, "PG","20th Century Fox");
+INSERT INTO Movie VALUES(-3, "The Simpsons Movie", -69, "PG","20th Century Fox");
 --violates the CHECK constraint since the ID is less than 0.
 
 INSERT INTO Actor VALUES(-1, "Black", "Jack", "Male",19690828,\N);
@@ -21,6 +22,7 @@ INSERT INTO Actor VALUES(1, "Evans", "Chris", "Male",19810613,\N);
 --violates the PRIMARY KEY constraint since ID's for both actors are the same.
 
 INSERT INTO Director VALUES(1, "Lucas", "George", 19440514, \N);
+INSERT INTO Director VALUES(2, "Osborne", "Mark", 19700917, \N);
 
 INSERT INTO Director VALUES(NULL, "Spielberg", "Steven", 19461218, \N);
 --violates the PRIMARY KEY constraint since ID is NULL for the Steven Spielberg entry.
@@ -34,6 +36,8 @@ INSERT INTO MovieGenre VALUES(5, "Romance");
 INSERT INTO MovieGenre VALUES(0, "Romance");
 --violates CHECK constraint since the movie ID < 0.
 
+INSERT INTO MovieGenre VALUES(2, "Children's");
+
 INSERT INTO MovieDirector VALUES(6, 1);
 --violates FOREIGN KEY constraint since there is no movie with ID 6.
 
@@ -45,6 +49,22 @@ INSERT INTO MovieDirector VALUES(0, 1);
 
 INSERT INTO MovieDirector VALUES(1, -1);
 --violates CHECK constraint since the director ID is not > 0.
+
+INSERT INTO MovieDirector VALUES(2, 2);
+
+INSERT INTO MovieActor(5, 1, "Po");
+--violates FOREIGN KEY constraint since there is no movie with ID 5.
+
+INSERT INTO MovieActor(2, 7000, "Po");
+--violates FOREIGN KEY constraint since there is no Actor with ID 7000.
+
+INSERT INTO MovieActor(-2, 2, "Po");
+--violates CHECK constraint since the movie ID is not > 0.
+
+INSERT INTO MovieActor(2, -2, "Po");
+--violates CHECK constraint since the actor ID is not > 0.
+
+INSERT INTO MovieActor(2, 1, "Po");
 
 
 
