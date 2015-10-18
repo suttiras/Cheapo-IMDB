@@ -5,7 +5,7 @@ CREATE TABLE Director(id INT PRIMARY KEY, last VARCHAR(20), first VARCHAR(20), d
 CREATE TABLE MovieGenre(mid INT, genre VARCHAR(20));
 CREATE TABLE MovieDirector(mid INT, did INT);
 CREATE TABLE MovieActor(mid INT, aid INT, role VARCHAR(50));
-CREATE TABLE Review(name VARCHAR(20) NOT NULl, time TIMESTAMP, mid INT NOT NULL, rating INT NOT NULl, comment VARCHAR(500),
+CREATE TABLE Review(name VARCHAR(20) NOT NULL, time TIMESTAMP, mid INT NOT NULL, rating INT NOT NULL, comment VARCHAR(500),
 CHECK (rating BETWEEN 1 and 5),
 CHECK (mid > 0)
 );
