@@ -17,3 +17,9 @@ WHERE T.totalMovies > 1)P;
 --Get the total number of movies each actor has acted, then eliminate the actors whose 
 --total number of movies are less than 1, then get the total number of actors remaining
 --(the total number of actors who have acted in multiple movies).
+
+SELECT COUNT(*) as 'Number of Actors who Acted in Multiple Movies'
+FROM (SELECT COUNT(*) 
+FROM MovieActor
+GROUP BY aid
+HAVING COUNT(*) >= 2) T;
