@@ -45,9 +45,10 @@ if ($_GET["query"] != "")
 	}
 	
 	echo "</tr>";
+	echo mysql_num_fields($result);
 	$result = mysql_fetch_row($rs);
-	echo count($result);
-	
+	//echo count($result);
+	echo mysql_num_fields($result);
 	
 	do
 	{
