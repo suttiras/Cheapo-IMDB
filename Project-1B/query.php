@@ -2,7 +2,6 @@
 <head><title>CS143 Project 1B</title></head>
 <body>
 <p><font size = "5"><b>IMDB: Cheapo Version</b></font></p>
-<p>Please do not run a complex query here. You may kill the server. </p>
 Type an SQL query in the following box: <p>
 Example: <tt>SELECT * FROM Actor WHERE id=10;</tt><br />
 <p>
