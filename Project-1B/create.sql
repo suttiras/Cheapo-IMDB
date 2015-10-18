@@ -1,12 +1,12 @@
 CREATE TABLE Movie(id INT PRIMARY KEY, title VARCHAR(100) NOT NULL, year INT, rating VARCHAR(10), company VARCHAR(50),
 CHECK (year > 0),
-CHECK (id > 0),
+CHECK (id > 0)
 )ENGINE = INNODB;
 
 CREATE TABLE Actor(id INT PRIMARY KEY, last VARCHAR(20) NOT NULL, first VARCHAR(20) NOT NULL, sex VARCHAR(6), 
 dob DATE NOT NULL, dod DATE,
 CHECK (id > 0),
-CHECK (sex = 'Female' OR sex = 'Male'),
+CHECK (sex = 'Female' OR sex = 'Male')
 )ENGINE = INNODB;
 
 CREATE TABLE Director(id INT PRIMARY KEY, last VARCHAR(20) NOT NULL, first VARCHAR(20) NOT NULL, dob DATE NOT NULL, 
