@@ -12,6 +12,7 @@ Example: <tt>SELECT * FROM Actor WHERE id=10;</tt><br />
 
 <?php
 $db_connection = mysql_connect("localhost", "cs143", "");
+mysql_select_db("TEST", $db_connection);
 
 mysql_close($db_connection);
 ?>
