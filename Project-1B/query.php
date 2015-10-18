@@ -9,6 +9,12 @@ Example: <tt>SELECT * FROM Actor WHERE id=10;</tt><br />
 <form action="." method="GET">
 <textarea name="query" cols="60" rows="8"></textarea><br />
 <input type="submit" value="Submit" />
+
+<?php
+$db_connection = mysql_connect("localhost", "cs143", "");
+
+
+?>
 </form>
 </p>
 <p><small>Note: tables and fields are case sensitive. All tables in Project 1B are availale.</small>
