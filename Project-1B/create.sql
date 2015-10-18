@@ -6,7 +6,7 @@ CHECK (id > 0),
 CREATE TABLE Actor(id INT PRIMARY KEY, last VARCHAR(20) NOT NULL, first VARCHAR(20) NOT NULL, sex VARCHAR(6), 
 dob DATE NOT NULL, dod DATE,
 CHECK (id > 0),
-CHECK (sex = 'Female' OR sex = 'Male')
+CHECK (sex = 'Female' OR sex = 'Male'),
 )ENGINE = INNODB;
 
 CREATE TABLE Director(id INT PRIMARY KEY, last VARCHAR(20) NOT NULL, first VARCHAR(20) NOT NULL, dob DATE NOT NULL, 
@@ -18,7 +18,9 @@ CREATE TABLE MovieDirector(mid INT, did INT, CHECK (mid > 0), CHECK (did > 0))EN
 
 CREATE TABLE MovieActor(mid INT, aid INT, role VARCHAR(50) NOT NULL,
 CHECK (mid > 0),
-CHECK (aid > 0)
+CHECK (aid > 0),
+FOREIGN KEY (aid) references Actor(id),
+FOREIGN KEY (mid) references Movie(id)
 )ENGINE = INNODB;
 
 CREATE TABLE Review(name VARCHAR(20) NOT NULL, time TIMESTAMP, mid INT NOT NULL, rating INT NOT NULL, comment VARCHAR(500),
