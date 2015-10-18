@@ -35,7 +35,7 @@ if ($_GET["query"] != "")
 	
 	echo "<table border = 1 cellspacing = 1><tr>";
 	
-	echo $result;
+	//echo $result;
 	
 	foreach (array_keys($result) as $col)
 	{
@@ -45,19 +45,14 @@ if ($_GET["query"] != "")
 	}
 	
 	echo "</tr>";
-	echo mysql_num_fields($result);
-	$result = mysql_fetch_row($rs);
-	//echo count($result);
-	echo mysql_num_fields($result);
-	
+
+	echo "<tr>";
 	do
 	{
-		$i = 0;
-		echo "<tr>";
-		for ($i; $i < count($result); $i= $i+1)
+		foreach($result as $col)
 		{
 			echo "<td>";
-			echo $result[$i]; 
+			echo $col; 
 			echo "</td>";
 		}
 		echo "</tr>";
