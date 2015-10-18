@@ -18,7 +18,7 @@ mysql_close($db_connection);
 ?>
 </form>
 </p>
-<p><small>Note: tables and fields are case sensitive. All tables in Project 1B are availale.</small>
+<p><small>Note: tables and fields are case sensitive. All tables in Project 1B are available.</small>
 </p>
 
 
