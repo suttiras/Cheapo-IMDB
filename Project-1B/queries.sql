@@ -23,3 +23,8 @@ FROM (SELECT COUNT(*)
 FROM MovieActor
 GROUP BY aid
 HAVING COUNT(*) >= 2) T;
+
+--Group the actors' ids in MovieActor and keep those who have acted in at least 2 movies, 
+--and then count the number of movies that that actor acted in (with the number of movies 
+--being represented in each row). Then count the total number of actors who have acted in 
+--multiple movies by counting the number of rows.
