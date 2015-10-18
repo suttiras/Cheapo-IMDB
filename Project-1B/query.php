@@ -12,8 +12,9 @@ Example: <tt>SELECT * FROM Actor WHERE id=10;</tt><br />
 <?php
 if ($_GET["query"] != "")
 {
-	
+	echo "<br><br><b>Your query is: </b></br> </br>";
 	echo $_GET["query"];
+	echo "<br><br>";
 	$db_connection = mysql_connect("localhost", "cs143", "");
 	
 	mysql_select_db("TEST", $db_connection);
@@ -30,7 +31,7 @@ if ($_GET["query"] != "")
 		echo "<br><br>No rows found.";
 		exit;
 	}
-	echo $rs;
+
 	$result = mysql_fetch_assoc($rs);
 	
 	echo "<table border = 1 cellspacing = 1><tr>";
@@ -47,6 +48,7 @@ if ($_GET["query"] != "")
 	echo "</tr>";
 
 	echo "<tr>";
+	
 	do
 	{
 		foreach($result as $col)
