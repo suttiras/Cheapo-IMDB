@@ -1,7 +1,7 @@
 <html>
 <head><title>CS143 Project 1B</title></head>
 <body>
-<p><b>CS143 Project 1B</b></p>
+<p><font size = "5"><b>IMDB: Cheapo Version</b></font></p>
 <p>Please do not run a complex query here. You may kill the server. </p>
 Type an SQL query in the following box: <p>
 Example: <tt>SELECT * FROM Actor WHERE id=10;</tt><br />
@@ -17,7 +17,7 @@ if ($_GET["query"] != "")
 	echo "<br><br>";
 	$db_connection = mysql_connect("localhost", "cs143", "");
 	
-	mysql_select_db("TEST", $db_connection);
+	mysql_select_db("CS143", $db_connection);
 	
 	//$sanitized_name = mysql_real_escape_string($query, $db_connection);
 	$rs = mysql_query($_GET["query"], $db_connection);
