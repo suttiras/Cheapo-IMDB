@@ -42,32 +42,34 @@ if ($_GET["query"] == "")
 	echo "<table border = 1 cellspacing = 1><tr>";
 	
 	//echo $result;
-	
+	/*
 	foreach (array_keys($result) as $col)
 	{
 		echo "<th>";
 		echo $col;
 		echo "</th>";
-	}
+	}*/
 	
 	echo "</tr>";
-//End of Brad Pitt's info
-//Start of movies
+
 	echo "<tr>";
 	
 	do
 	{
+	
 		foreach($result as $col)
 		{
-			echo "<td>";
+			echo " ";
 			echo $col; 
-			echo "</td>";
+			echo " ";
 		}
-		echo "</tr>";
+		echo "<br>";
 	}while ($result = mysql_fetch_assoc($rs));
 	
-	echo "</table>";
 	
+	echo "</table>";
+	//End of Brad Pitt's info
+//Start of movies
 	
 	
 	$rs = mysql_query("SELECT Movie.title AS 'Movies That Brad Pitt Has Acted In', Movie.year
