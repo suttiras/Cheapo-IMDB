@@ -2,6 +2,9 @@
 <head>
 	<title>IMDB: Cheapo Version</title>
 </head>
+<style>
+.error {color: #FF0000;}
+</style>
 <body>
 <p style="text-align:center"><a href="./Homepage.php"><img src="ImdbLogo.png" alt="Website Logo"></a></p>
 
@@ -14,7 +17,7 @@ Actor/Director Page
 <?php
 // define variables and set to empty values
 $firstnameErr = $lastnameErr = $genderErr = $dobErr = "";
-$firstname = $email = $gender = $comment = $website = "";
+$first_name = $last_name = $gender = $dob = $dod = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
    if (empty($_POST["first_name"])) {
