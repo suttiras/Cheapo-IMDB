@@ -8,7 +8,7 @@
 <body>
 <p style="text-align:center"><a href="./Homepage.php"><img src="ImdbLogo.png" alt="Website Logo"></a></p>
 
-<p>
+<p style="text-align:center">
 Actor/Director Page
 </p>
 
@@ -55,15 +55,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <form method="GET" action=""> 
-   First Name: <input type="text" name="first_name">
+   First Name: <input type="text" name="first_name" required>
    <span class="error">* <?php echo $firstnameErr;?></span>
    <br><br>
    
-   Last Name: <input type="text" name="last_name">
+   Last Name: <input type="text" name="last_name" required>
 	<span class="error">* <?php echo $lastnameErr;?></span>
    <br><br>
    Gender:
-   <input type="radio" name="gender" value='female'>Female
+   <input checked= "checked" type="radio" name="gender" value='female'>Female
    <input type="radio" name="gender" value='male'>Male
    <span class="error">* <?php echo $genderErr;?></span>
    <br><br>
