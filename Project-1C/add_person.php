@@ -43,19 +43,19 @@ Add Actor/Director Page
    <span class="error">* </span>
    <br><br>
    First Name: <input type="text" name="first_name" required>
-   <span class="error">* <?php echo $firstnameErr;?></span>
+   <span class="error">* </span>
    <br><br>
    
    Last Name: <input type="text" name="last_name" required>
-	<span class="error">* <?php echo $lastnameErr;?></span>
+	<span class="error">* </span>
    <br><br>
    Gender:
    <input checked= "checked" type="radio" name="gender" value='Female'>Female
    <input type="radio" name="gender" value='Male'>Male
-   <span class="error">* <?php echo $genderErr;?></span>
+   <span class="error">* </span>
    <br><br>
    Date of Birth (yyyymmdd): <input type="number" name="dob" required>
-	<span class="error">* <?php echo $dobErr;?></span>
+	<span class="error">* </span>
    <br><br>
    Date of Death (yyyymmdd)(if applicable): <input type="number" name="dod">
    <br><br>
