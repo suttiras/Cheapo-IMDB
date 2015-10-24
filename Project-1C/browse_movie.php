@@ -1,5 +1,4 @@
 <html>
-<html>
 <head>
 	<title>IMDB: Cheapo Version</title>
 </head>
@@ -7,7 +6,7 @@
 <p style="text-align:center"><a href="./Homepage.php"><img src="ImdbLogo.png" alt="Website Logo"></a></p>
 
 <p>
-Add Actor to Movie Page
+Browse Movie Page
 </p>
 
 
