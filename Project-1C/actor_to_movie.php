@@ -6,6 +6,6 @@
 <p style="text-align:center"><img src="ImdbLogo.png" alt="Website Logo"></p>
 <p></p>
 <p>
-Actor/Director Page
+Add Actor to Movie Page
 <a href="./add_person.php">Actor/Director</a>
 </p>
