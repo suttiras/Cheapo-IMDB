@@ -11,13 +11,6 @@
 <p style="text-align:center">
 Actor/Director Page
 </p>
-
-<p>
-
-<?php
-   echo "Hello World!";
-?>
-</p>
 <p>
 <script type ="text/javascript">
 	function checkForm(form)
@@ -63,6 +56,13 @@ Actor/Director Page
 
    <br><br>
    <input type="submit" name="submit" value="Submit">
+   
+   <p>
+	<?php
+		//echo "Hello World!";
+		
+	?>
+</p>
    
 </form>
 
