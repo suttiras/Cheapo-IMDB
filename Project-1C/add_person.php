@@ -76,7 +76,9 @@ Add Actor/Director Page
 		$success = true;
 		if ($first_name_2 != "" && $last_name_2 != "")
 		{	
+			//attempt to add to database
 			
+			//after attempt to add to database
 			if($success)
 			{
 				echo "<h3><b>You added the following to the database: </b></h3>";
