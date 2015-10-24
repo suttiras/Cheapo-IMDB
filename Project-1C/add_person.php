@@ -9,6 +9,71 @@
 Actor/Director Page
 </p>
 
+<p>
+
+<?php
+// define variables and set to empty values
+$firstnameErr = $lastnameErr = $genderErr = $dobErr = "";
+$firstname = $email = $gender = $comment = $website = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+   if (empty($_POST["first_name"])) {
+     $firstnameErr = "First Name is required";
+   } else {
+     $first_name = test_input($_POST["first_name"]);
+     // check if name only contains letters and whitespace
+     if (!preg_match("/^[a-zA-Z ]*$/",$first_name) {
+       $firstnameErr = "Only letters and white space allowed"; 
+     }
+   }
+   if (empty($_POST["last_name"])) {
+     $lastnameErr = "Last Name is required";
+   } else {
+     $last_name = test_input($_POST["last_name"]);
+     // check if name only contains letters and whitespace
+     if (!preg_match("/^[a-zA-Z ]*$/",$last_name)) {
+       $lastnameErr = "Only letters and white space allowed"; 
+     }
+   }
+
+   if (empty($_POST["dob"])) {
+     $dobErr = "Need a date of birth!";
+   } else {
+     $dob = test_input($_POST["dob"]);
+   }
+
+   if (empty($_POST["gender"])) {
+     $genderErr = "Gender is required";
+   } else {
+     $gender = test_input($_POST["gender"]);
+   }
+}
+
+
+<form method="GET" action=""> 
+   First Name: <input type="text" name="first_name">
+   <br><br>
+   Last Name: <input type="text" name="last_name">
+
+   <br><br>
+   Gender:
+   <input type="radio" name="gender" value='female'>Female
+   <input type="radio" name="gender" value='male'>Male
+   <br><br>
+   Date of Birth: <input type="text" name="dob">
+
+   <br><br>
+   Date of Death (if applicable): <input type="text" name="dod">
+   <br><br>
+
+   <br><br>
+   <input type="submit" name="submit" value="Submit"> 
+</form>
+
+<?>
+</p>
+
+
 
 <h2 style="text-align:center"><font size = "3"><b>Add to Database</b></font></h2>
 <p style="text-align:center">
