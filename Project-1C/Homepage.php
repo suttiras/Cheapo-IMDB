@@ -27,7 +27,7 @@ We at IMDB: Cheapo Version desperately need your help in improving our website! 
 <a href="./add_comments.php">Reviews</a>
 </p>
 <p style="text-align:center">
-<a href="./director_to_movie.php">Add an Actor to a Movie</a>
+<a href="./actor_to_movie.php">Add an Actor to a Movie</a>
 </p>
 <p style="text-align:center">
 <a href="./director_to_movie.php">Add a Director to a Movie</a>
