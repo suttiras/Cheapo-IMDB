@@ -51,20 +51,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
      $gender = test_input($_POST["gender"]);
    }
 }
-
+?>
 
 <form method="GET" action=""> 
    First Name: <input type="text" name="first_name">
+   <span class="error">* <?php echo $firstnameErr;?></span>
    <br><br>
+   
    Last Name: <input type="text" name="last_name">
-
+	<span class="error">* <?php echo $lastnameErr;?></span>
    <br><br>
    Gender:
    <input type="radio" name="gender" value='female'>Female
    <input type="radio" name="gender" value='male'>Male
+   <span class="error">* <?php echo $genderErr;?></span>
    <br><br>
    Date of Birth: <input type="text" name="dob">
-
+	<span class="error">* <?php echo $dobErr;?></span>
    <br><br>
    Date of Death (if applicable): <input type="text" name="dod">
    <br><br>
@@ -73,7 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    <input type="submit" name="submit" value="Submit"> 
 </form>
 
-<?>
+
 </p>
 
 
