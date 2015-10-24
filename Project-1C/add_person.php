@@ -33,6 +33,11 @@ Add Actor/Director Page
 			alert("Error: Date of death is invalid.");
 			return false;
 		}
+		if (form.dod.value != "" && form.dod.value < form.dob.value)
+		{
+			alert("Error: Date of death and birth are invalid.");
+			return false;
+		}
 	}
 </script>
 
