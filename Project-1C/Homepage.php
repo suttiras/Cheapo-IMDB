@@ -9,6 +9,9 @@
 <p>
 <a href="./add_person.php">Actor/Director</a>
 </p>
+<p>
+<a href="./add_comments.php">Reviews</a>
+</p>
 
 </body>
 </html>
