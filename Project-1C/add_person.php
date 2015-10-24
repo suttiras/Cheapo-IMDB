@@ -1,3 +1,4 @@
+
 <html>
 <head>
 	<title>IMDB: Cheapo Version</title>
@@ -8,9 +9,9 @@
 <body>
 <p style="text-align:center"><a href="./Homepage.php"><img src="ImdbLogo.png" alt="Website Logo"></a></p>
 
-<p style="text-align:center">
-Actor/Director Page
-</p>
+<h2 style="text-align:center">
+Add Actor/Director Page
+</h2>
 <p>
 <script type ="text/javascript">
 	function checkForm(form)
@@ -36,6 +37,11 @@ Actor/Director Page
 </script>
 
 <form method="GET" action="" onsubmit="return checkForm(this);"> 
+	Actor or Director:
+   <input checked= "checked" type="radio" name="actor_or_director" value='actor'>Actor
+   <input type="radio" name="actor_or_director" value='director'>Director
+   <span class="error">* </span>
+   <br><br>
    First Name: <input type="text" name="first_name" required>
    <span class="error">* <?php echo $firstnameErr;?></span>
    <br><br>
@@ -44,14 +50,14 @@ Actor/Director Page
 	<span class="error">* <?php echo $lastnameErr;?></span>
    <br><br>
    Gender:
-   <input checked= "checked" type="radio" name="gender" value='female'>Female
-   <input type="radio" name="gender" value='male'>Male
+   <input checked= "checked" type="radio" name="gender" value='Female'>Female
+   <input type="radio" name="gender" value='Male'>Male
    <span class="error">* <?php echo $genderErr;?></span>
    <br><br>
-   Date of Birth: <input type="number" name="dob" required>
+   Date of Birth (yyyymmdd): <input type="number" name="dob" required>
 	<span class="error">* <?php echo $dobErr;?></span>
    <br><br>
-   Date of Death (if applicable): <input type="number" name="dod">
+   Date of Death (yyyymmdd)(if applicable): <input type="number" name="dod">
    <br><br>
 
    <br><br>
@@ -60,6 +66,32 @@ Actor/Director Page
    <p>
 	<?php
 		//echo "Hello World!";
+		$first_name_2 = $_GET["first_name"];
+		$last_name_2 = $_GET["last_name"];
+		$gender_2 = $_GET["gender"];
+		$actor_or_director_2 = $_GET["actor_or_director"];
+		$dob_2 = $_GET["dob"];
+		$dod_2 = $_GET["dod"];
+		
+		$success = true;
+		if ($first_name_2 != "" && $last_name_2 != "")
+		{	
+			
+			if($success)
+			{
+				echo "<h3><b>You added the following to the database: </b></h3>";
+				echo "Actor or Director: $actor_or_director_2 <br>";
+				echo "First name: $first_name_2 <br>";
+				echo "Last name: $last_name_2 <br>";
+				echo "Gender: $gender_2 <br>";
+				echo "DOB: $dob_2 <br>";
+				echo "DOD: $dod_2 <br>";
+			}
+			else
+			{
+				echo "Failed to add actor to database.";
+			}
+		}
 		
 	?>
 </p>
@@ -71,7 +103,7 @@ Actor/Director Page
 
 <h2 style="text-align:center"><font size = "3"><b>Add to Database</b></font></h2>
 <p style="text-align:center">
-Actor/Director
+<a href="./add_person.php">Actor/Director</a>
 </p>
 <p style="text-align:center">
 <a href="./add_movie.php">Movie</a>
