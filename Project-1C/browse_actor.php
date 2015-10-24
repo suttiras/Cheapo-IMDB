@@ -29,7 +29,7 @@ Browse Actor Page
 <p></p>
 <h2 style="text-align:center"><font size = "3"><b>Browse Database</b></font></h2>
 <p style="text-align:center">
-<a href="./browse_actor.php">Actor</a>
+Actor
 </p>
 
 <p style="text-align:center">

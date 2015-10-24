@@ -15,7 +15,7 @@ Movie Page
 <a href="./add_person.php">Actor/Director</a>
 </p>
 <p style="text-align:center">
-<a href="./add_movie.php">Movie</a>
+Movie
 </p>
 <p style="text-align:center">
 <a href="./add_comments.php">Reviews</a>

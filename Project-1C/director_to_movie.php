@@ -24,7 +24,7 @@ Add Director to Movie Page
 <a href="./actor_to_movie.php">Add an Actor to a Movie</a>
 </p>
 <p style="text-align:center">
-<a href="./director_to_movie.php">Add a Director to a Movie</a>
+Add a Director to a Movie
 </p>
 <p></p>
 <h2 style="text-align:center"><font size = "3"><b>Browse Database</b></font></h2>

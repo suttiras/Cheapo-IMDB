@@ -33,7 +33,7 @@ Browse Movie Page
 </p>
 
 <p style="text-align:center">
-<a href="./browse_movie.php">Movie</a>
+Movie
 </p>
 
 </body>

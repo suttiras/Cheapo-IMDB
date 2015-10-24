@@ -83,7 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <h2 style="text-align:center"><font size = "3"><b>Add to Database</b></font></h2>
 <p style="text-align:center">
-<a href="./add_person.php">Actor/Director</a>
+Actor/Director
 </p>
 <p style="text-align:center">
 <a href="./add_movie.php">Movie</a>

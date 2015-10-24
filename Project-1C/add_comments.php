@@ -18,7 +18,7 @@ Add Comments Page
 <a href="./add_movie.php">Movie</a>
 </p>
 <p style="text-align:center">
-<a href="./add_comments.php">Reviews</a>
+Reviews
 </p>
 <p style="text-align:center">
 <a href="./actor_to_movie.php">Add an Actor to a Movie</a>

@@ -22,7 +22,7 @@ Add Actor to Movie Page
 <a href="./add_comments.php">Reviews</a>
 </p>
 <p style="text-align:center">
-<a href="./actor_to_movie.php">Add an Actor to a Movie</a>
+Add an Actor to a Movie
 </p>
 <p style="text-align:center">
 <a href="./director_to_movie.php">Add a Director to a Movie</a>
