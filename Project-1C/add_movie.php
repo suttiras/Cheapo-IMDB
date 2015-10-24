@@ -64,15 +64,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <form method="GET" action=""> 
-   Name of Movie: <input type="text" name="movie_name">
+   Name of Movie: <input type="text" name="movie_name" required>
    <span class="error">* <?php echo $movieNameErr;?></span>
    <br><br>
    
-   Year: <input type="text" name="year">
+   Year: <input type="text" name="year" required>
 	<span class="error">* <?php echo $yearErr;?></span>
    <br><br>
    Rating:
-	<select name="rating">
+	<select name="rating" required>
 	<option value="G">G</option>
 	<option value="PG">PG</option>
 	<option value="PG-13">PG-13</option>
@@ -83,12 +83,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    <span class="error">* <?php echo $ratingErr;?></span>
    <br><br>
    
-   Production Company: <input type="text" name="year">
+   Production Company: <input type="text" name="year" required>
 	<span class="error">* <?php echo $yearErr;?></span>
    <br><br>
    
    Genre(s):
-   <form action="#" method="post">
+   <form action="#" method="post" required>
    <span class="error">* <?php echo $ratingErr;?></span>
 <input type="checkbox" name="check_list[]" value="Action"><label>Action</label>
 <input type="checkbox" name="check_list[]" value="Adult"><label>Adult</label>
