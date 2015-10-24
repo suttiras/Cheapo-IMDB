@@ -47,7 +47,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
    if (empty($_POST["gender"])) {
      $genderErr = "Gender is required";
-   } else {
+   } 
+   else {
      $gender = test_input($_POST["gender"]);
    }
 }
@@ -80,7 +81,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </p>
 
 
-
 <h2 style="text-align:center"><font size = "3"><b>Add to Database</b></font></h2>
 <p style="text-align:center">
 <a href="./add_person.php">Actor/Director</a>
@@ -106,6 +106,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <p style="text-align:center">
 <a href="./browse_movie.php">Movie</a>
 </p>
+
+
+
 
 </body>
 </html>
