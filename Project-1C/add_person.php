@@ -78,6 +78,8 @@ Add Actor/Director Page
 		{	
 			//attempt to add to database
 			
+			
+			
 			//after attempt to add to database
 			if($success)
 			{
