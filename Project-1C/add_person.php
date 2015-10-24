@@ -15,46 +15,34 @@ Actor/Director Page
 <p>
 
 <?php
-// define variables and set to empty values
-$firstnameErr = $lastnameErr = $genderErr = $dobErr = "";
-$first_name = $last_name = $gender = $dob = $dod = "";
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-   if (empty($_POST["first_name"])) {
-     $firstnameErr = "First Name is required";
-   } else {
-     $first_name = test_input($_POST["first_name"]);
-     // check if name only contains letters and whitespace
-     if (!preg_match("/^[a-zA-Z ]*$/",$first_name) {
-       $firstnameErr = "Only letters and white space allowed"; 
-     }
-   }
-   if (empty($_POST["last_name"])) {
-     $lastnameErr = "Last Name is required";
-   } else {
-     $last_name = test_input($_POST["last_name"]);
-     // check if name only contains letters and whitespace
-     if (!preg_match("/^[a-zA-Z ]*$/",$last_name)) {
-       $lastnameErr = "Only letters and white space allowed"; 
-     }
-   }
-
-   if (empty($_POST["dob"])) {
-     $dobErr = "Need a date of birth!";
-   } else {
-     $dob = test_input($_POST["dob"]);
-   }
-
-   if (empty($_POST["gender"])) {
-     $genderErr = "Gender is required";
-   } 
-   else {
-     $gender = test_input($_POST["gender"]);
-   }
-}
+   echo "Hello World!";
 ?>
+</p>
+<p>
+<script type ="text/javascript">
+	function checkForm(form)
+	{
+		var alphabet = /^[a-zA-Z ]*$/;
+		if(!alphabet.test(form.first_name.value) || !alphabet.test(form.last_name.value)  )
+		{
+			alert("Error: Name(s) contain(s) invalid characters.");
+			return false;
+		}
+		var date_valid = /^(?:(?:(?:(?:(?:[13579][26]|[2468][048])00)|(?:[0-9]{2}(?:(?:[13579][26])|(?:[2468][048]|0[48]))))(?:(?:(?:09|04|06|11)(?:0[1-9]|1[0-9]|2[0-9]|30))|(?:(?:01|03|05|07|08|10|12)(?:0[1-9]|1[0-9]|2[0-9]|3[01]))|(?:02(?:0[1-9]|1[0-9]|2[0-9]))))|(?:[0-9]{4}(?:(?:(?:09|04|06|11)(?:0[1-9]|1[0-9]|2[0-9]|30))|(?:(?:01|03|05|07|08|10|12)(?:0[1-9]|1[0-9]|2[0-9]|3[01]))|(?:02(?:[01][0-9]|2[0-8])))))$/;
+		if(!date_valid.test(form.dob.value))
+		{
+			alert("Error: Date of birth is invalid.");
+			return false;
+		}
+		if (form.dod.value != "" && !date_valid.test(form.dod.value))
+		{
+			alert("Error: Date of death is invalid.");
+			return false;
+		}
+	}
+</script>
 
-<form method="GET" action=""> 
+<form method="GET" action="" onsubmit="return checkForm(this);"> 
    First Name: <input type="text" name="first_name" required>
    <span class="error">* <?php echo $firstnameErr;?></span>
    <br><br>
@@ -67,16 +55,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    <input type="radio" name="gender" value='male'>Male
    <span class="error">* <?php echo $genderErr;?></span>
    <br><br>
-   Date of Birth: <input type="text" name="dob" required>
+   Date of Birth: <input type="number" name="dob" required>
 	<span class="error">* <?php echo $dobErr;?></span>
    <br><br>
-   Date of Death (if applicable): <input type="text" name="dod">
+   Date of Death (if applicable): <input type="number" name="dod">
    <br><br>
 
    <br><br>
-   <input type="submit" name="submit" value="Submit"> 
+   <input type="submit" name="submit" value="Submit">
+   
 </form>
-
 
 </p>
 
@@ -106,6 +94,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <p style="text-align:center">
 <a href="./browse_movie.php">Movie</a>
 </p>
+
 
 
 
