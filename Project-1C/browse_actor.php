@@ -15,8 +15,10 @@ Browse Actor Page
 <textarea name="query" cols="60" rows="1"></textarea><br />
 <input type="submit" value="Submit" />
 <?php
+
 if ($_GET["query"] == "")
 {
+	
 	echo "<br><br>";
 	$db_connection = mysql_connect("localhost", "cs143", "");
 	
@@ -41,6 +43,8 @@ if ($_GET["query"] == "")
 	
 	echo "<table border = 1 cellspacing = 1><tr>";
 	
+	
+	
 	//echo $result;
 	/*
 	foreach (array_keys($result) as $col)
@@ -49,6 +53,7 @@ if ($_GET["query"] == "")
 		echo $col;
 		echo "</th>";
 	}*/
+	
 	
 	echo "</tr>";
 
@@ -127,13 +132,34 @@ else if ($_GET["query"] != "")
 	echo "<br><br><b>The actor you're searching for is: </b></br> </br>";
 	echo $_GET["query"];
 	echo "<br><br>";
+	
+	$search = $_GET["query"];
+	$trimmedSearch = trim($search, " \t.");
+	
+	
+	if (!preg_match("/^[a-zA-Z ]*$/",$trimmedSearch)) {
+       echo "Only letters and white space allowed"; 
+     }
+	
+	echo "Revised search is: ";
+	echo $trimmedSearch;
+	echo "<br><br>";
+	
 	$db_connection = mysql_connect("localhost", "cs143", "");
 	
-	mysql_select_db("CS143", $db_connection);
+	mysql_select_db("TEST", $db_connection);
 	
 	//$sanitized_name = mysql_real_escape_string($query, $db_connection);
-	$actorName = $_GET["query"];
 	//$query2 = "SELECT 
+	$searchTerms = explode(" ", $trimmedSearch);
+	//list($firstName, $lastName) = split(' ', $actorName);
+	
+	/*
+	echo $firstName;
+	echo "<br>";
+	echo $lastName;\
+	*/
+	/*
 	$rs = mysql_query($_GET["query"], $db_connection);
 	
 	if (!$rs) {
@@ -178,6 +204,7 @@ else if ($_GET["query"] != "")
 	
 	mysql_free_result($result);
 	mysql_close($db_connection);
+	*/
 	
 }
 ?>
