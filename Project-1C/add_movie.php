@@ -118,7 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    
    <?php
 		require_once('global_functions.php');
-		//echo "Hello World!";
+		echo "Hello World!";
 		$movie_name_2 = $_GET["movie_name"];
 		$year_2 = $_GET["year"];
 		$rating_2 = $_GET["rating"];
