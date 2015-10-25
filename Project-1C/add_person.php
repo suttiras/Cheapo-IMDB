@@ -79,7 +79,7 @@ Add Actor/Director Page
 		$dob_2 = $_GET["dob"];
 		$dod_2 = $_GET["dod"];
 		
-		$success = true;
+		$success = false;
 		if ($first_name_2 != "" && $last_name_2 != "")
 		{	
 			//attempt to add to database
@@ -92,9 +92,12 @@ Add Actor/Director Page
 				//$maxId = mysql_query("SELECT MAX(id) FROM MaxPersonID;", $db_connection);
 				$maxIdQuery = 'SELECT MAX(id)+1 FROM MaxPersonID';
 				$pdo_obj = get_pdo();
+				
 				$maxIDQueryStmt = $pdo_obj->prepare($maxIdQuery);
+				
 				if (! $maxIDQueryStmt->execute())
 				{
+				
 					//failed to get maxID from MaxID table. We have to get it another way.
 					//$MaxId = 'SELECT MAX(id)+1 FROM Actor';
 					$MaxIdUnion = 'SELECT MAX(id) 
@@ -108,20 +111,24 @@ Add Actor/Director Page
 					}
 					else
 					{
-						$MaxId2 = $maxIDQueryStmt2->fetch(PDO::FETCH_COLUMN, 0);
-						$MaxId2 = $MaxId2 + 1;
-						echo "Got ID from Actor/Director Table: $MaxId2";
+						$MaxId = $maxIDQueryStmt2->fetch(PDO::FETCH_COLUMN, 0);
+						$MaxId = $MaxId + 1;
+						echo "Got ID from Actor/Director Table: $MaxId";
+						$success = true;
 					}
 				}
 				else
 				{
 					$MaxId = $maxIDQueryStmt->fetch(PDO::FETCH_COLUMN, 0);
 					echo "Got Max ID from MaxPersonID Table is $MaxId";
+					$success = true;
 					//TO DO:insert into MaxPersonID Table
+					
 				}
 				
 				
-				$add_query = "INSERT INTO Actor VALUES(100, $last_name_2, $first_name_2, $gender_2, $dob_2, $dod_2);"; 
+				$add_query = "INSERT INTO Actor VALUES($MaxId, $last_name_2, $first_name_2, $gender_2, $dob_2, $dod_2);"; 
+				echo "<br>$add_query";
 			}
 			
 			
