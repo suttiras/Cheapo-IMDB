@@ -95,27 +95,17 @@ Add Actor/Director Page
 				$maxIDQueryStmt = $pdo_obj->prepare($maxIdQuery);
 				if (! $maxIDQueryStmt->execute())
 				{
-				//failed to get maxID from MaxID table
+					//failed to get maxID from MaxID table. We have to get it another way.
+					$MaxId = 'SELECT MAX(id)+1 FROM Actor';
+					//TO DO
 				}
 				else
 				{
 					$MaxId = $maxIDQueryStmt->fetch(PDO::FETCH_COLUMN, 0);
+					//TO DO:insert into MaxPersonID Table
 				}
 				echo "Max ID is $MaxId";
 				
-				//test
-				/*
-				$next_id_sql = 'SELECT MAX(id)+1 FROM MaxPersonID';
-				$sth = $pdo_obj->prepare( $next_id_sql );
-				if ( ! $sth->execute() ) {
-					return false;
-				}
-				$new_id = $sth->fetch( PDO::FETCH_COLUMN, 0 );
-				echo $new_id;
-				*/
-				//end of test
-				
-				//echo "Max ID is $maxId";
 				$add_query = "INSERT INTO Actor VALUES(100, $last_name_2, $first_name_2, $gender_2, $dob_2, $dod_2);"; 
 			}
 			
