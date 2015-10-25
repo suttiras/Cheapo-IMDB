@@ -97,6 +97,13 @@ Add Actor/Director Page
 				{
 					//failed to get maxID from MaxID table. We have to get it another way.
 					$MaxId = 'SELECT MAX(id)+1 FROM Actor';
+					$MaxIdUnion = 'SELECT MAX(id) 
+									FROM (SELECT id FROM Actor
+									UNION
+									SELECT id FROM Director) AS M';
+					$maxIDQueryStmt2 = $pdo_obj->prepare($maxIdUnion);
+					
+					
 					//TO DO
 				}
 				else
