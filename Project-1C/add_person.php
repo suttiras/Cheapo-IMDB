@@ -132,6 +132,8 @@ Add Actor/Director Page
 						echo "Failed to insert Max ID into MaxPersonID table.";
 					}
 					//$MaxIdInsert->execute();
+					$MaxIdInsert = $pdo_obj->prepare('INSERT INTO MaxPersonID (id) VALUES (:MaxId)');
+					$MaxIdInsert->bindParam(':MaxId', $MaxId, PDO::PARAM_INT);
 					//echo $MaxIdInsert;
 				}
 				
