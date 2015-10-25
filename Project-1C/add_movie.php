@@ -20,10 +20,10 @@ $movieNameErr = $ratingErr = $yearErr = $productionCompanyErr = $genreErr = "";
 $movieName = $rating = $year = $productionCompany = $check_list[] = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-   if (empty($_POST["movie_name"])) {
+   if (empty($_GET["movie_name"])) {
      $movieNameErr = "A movie name is required";
    } else {
-     $movieName = test_input($_POST["movie_name"]);
+     $movieName = test_input($_GET["movie_name"]);
      // check if name only contains letters and whitespace
 	 /*
      if (!preg_match("/^[a-zA-Z0-9 ]*$/",$movie_name) {
@@ -31,34 +31,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
      }
 	 */
    }
-   if (empty($_POST["year"])) {
+   if (empty($_GET["year"])) {
      $yearErr = "Year is required";
    } else {
-     $year = test_input($_POST["year"]);
+     $year = test_input($_GET["year"]);
      // check if year has only numbers
      if (!preg_match("/^[0-9]*$/",$year)) { //doesn't completely work...
        $lastnameErr = "Only numbers allowed"; 
      }
    }
 
-   if (empty($_POST["rating"])) {
+   if (empty($_GET["rating"])) {
      $ratingErr = "Rating is required.";
    } else {
-     $rating = test_input($_POST["rating"]);
+     $rating = test_input($_GET["rating"]);
    }
 
-   if (empty($_POST["productionCompany"])) {
+   if (empty($_GET["productionCompany"])) {
      $productionCompanyErr = "Production company is required";
    } 
    else {
-     $productionCompany = test_input($_POST["productionCompany"]);
+     $productionCompany = test_input($_GET["productionCompany"]);
    }
    
-   if (empty($_POST["check_list[]"])) {
+   if (empty($_GET["check_list"])) {
      $genreErr = "Genre is required";
    } 
    else {
-     $check_list[] = test_input($_POST["check_list[]"]);
+     $check_list[] = test_input($_GET["check_list"]);
    }
 }
 ?>
@@ -113,7 +113,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
  
    <input type="submit" name="submit" value="Submit"> 
-   
+   </form>
    
    
    <?php
@@ -123,7 +123,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		$year_2 = $_GET["year"];
 		$rating_2 = $_GET["rating"];
 		$productionCompany_2 = $_GET["productionCompany"];
-		$genre_2 = $_POST["check_list[]"];
+		$genre_2 = $_GET['check_list'];
 		
 		$success = false;
 		if ($movie_name_2 != "" && $year_2 != "")
@@ -152,14 +152,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					{
 						$MaxId = $maxIDQueryStmt2->fetch(PDO::FETCH_COLUMN, 0);
 						$MaxId = $MaxId + 1;
-						echo "Got ID from Movie Table: $MaxId";	//debugging
+						//echo "Got ID from Movie Table: $MaxId";	//debugging
 						$success = true;
 					}
 				}
 				else
 				{
 					$MaxId = $maxIDQueryStmt->fetch(PDO::FETCH_COLUMN, 0);
-					echo "Got Max ID from MaxMovieID Table is $MaxId";	//debugging
+					//echo "Got Max ID from MaxMovieID Table is $MaxId";	//debugging
 					$success = true;
 					//TO DO:insert into MaxPersonID Table
 					//$sql = 'INSERT id INTO MaxPersonID VALUES (:MaxId)';
@@ -175,6 +175,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				
 				$add_query = $pdo_obj->prepare('INSERT INTO Movie(id, title, year, rating, company) VALUES(:id, :movie_name_2, :year_2, :rating_2, :productionCompany_2)');
 				
+				
+				//testing purposes
+				if (!$genre_2)
+					echo "There is nothing in genre";
+				foreach($genre_2 as $genre)
+				{
+					echo $genre;
+					echo '<br>';
+				}
 				//TO DO: need to also insert into MovieGenre table
 				
 				$add_query->bindParam(':id', $MaxId, PDO::PARAM_INT);
@@ -210,7 +219,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    
    
    
-</form>
+
 
 
 </p>
