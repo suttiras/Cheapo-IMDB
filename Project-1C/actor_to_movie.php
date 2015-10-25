@@ -57,8 +57,9 @@ Add Actor to Movie
 		$title_id = $_GET["title"];
 		$actor_name_2 = $_GET["actor_name"];
 		$role_2 = $_GET["role"];
+		$submit = $_GET["submit"];
 		
-		if ($role_2 != "")
+		if ($submit != "")
 		{
 			$addActorQuery = 'INSERT INTO MovieActor(mid, aid, role) VALUES(:mid, :aid, :role)';
 			$pdo_obj = get_pdo();
