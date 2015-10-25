@@ -173,40 +173,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					//echo $MaxIdInsert;
 				}
 				
-				$add_query = $pdo_obj->prepare('INSERT INTO Movie(id, title, year, rating, company) VALUES(:id, :movie_name_2, :year_2, :rating_2, :productionCompany_2)');
+				$add_query_1 = $pdo_obj->prepare('INSERT INTO Movie(id, title, year, rating, company) VALUES(:id, :movie_name_2, :year_2, :rating_2, :productionCompany_2)');
+				$add_query_2 = $pdo_obj->prepare('INSERT INTO MovieGenre(mid, genre) VALUES(:id, :genre)');
 				
+				$add_query_1->bindParam(':id', $MaxId, PDO::PARAM_INT);
+				$add_query_1->bindParam(':movie_name_2', $movie_name_2, PDO::PARAM_STR);
+				$add_query_1->bindParam(':year_2', $year_2, PDO::PARAM_STR);
+				$add_query_1->bindParam(':rating_2', $rating_2, PDO::PARAM_STR);
+				$add_query_1->bindParam(':productionCompany_2', $productionCompany_2, PDO::PARAM_STR);
 				
+				$add_query_2->bindParam(':id', $MaxId, PDO::PARAM_INT);
 				//testing purposes
 				if (!$genre_2)
 					echo "There is nothing in genre";
 				foreach($genre_2 as $genre)
 				{
-					echo $genre;
-					echo '<br>';
+					$add_query_2->bindParam(':genre', $genre, PDO::PARAM_STR);
+					if(!$add_query_2->execute())
+					{
+						echo "Could not add genre to database.";
+						$success = false;
+					}
 				}
 				//TO DO: need to also insert into MovieGenre table
 				
-				$add_query->bindParam(':id', $MaxId, PDO::PARAM_INT);
-				$add_query->bindParam(':movie_name_2', $movie_name_2, PDO::PARAM_STR);
-				$add_query->bindParam(':year_2', $year_2, PDO::PARAM_STR);
-				$add_query->bindParam(':rating_2', $rating_2, PDO::PARAM_STR);
-				$add_query->bindParam(':productionCompany_2', $productionCompany_2, PDO::PARAM_STR);
 				
-				if(!$add_query->execute())
+				
+				if(!$add_query_1->execute())
 				{
 					echo "Could not add actor to database.";
 					$success = false;
 				}
 			
-			
 			//after attempt to add to database
 			if($success)
 			{
 				echo "<h3><b>You added the following to the database: </b></h3>";
-				echo "Movie: $movie_name_2 <br>";
-				echo "Year: $year_2 <br>";
-				echo "Rating: $rating_2 <br>";
-				echo "Production Company: $productionCompany_2 <br>";
+				echo "<b>Movie: </b>$movie_name_2 <br>";
+				echo "<b>Year: </b>$year_2 <br>";
+				echo "<b>Rating: </b>$rating_2 <br>";
+				echo "<b>Production Company: </b>$productionCompany_2 <br>";
+				echo "<b>Genre(s): </b>";
+				foreach($genre_2 as $genre)
+				{
+					echo $genre;
+					echo '<br>';
+				}
 			}
 			else
 			{
