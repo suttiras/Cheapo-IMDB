@@ -138,7 +138,7 @@ else if ($_GET["query"] != "")
 	$search = $_GET["query"];
 	$trimmedSearch = trim($search, " \t.");
 	
-	$queryMovie = 'SELECT id,title FROM Movie WHERE title LIKE %';
+	$queryMovie = 'SELECT id,title FROM Movie WHERE title LIKE "%';
 	/*
 	if (!preg_match("/^[0-9a-zA-Z ]*$/",$trimmedSearch)) {
        echo "Only numbers, letters and white space allowed"; 
@@ -164,22 +164,35 @@ else if ($_GET["query"] != "")
 		//$clauses[]="title LIKE '%" . mysql_real_escape_string($part) . "%'";
 		if (!$first)
 		{
-			$queryMovie = $queryMovie . $part . "%";
+			$queryMovie = $queryMovie . $part . '%' . '"';
+			//$queryMovie = $queryMovie . ":part" . '%';
+			//new
+			//$queryMovie = $pdo_obj->prepare($queryMovie);
+			//$queryMovie->bindValue(':part', $part, PDO::PARAM_STR);
+			//
 			$first = true;
 		}
 		else
 		{
-			$queryMovie = $queryMovie . " AND title LIKE %" . $part . "%";
+			$queryMovie = $queryMovie . ' AND title LIKE "%' . $part . "%" . '"';
+			//$queryMovie = $queryMovie . ' AND title LIKE %' . ":part" . '%';
+			//new
+			//$queryMovie = $pdo_obj->prepare($queryMovie);
+			//$queryMovie->bindValue(':part', $part, PDO::PARAM_STR);
+			//
 		}
 	}
 	echo $queryMovie;
 	$queryMoviePrep = $pdo_obj->prepare($queryMovie);
-	/*$rs = $queryMoviePrep->execute();
+	//$queryMovie = 'SELECT id, title FROM Movie WHERE title LIKE "%Joe%" AND "%Black%"';
+	//$queryMoviePrep = $pdo_obj->prepare($queryMovie);
+	$rs = $queryMoviePrep->execute();
 	
 	if ($rs == "")
 	{
 		echo "Couldn't find any movies...";
 	}
+	/*
 	else
 	{
 		$result = mysql_fetch_assoc($rs);
@@ -195,15 +208,17 @@ else if ($_GET["query"] != "")
 	*/
 	
 //print results
-	//echo "<select name=title value=''>Movie Name</option>"; // list box select command
-	$pdo_obj = get_pdo();
+	echo "<select name=title value=''>Movie Name</option>"; // list box select command
+	
+	//$pdo_obj = get_pdo();
 	foreach ($pdo_obj->query($queryMovie) as $row){//Array or records stored in $row
 	$formatted_name = $row[title];
-	echo "<br>Got a movie! <br>";
-	//echo "<option value=$row[id]>$formatted_name</option>"; 
+	//echo $formatted_name;
+	//echo "<br>Got a movie! <br>";
+	echo "<option value=$row[id]>$formatted_name</option>"; 
 
 }
-
+echo "<br>Got a movie! <br>";
  //echo "</select>";// Closing of list box
    
    echo "<br><br>";
