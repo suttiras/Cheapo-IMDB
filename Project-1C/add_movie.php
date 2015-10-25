@@ -141,18 +141,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				
 					//failed to get maxID from MaxID table. We have to get it another way.
 					//$MaxId = 'SELECT MAX(id)+1 FROM Actor';
-					$MaxId = 'SELECT MAX(id) 
+					$MaxId2 = 'SELECT MAX(id) 
 									FROM Movie';
-					$maxIDQueryStmt2 = $pdo_obj->prepare($MaxId);
+					$maxIDQueryStmt2 = $pdo_obj->prepare($MaxId2);
 					if (! $maxIDQueryStmt2->execute())
 					{
 						echo "Doesn't work...";
 					}
 					else
 					{
-						$MaxId2 = $maxIDQueryStmt2->fetch(PDO::FETCH_COLUMN, 0);
-						$MaxId2 = $MaxId2 + 1;
-						echo "Got ID from Movie Table: $MaxId2";	//debugging
+						$MaxId = $maxIDQueryStmt2->fetch(PDO::FETCH_COLUMN, 0);
+						$MaxId = $MaxId + 1;
+						echo "Got ID from Movie Table: $MaxId";	//debugging
 						$success = true;
 					}
 				}
@@ -168,18 +168,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					$MaxIdInsert->bindParam(':MaxId', $MaxId, PDO::PARAM_INT);
 					if(!$MaxIdInsert->execute())
 					{
-						echo "Failed to insert Max ID into MaxPersonID table.";
+						echo "Failed to insert Max ID into MaxMovieID table.";
 					}
 					//echo $MaxIdInsert;
 				}
 				
-				$add_query = $pdo_obj->prepare('INSERT INTO Actor(id, last, first, sex, dob, dod) VALUES(:id, :last_name_2, :first_name_2, :gender_2, :dob_2, :dod_2)');
+				$add_query = $pdo_obj->prepare('INSERT INTO Movie(id, title, year, rating, company) VALUES(:id, :movie_name_2, :year_2, :rating_2, :productionCompany_2)');
+				
+				//TO DO: need to also insert into MovieGenre table
+				
 				$add_query->bindParam(':id', $MaxId, PDO::PARAM_INT);
-				$add_query->bindParam(':last_name_2', $last_name_2, PDO::PARAM_STR);
-				$add_query->bindParam(':first_name_2', $first_name_2, PDO::PARAM_STR);
-				$add_query->bindParam(':gender_2', $gender_2, PDO::PARAM_STR);
-				$add_query->bindParam(':dob_2', $dob_2, PDO::PARAM_INT);
-				$add_query->bindParam(':dod_2', $dod_2, PDO::PARAM_INT);
+				$add_query->bindParam(':movie_name_2', $movie_name_2, PDO::PARAM_STR);
+				$add_query->bindParam(':year_2', $year_2, PDO::PARAM_STR);
+				$add_query->bindParam(':rating_2', $rating_2, PDO::PARAM_STR);
+				$add_query->bindParam(':productionCompany_2', $productionCompany_2, PDO::PARAM_STR);
 				
 				if(!$add_query->execute())
 				{
@@ -192,16 +194,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			if($success)
 			{
 				echo "<h3><b>You added the following to the database: </b></h3>";
-				echo "Actor or Director: $actor_or_director_2 <br>";
-				echo "First name: $first_name_2 <br>";
-				echo "Last name: $last_name_2 <br>";
-				echo "Gender: $gender_2 <br>";
-				echo "DOB: $dob_2 <br>";
-				echo "DOD: $dod_2 <br>";
+				echo "Movie: $movie_name_2 <br>";
+				echo "Year: $year_2 <br>";
+				echo "Rating: $rating_2 <br>";
+				echo "Production Company: $productionCompany_2 <br>";
 			}
 			else
 			{
-				echo "Failed to add actor to database.";
+				echo "Failed to add movie to database.";
 			}
 		}
 		
