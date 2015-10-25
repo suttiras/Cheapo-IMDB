@@ -10,6 +10,9 @@
 Add Actor to Movie Page
 </p>
 
+<p style="text-align:center">
+<a href="./search.php">Search</a>
+</p>
 
 <h2 style="text-align:center"><font size = "3"><b>Add to Database</b></font></h2>
 <p style="text-align:center">
