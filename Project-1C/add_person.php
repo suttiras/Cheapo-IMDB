@@ -90,22 +90,35 @@ Add Actor/Director Page
 					$dod_2 = "\N";
 				}
 				//$maxId = mysql_query("SELECT MAX(id) FROM MaxPersonID;", $db_connection);
-				$maxIdQuery = "SELECT MAX(id) FROM MaxPersonID";
+				$maxIdQuery = 'SELECT MAX(id)+1 FROM MaxPersonID';
+				$pdo_obj = get_pdo();
+				$maxIDQueryStmt = $pdo_obj->prepare($maxIdQuery);
+				if (! $maxIDQueryStmt->execute())
+				{
+				//failed to get maxID from MaxID table
+				}
+				else
+				{
+					$MaxId = $maxIDQueryStmt->fetch(PDO::FETCH_COLUMN, 0);
+				}
+				echo "Max ID is $MaxId";
 				
-				echo "Max ID is $maxId";
+				//test
+				/*
+				$next_id_sql = 'SELECT MAX(id)+1 FROM MaxPersonID';
+				$sth = $pdo_obj->prepare( $next_id_sql );
+				if ( ! $sth->execute() ) {
+					return false;
+				}
+				$new_id = $sth->fetch( PDO::FETCH_COLUMN, 0 );
+				echo $new_id;
+				*/
+				//end of test
+				
+				//echo "Max ID is $maxId";
 				$add_query = "INSERT INTO Actor VALUES(100, $last_name_2, $first_name_2, $gender_2, $dob_2, $dod_2);"; 
 			}
-			$pdo_obj = get_pdo();
-			$maxIDQueryStmt = $pdo_obj->prepare($maxIDQuery);
-			if (! $maxIDQueryStmt->execute())
-			{
-				//failed to get maxID from MaxID table
-			}
-			else
-			{
-				$MaxId = $maxIDQueryStmt->fetch(PDO::FETCH_COLUMN, 0);
-			}
-			echo $MaxId;
+			
 			
 			//after attempt to add to database
 			if($success)
