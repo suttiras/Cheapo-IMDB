@@ -10,7 +10,7 @@
 Add Actor to Movie
 </h2>
 
-<form method="GET" action="" onsubmit="return checkForm(this);"> 
+<form method="GET" action=""> 
    Actor:
    <?php require_once('global_functions.php');
 
@@ -77,8 +77,6 @@ Add Actor to Movie
 				echo "Successfully added actor to Movie Actor database!";
 			}
 		}
-		
-   
    ?>
 
    
