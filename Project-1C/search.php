@@ -193,93 +193,9 @@ else if ($_GET["query"] != "")
 		}while ($result = mysql_fetch_assoc($rs));
 	}
 	
+//print results
+	
 
-	
-	/*
-	$clause=implode(' OR ' ,$clauses);
-	//select your condition and add "AND ($clauses)" .
-	$sql="SELECT title
-		FROM Movie 
-		WHERE
-		title='($clause) ";
-		
-	$results=mysql_query($sql,$db_connection);
-	if(!$results){
-		echo "Couldn't find any results...";
-	}
-	else if($results){
-	$rows = array();
-*/
-	/*
-	while($rows = mysql_fetch_array($results, MYSQL_ASSOC))
-	{
-	// echo whatever u want !
-	}
-	*/
-	/*
-	$result = mysql_fetch_assoc($results);
-	do
-	{
-		foreach($result as $col)
-		{
-			echo $col; 
-			echo "<br>";
-		}
-		echo "</tr>";
-	}while ($result = mysql_fetch_assoc($results));
-	
-	*/
-	
-	//list($firstName, $lastName) = split(' ', $actorName);
-	
-	/*
-	echo $firstName;
-	echo "<br>";
-	echo $lastName;\
-	*/
-	/*
-	$rs = mysql_query($_GET["query"], $db_connection);
-	
-	if (!$rs) {
-		echo "<br><br>Could not successfully run query from DB: " . mysql_error();
-		exit;
-	}
-
-	if (mysql_num_rows($rs) == 0) {
-		echo "<br><br>No rows found.";
-		exit;
-	}
-
-	$result = mysql_fetch_assoc($rs);
-	
-	echo "<table border = 1 cellspacing = 1><tr>";
-	
-	//echo $result;
-	
-	foreach (array_keys($result) as $col)
-	{
-		echo "<th>";
-		echo $col;
-		echo "</th>";
-	}
-	
-	echo "</tr>";
-
-	echo "<tr>";
-	
-	do
-	{
-		foreach($result as $col)
-		{
-			echo "<td>";
-			echo $col; 
-			echo "</td>";
-		}
-		echo "</tr>";
-	}while ($result = mysql_fetch_assoc($rs));
-	
-	echo "</table>";
-	*/
 	mysql_free_result($result);
 	mysql_close($db_connection);
 	
