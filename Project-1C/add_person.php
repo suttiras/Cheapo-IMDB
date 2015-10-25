@@ -59,10 +59,10 @@ Add Actor/Director Page
    <input type="radio" name="gender" value='Male'>Male
    <span class="error">* </span>
    <br><br>
-   Date of Birth (yyyymmdd): <input type="number" name="dob" required>
+   Date of Birth (yyyymmdd): <input type="date" name="dob" required>
 	<span class="error">* </span>
    <br><br>
-   Date of Death (yyyymmdd)(if applicable): <input type="number" name="dod">
+   Date of Death (yyyymmdd)(if applicable): <input type="date" name="dod">
    <br><br>
 
    <br><br>
