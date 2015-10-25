@@ -12,6 +12,17 @@
 Add Reviews
 </h2>
 
+<script type ="text/javascript">
+	function checkForm(form)
+	{
+		var alphabet = /^[a-zA-Z ]*$/;
+		if(!alphabet.test(form.reviewer.value))
+		{
+			alert("Error: Reviewer name contains invalid characters.");
+			return false;
+		}
+	}
+</script>
 
 <?php
 // define variables and set to empty values
@@ -67,10 +78,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-<form method="GET" action=""> 
-   <!--Name of Movie: <input type="text" name="movie_name" required>-->
-   <!--<span class="error">* <?php echo $movieNameErr;?></span>-->
-   <br>
+
+
+<form method="GET" action="" onsubmit="return checkForm(this);"> 
+   
    Movie Title:
    <?php require_once('global_functions.php');
 
@@ -88,6 +99,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    ?>
    <br><br>
 
+   Reviewer: <input type="text" name="reviewer" required>
+   <span class="error">* <?php echo $movieNameErr;?></span>
+   <br>
+   <br>
+   
    Rating:
 	<select name="rating" required>
 	<option value="1">*</option>
@@ -108,6 +124,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    
  
    <input type="submit" name="submit" value="Submit"> 
+   
+   <!--Now we parse the content-->
+   <?php
+   //Review(name VARCHAR(20) NOT NULL, time TIMESTAMP, mid INT NOT NULL, rating INT NOT NULL, comment VARCHAR(500)
+		$title_id = $_GET["title"];
+		$reviewer_2 = $_GET["reviewer"];
+		$rating_2 = $_GET["rating"];
+		$review_2 = $_GET["review"];
+		
+		if ($reviewer_2 != "")
+		{
+			$currentTime = date("Y-m-d H:i:s", time());
+			$reviewQuery = 'INSERT INTO Review(name, time, mid, rating, comment) VALUES(:name, :time, :mid, :rating, :comment)';
+			$pdo_obj = get_pdo();
+			//echo $currentTime;
+			$reviewQueryStmt = $pdo_obj->prepare($reviewQuery);
+			$reviewQueryStmt->bindParam(':mid', $title_id, PDO::PARAM_INT);
+			$reviewQueryStmt->bindParam(':name', $reviewer_2, PDO::PARAM_STR);
+			$reviewQueryStmt->bindParam(':time', $currentTime, PDO::PARAM_INT);
+			$reviewQueryStmt->bindParam(':rating', $rating_2, PDO::PARAM_INT);
+			$reviewQueryStmt->bindParam(':comment', $review_2, PDO::PARAM_STR);
+			
+			if (!$reviewQueryStmt->execute())
+			{
+				echo "Could not add review to database.";
+			}
+			else
+			{
+				echo "Successfully added review to database!";
+			}
+		}
+		
+   
+   ?>
+   
 </form>
 
 
