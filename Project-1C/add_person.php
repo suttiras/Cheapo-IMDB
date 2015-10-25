@@ -124,7 +124,7 @@ Add Actor/Director Page
 					$success = true;
 					//TO DO:insert into MaxPersonID Table
 					//$sql = 'INSERT id INTO MaxPersonID VALUES (:MaxId)';
-					$MaxIdInsert = $pdo_obj->prepare('INSERT id INTO MaxPersonID VALUES (:MaxId)');
+					$MaxIdInsert = $pdo_obj->prepare('INSERT INTO MaxPersonID (id) VALUES (:MaxId)');
 					//$MaxIdInsert->bindParam(':MaxId', $MaxId, PDO::PARAM_INT);
 					//echo $MaxIdInsert;
 				}
