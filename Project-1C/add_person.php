@@ -87,7 +87,7 @@ Add Actor/Director Page
 			{
 				if ($dod_2 == "")
 				{
-					$dod_2 = "\N";
+					$dod_2 = null;
 				}
 				//$maxId = mysql_query("SELECT MAX(id) FROM MaxPersonID;", $db_connection);
 				$maxIdQuery = 'SELECT MAX(id)+1 FROM MaxPersonID';
@@ -140,11 +140,83 @@ Add Actor/Director Page
 				$add_query->bindParam(':first_name_2', $first_name_2, PDO::PARAM_STR);
 				$add_query->bindParam(':gender_2', $gender_2, PDO::PARAM_STR);
 				$add_query->bindParam(':dob_2', $dob_2, PDO::PARAM_INT);
-				$add_query->bindParam(':dod_2', $dod_2, PDO::PARAM_INT);
+				if ($dod_2 == null){
+				$add_query->bindParam(':dod_2', $dod_2, PDO::PARAM_STR);}
+				else{
+				$add_query->bindParam(':dod_2', $dod_2, PDO::PARAM_INT);}
 				
 				if(!$add_query->execute())
 				{
 					echo "Could not add actor to database.";
+					$success = false;
+				}
+			}
+			
+			//director
+			if ($actor_or_director_2 == "director")
+			{
+				if ($dod_2 == "")
+				{
+					$dod_2 = null;
+				}
+				//$maxId = mysql_query("SELECT MAX(id) FROM MaxPersonID;", $db_connection);
+				$maxIdQuery = 'SELECT MAX(id)+1 FROM MaxPersonID';
+				$pdo_obj = get_pdo();
+				
+				$maxIDQueryStmt = $pdo_obj->prepare($maxIdQuery);
+				
+				if (! $maxIDQueryStmt->execute())
+				{
+				
+					//failed to get maxID from MaxID table. We have to get it another way.
+					//$MaxId = 'SELECT MAX(id)+1 FROM Actor';
+					$MaxIdUnion = 'SELECT MAX(id) 
+									FROM (SELECT id FROM Actor
+									UNION
+									SELECT id FROM Director) AS M';
+					$maxIDQueryStmt2 = $pdo_obj->prepare($MaxIdUnion);
+					if (! $maxIDQueryStmt2->execute())
+					{
+						echo "Doesn't work...";
+					}
+					else
+					{
+						$MaxId = $maxIDQueryStmt2->fetch(PDO::FETCH_COLUMN, 0);
+						$MaxId = $MaxId + 1;
+						echo "Got ID from Actor/Director Table: $MaxId";	//debugging
+						$success = true;
+					}
+				}
+				else
+				{
+					$MaxId = $maxIDQueryStmt->fetch(PDO::FETCH_COLUMN, 0);
+					echo "Got Max ID from MaxPersonID Table is $MaxId";	//debugging
+					$success = true;
+					//TO DO:insert into MaxPersonID Table
+					//$sql = 'INSERT id INTO MaxPersonID VALUES (:MaxId)';
+					$MaxIdInsert = $pdo_obj->prepare('INSERT INTO MaxPersonID(id) VALUES (:MaxId)');
+					
+					$MaxIdInsert->bindParam(':MaxId', $MaxId, PDO::PARAM_INT);
+					if(!$MaxIdInsert->execute())
+					{
+						echo "Failed to insert Max ID into MaxPersonID table.";
+					}
+					//echo $MaxIdInsert;
+				}
+				
+				$add_query = $pdo_obj->prepare('INSERT INTO Director(id, last, first, dob, dod) VALUES(:id, :last_name_2, :first_name_2, :dob_2, :dod_2)');
+				$add_query->bindParam(':id', $MaxId, PDO::PARAM_INT);
+				$add_query->bindParam(':last_name_2', $last_name_2, PDO::PARAM_STR);
+				$add_query->bindParam(':first_name_2', $first_name_2, PDO::PARAM_STR);
+				$add_query->bindParam(':dob_2', $dob_2, PDO::PARAM_INT);
+				if ($dod_2 == null){
+				$add_query->bindParam(':dod_2', $dod_2, PDO::PARAM_STR);}
+				else{
+				$add_query->bindParam(':dod_2', $dod_2, PDO::PARAM_INT);}
+				
+				if(!$add_query->execute())
+				{
+					echo "Could not add director to database.";
 					$success = false;
 				}
 			}
