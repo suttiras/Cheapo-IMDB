@@ -123,12 +123,15 @@ Add Actor/Director Page
 					echo "Got Max ID from MaxPersonID Table is $MaxId";
 					$success = true;
 					//TO DO:insert into MaxPersonID Table
-					
+					//$sql = 'INSERT id INTO MaxPersonID VALUES (:MaxId)';
+					$MaxIdInsert = $pdo_obj->prepare('INSERT id INTO MaxPersonID VALUES (:MaxId)');
+					//$MaxIdInsert->bindParam(':MaxId', $MaxId, PDO::PARAM_INT);
+					//echo $MaxIdInsert;
 				}
 				
 				
-				$add_query = "INSERT INTO Actor VALUES($MaxId, $last_name_2, $first_name_2, $gender_2, $dob_2, $dod_2);"; 
-				echo "<br>$add_query";
+				//$add_query = "INSERT INTO Actor VALUES($MaxId, $last_name_2, $first_name_2, $gender_2, $dob_2, $dod_2);"; 
+				//echo "<br>$add_query";
 			}
 			
 			
