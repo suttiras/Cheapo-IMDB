@@ -8,9 +8,9 @@
 <body>
 <p style="text-align:center"><a href="./Homepage.php"><img src="ImdbLogo.png" alt="Website Logo"></a></p>
 
-<p>
-Add Comments Page
-</p>
+<h2 style="text-align:center">
+Add Reviews
+</h2>
 
 
 <?php
