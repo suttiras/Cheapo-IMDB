@@ -140,7 +140,7 @@ else if ($_GET["query"] != "")
 	
 	$queryMovie = 'SELECT id,title FROM Movie WHERE title LIKE %';
 	
-	if (!preg_match("/^[a-zA-Z ]*$/",$trimmedSearch)) {
+	if (!preg_match("/^[0-9a-zA-Z ]*$/",$trimmedSearch)) {
        echo "Only letters and white space allowed"; 
      }
 	
@@ -174,7 +174,7 @@ else if ($_GET["query"] != "")
 	}
 	echo $queryMovie;
 	$queryMoviePrep = $pdo_obj->prepare($queryMovie);
-	$rs = $queryMoviePrep->execute();
+	/*$rs = $queryMoviePrep->execute();
 	
 	if ($rs == "")
 	{
@@ -192,17 +192,17 @@ else if ($_GET["query"] != "")
 			}
 		}while ($result = mysql_fetch_assoc($rs));
 	}
-	
+	*/
 	
 //print results
 	//echo "<select name=title value=''>Movie Name</option>"; // list box select command
-	//$pdo_obj = get_pdo();
-	//foreach ($pdo_obj->query($queryMovie) as $row){//Array or records stored in $row
-	//$formatted_name = $row[title];
+	$pdo_obj = get_pdo();
+	foreach ($pdo_obj->query($queryMovie) as $row){//Array or records stored in $row
+	$formatted_name = $row[title];
 	echo "<br>Got a movie! <br>";
 	//echo "<option value=$row[id]>$formatted_name</option>"; 
 
-//}
+}
 
  //echo "</select>";// Closing of list box
    
