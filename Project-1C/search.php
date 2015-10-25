@@ -152,6 +152,45 @@ else if ($_GET["query"] != "")
 	//$sanitized_name = mysql_real_escape_string($query, $db_connection);
 	//$query2 = "SELECT 
 	$searchTerms = explode(" ", $trimmedSearch);
+	
+	
+	//$parts = explode(" ",trim($words));
+	$clauses=array();
+	foreach ($searchTerms as $part){
+		//function_description in my case ,  replace it with whatever u want in ur table
+		$clauses[]="function_description LIKE '%" . mysql_real_escape_string($part) . "%'";
+	}
+	$clause=implode(' OR ' ,$clauses);
+	//select your condition and add "AND ($clauses)" .
+	$sql="SELECT title 
+		FROM Movie 
+		WHERE
+		title='($clause) ";
+		
+	$results=mysql_query($sql,$db_connection);
+	if(!$results){
+		echo "Couldn't find any results...";
+	}
+	else if($results){
+	$rows = array();
+
+	/*
+	while($rows = mysql_fetch_array($results, MYSQL_ASSOC))
+	{
+	// echo whatever u want !
+	}
+	*/
+	$result = mysql_fetch_assoc($results);
+	do
+	{
+		foreach($result as $col)
+		{
+			echo $col; 
+			echo "<br>";
+		}
+		echo "</tr>";
+	}while ($result = mysql_fetch_assoc($results));
+	
 	//list($firstName, $lastName) = split(' ', $actorName);
 	
 	/*
@@ -201,10 +240,10 @@ else if ($_GET["query"] != "")
 	}while ($result = mysql_fetch_assoc($rs));
 	
 	echo "</table>";
-	
+	*/
 	mysql_free_result($result);
 	mysql_close($db_connection);
-	*/
+	
 	
 }
 ?>
