@@ -102,7 +102,15 @@ Add Actor/Director Page
 									UNION
 									SELECT id FROM Director) AS M';
 					$maxIDQueryStmt2 = $pdo_obj->prepare($maxIdUnion);
-					
+					if (! $maxIDQueryStmt2->execute())
+					{
+						echo "Doesn't work...";
+					}
+					else
+					{
+						$MaxId2 = $maxIDQueryStmt2->fetch(PDO::FETCH_COLUMN, 0);
+						echo $MaxId2;
+					}
 					
 					//TO DO
 				}
