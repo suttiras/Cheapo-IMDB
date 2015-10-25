@@ -129,13 +129,16 @@ WHERE Actor.id = 49514 AND MovieActor.aid = Actor.id AND MovieActor.mid = Movie.
 
 else if ($_GET["query"] != "")
 {
-	echo "<br><br><b>The actor you're searching for is: </b></br> </br>";
+	require_once('global_functions.php');
+	$pdo_obj = get_pdo();
+	echo "<br><br><b>The actor/movie you're searching for is: </b></br> </br>";
 	echo $_GET["query"];
 	echo "<br><br>";
 	
 	$search = $_GET["query"];
 	$trimmedSearch = trim($search, " \t.");
 	
+	$queryMovie = 'SELECT title FROM Movie WHERE title LIKE %';
 	
 	if (!preg_match("/^[a-zA-Z ]*$/",$trimmedSearch)) {
        echo "Only letters and white space allowed"; 
@@ -145,7 +148,7 @@ else if ($_GET["query"] != "")
 	echo $trimmedSearch;
 	echo "<br><br>";
 	
-	$db_connection = mysql_connect("localhost", "cs143", "");
+	//$db_connection = mysql_connect("localhost", "cs143", "");
 	
 	mysql_select_db("TEST", $db_connection);
 	
@@ -153,16 +156,49 @@ else if ($_GET["query"] != "")
 	//$query2 = "SELECT 
 	$searchTerms = explode(" ", $trimmedSearch);
 	
+	$first = false;
 	
-	//$parts = explode(" ",trim($words));
-	$clauses=array();
+	//$clauses=array();
 	foreach ($searchTerms as $part){
 		//function_description in my case ,  replace it with whatever u want in ur table
-		$clauses[]="function_description LIKE '%" . mysql_real_escape_string($part) . "%'";
+		//$clauses[]="title LIKE '%" . mysql_real_escape_string($part) . "%'";
+		if (!$first)
+		{
+			$queryMovie = $queryMovie . $part . "%";
+			$first = true;
+		}
+		else
+		{
+			$queryMovie = $queryMovie . " AND title LIKE %" . $part . "%";
+		}
 	}
+	echo $queryMovie;
+	
+	$rs = $queryMovie->execute();
+	
+	if ($rs != "")
+	{
+		echo "Couldn't find any movies...";
+	}
+	else
+	{
+		$result = mysql_fetch_assoc($rs);
+		do
+		{
+			foreach($result as $col)
+			{
+				echo $col; 
+				echo "<br>";
+			}
+		}while ($result = mysql_fetch_assoc($rs));
+	}
+	
+
+	
+	/*
 	$clause=implode(' OR ' ,$clauses);
 	//select your condition and add "AND ($clauses)" .
-	$sql="SELECT title 
+	$sql="SELECT title
 		FROM Movie 
 		WHERE
 		title='($clause) ";
@@ -173,13 +209,14 @@ else if ($_GET["query"] != "")
 	}
 	else if($results){
 	$rows = array();
-
+*/
 	/*
 	while($rows = mysql_fetch_array($results, MYSQL_ASSOC))
 	{
 	// echo whatever u want !
 	}
 	*/
+	/*
 	$result = mysql_fetch_assoc($results);
 	do
 	{
@@ -190,6 +227,8 @@ else if ($_GET["query"] != "")
 		}
 		echo "</tr>";
 	}while ($result = mysql_fetch_assoc($results));
+	
+	*/
 	
 	//list($firstName, $lastName) = split(' ', $actorName);
 	
