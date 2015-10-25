@@ -86,9 +86,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    Production Company: <input type="text" name="productionCompany" required>
 	<span class="error">* <?php echo $yearErr;?></span>
    <br><br>
-   
+   <!--</form>-->
    Genre(s):
-   <form action="#" method="post" required>
+   <!--<form action="#" method="post" required>-->
    <span class="error">* <?php echo $ratingErr;?></span>
 <input type="checkbox" name="check_list[]" value="Action"><label>Action</label>
 <input type="checkbox" name="check_list[]" value="Adult"><label>Adult</label>
@@ -110,7 +110,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <input type="checkbox" name="check_list[]" value="War"><label>War</label><br/>
 <input type="checkbox" name="check_list[]" value="Western"><label>Western</label><br/>
 
-</form>
+
  
    <input type="submit" name="submit" value="Submit"> 
    
@@ -118,12 +118,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    
    <?php
 		require_once('global_functions.php');
-		echo "Hello World!";
+		//echo "Hello World!";
 		$movie_name_2 = $_GET["movie_name"];
 		$year_2 = $_GET["year"];
 		$rating_2 = $_GET["rating"];
 		$productionCompany_2 = $_GET["productionCompany"];
-		$genre_2 = $_GET["check_list[]"];
+		$genre_2 = $_POST["check_list[]"];
 		
 		$success = false;
 		if ($movie_name_2 != "" && $year_2 != "")
