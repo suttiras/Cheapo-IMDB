@@ -59,10 +59,10 @@ Add Actor/Director Page
    <input type="radio" name="gender" value='Male'>Male
    <span class="error">* </span>
    <br><br>
-   Date of Birth (yyyymmdd): <input type="date" name="dob" required>
+   Date of Birth (yyyymmdd): <input type="number" name="dob" required>
 	<span class="error">* </span>
    <br><br>
-   Date of Death (yyyymmdd)(if applicable): <input type="date" name="dod">
+   Date of Death (yyyymmdd)(if applicable): <input type="number" name="dod">
    <br><br>
 
    <br><br>
@@ -134,11 +134,20 @@ Add Actor/Director Page
 					//echo $MaxIdInsert;
 				}
 				
+				$add_query = $pdo_obj->prepare('INSERT INTO Actor(id, last, first, sex, dob, dod) VALUES(:id, :last_name_2, :first_name_2, :gender_2, :dob_2, :dod_2)');
+				$add_query->bindParam(':id', $MaxId, PDO::PARAM_INT);
+				$add_query->bindParam(':last_name_2', $last_name_2, PDO::PARAM_STR);
+				$add_query->bindParam(':first_name_2', $first_name_2, PDO::PARAM_STR);
+				$add_query->bindParam(':gender_2', $gender_2, PDO::PARAM_STR);
+				$add_query->bindParam(':dob_2', $dob_2, PDO::PARAM_INT);
+				$add_query->bindParam(':dod_2', $dod_2, PDO::PARAM_INT);
 				
-				//$add_query = "INSERT INTO Actor VALUES($MaxId, $last_name_2, $first_name_2, $gender_2, $dob_2, $dod_2);"; 
-				//echo "<br>$add_query";
+				if(!$add_query->execute())
+				{
+					echo "Could not add actor to database.";
+					$success = false;
+				}
 			}
-			
 			
 			//after attempt to add to database
 			if($success)
