@@ -73,7 +73,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    <br>
    Movie Title:
    <?php require_once('global_functions.php');
-	//$sql="SELECT name,id FROM student"; 
 
 	$sql="SELECT title,id FROM Movie order by title"; 
 
