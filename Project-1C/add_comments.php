@@ -19,17 +19,22 @@ $movieNameErr = $ratingErr = $yearErr = $productionCompanyErr = $genreErr = "";
 $movieName = $rating = $year = $productionCompany = $check_list[] = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
    if (empty($_POST["movie_name"])) {
      $movieNameErr = "A movie name is required";
    } else {
      $movieName = test_input($_POST["movie_name"]);
+	 }
+	 
      // check if name only contains letters and whitespace
 	 /*
      if (!preg_match("/^[a-zA-Z0-9 ]*$/",$movie_name) {
        $firstnameErr = "Only letters, numbers, and white space allowed"; 
      }
-	 */
    }
+   */
+
+   
    if (empty($_POST["year"])) {
      $yearErr = "Year is required";
    } else {
@@ -63,8 +68,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <form method="GET" action=""> 
-   Name of Movie: <input type="text" name="movie_name" required>
-   <span class="error">* <?php echo $movieNameErr;?></span>
+   <!--Name of Movie: <input type="text" name="movie_name" required>-->
+   <!--<span class="error">* <?php echo $movieNameErr;?></span>-->
+   <br>
+   Movie Title:
+   <?php require_once('global_functions.php');
+	//$sql="SELECT name,id FROM student"; 
+
+	$sql="SELECT title,id FROM Movie order by title"; 
+
+	echo "<select name=title value=''>Movie Title</option>"; // list box select command
+	$pdo_obj = get_pdo();
+	foreach ($pdo_obj->query($sql) as $row){//Array or records stored in $row
+
+	echo "<option value=$row[id]>$row[title]</option>"; 
+
+}
+
+ echo "</select>";// Closing of list box
+   ?>
    <br><br>
 
    Rating:
