@@ -96,12 +96,12 @@ Add Actor/Director Page
 				if (! $maxIDQueryStmt->execute())
 				{
 					//failed to get maxID from MaxID table. We have to get it another way.
-					$MaxId = 'SELECT MAX(id)+1 FROM Actor';
+					//$MaxId = 'SELECT MAX(id)+1 FROM Actor';
 					$MaxIdUnion = 'SELECT MAX(id) 
 									FROM (SELECT id FROM Actor
 									UNION
 									SELECT id FROM Director) AS M';
-					$maxIDQueryStmt2 = $pdo_obj->prepare($maxIdUnion);
+					$maxIDQueryStmt2 = $pdo_obj->prepare($MaxIdUnion);
 					if (! $maxIDQueryStmt2->execute())
 					{
 						echo "Doesn't work...";
@@ -109,17 +109,17 @@ Add Actor/Director Page
 					else
 					{
 						$MaxId2 = $maxIDQueryStmt2->fetch(PDO::FETCH_COLUMN, 0);
-						echo $MaxId2;
+						$MaxId2 = $MaxId2 + 1;
+						echo "Got ID from Actor/Director Table: $MaxId2";
 					}
-					
-					//TO DO
 				}
 				else
 				{
 					$MaxId = $maxIDQueryStmt->fetch(PDO::FETCH_COLUMN, 0);
+					echo "Got Max ID from MaxPersonID Table is $MaxId";
 					//TO DO:insert into MaxPersonID Table
 				}
-				echo "Max ID is $MaxId";
+				
 				
 				$add_query = "INSERT INTO Actor VALUES(100, $last_name_2, $first_name_2, $gender_2, $dob_2, $dod_2);"; 
 			}
