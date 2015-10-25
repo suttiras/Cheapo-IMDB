@@ -113,14 +113,14 @@ Add Actor/Director Page
 					{
 						$MaxId = $maxIDQueryStmt2->fetch(PDO::FETCH_COLUMN, 0);
 						$MaxId = $MaxId + 1;
-						echo "Got ID from Actor/Director Table: $MaxId";
+						echo "Got ID from Actor/Director Table: $MaxId";	//debugging
 						$success = true;
 					}
 				}
 				else
 				{
 					$MaxId = $maxIDQueryStmt->fetch(PDO::FETCH_COLUMN, 0);
-					echo "Got Max ID from MaxPersonID Table is $MaxId";
+					echo "Got Max ID from MaxPersonID Table is $MaxId";	//debugging
 					$success = true;
 					//TO DO:insert into MaxPersonID Table
 					//$sql = 'INSERT id INTO MaxPersonID VALUES (:MaxId)';
@@ -131,9 +131,6 @@ Add Actor/Director Page
 					{
 						echo "Failed to insert Max ID into MaxPersonID table.";
 					}
-					//$MaxIdInsert->execute();
-					$MaxIdInsert = $pdo_obj->prepare('INSERT INTO MaxPersonID (id) VALUES (:MaxId)');
-					$MaxIdInsert->bindParam(':MaxId', $MaxId, PDO::PARAM_INT);
 					//echo $MaxIdInsert;
 				}
 				
