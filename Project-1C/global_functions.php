@@ -1,5 +1,24 @@
 <?php
 
+function get_pdo()
+{
+		global $pdo_obj;
+		//$dsn = 'mysql:dbname=CS143';
+		$dsn = 'mysql:dbname=TEST';
+		$user = 'cs143';
+		$password = 'password';
+		if (empty($pdo_obj) || !isset($pdo_obj))
+		{
+		try {
+			//$pdo_obj = new PDO($dsn, $user, $password);
+			$pdo_obj = new PDO($dsn, 'cs143');
+		} catch (PDOException $e) {
+		echo 'Connection failed: ' . $e->getMessage();
+		}
+		}
+		return $pdo_obj;
+}
+
 function add_to_db_actor($first_name, $last_name, $gender, $dob, $dod)
 {
 		$db_connection = mysql_connect("localhost", "cs143", "");

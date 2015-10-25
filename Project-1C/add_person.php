@@ -70,6 +70,7 @@ Add Actor/Director Page
    
    <p>
 	<?php
+		require_once('global_functions.php');
 		//echo "Hello World!";
 		$first_name_2 = $_GET["first_name"];
 		$last_name_2 = $_GET["last_name"];
@@ -82,8 +83,29 @@ Add Actor/Director Page
 		if ($first_name_2 != "" && $last_name_2 != "")
 		{	
 			//attempt to add to database
-			
-			
+			if ($actor_or_director_2 == "actor")
+			{
+				if ($dod_2 == "")
+				{
+					$dod_2 = "\N";
+				}
+				//$maxId = mysql_query("SELECT MAX(id) FROM MaxPersonID;", $db_connection);
+				$maxIdQuery = "SELECT MAX(id) FROM MaxPersonID";
+				
+				echo "Max ID is $maxId";
+				$add_query = "INSERT INTO Actor VALUES(100, $last_name_2, $first_name_2, $gender_2, $dob_2, $dod_2);"; 
+			}
+			$pdo_obj = get_pdo();
+			$maxIDQueryStmt = $pdo_obj->prepare($maxIDQuery);
+			if (! $maxIDQueryStmt->execute())
+			{
+				//failed to get maxID from MaxID table
+			}
+			else
+			{
+				$MaxId = $maxIDQueryStmt->fetch(PDO::FETCH_COLUMN, 0);
+			}
+			echo $MaxId;
 			
 			//after attempt to add to database
 			if($success)
