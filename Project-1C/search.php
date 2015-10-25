@@ -141,7 +141,7 @@ else if ($_GET["query"] != "")
 	$queryMovie = 'SELECT id,title FROM Movie WHERE title LIKE %';
 	
 	if (!preg_match("/^[0-9a-zA-Z ]*$/",$trimmedSearch)) {
-       echo "Only letters and white space allowed"; 
+       echo "Only numbers, letters and white space allowed"; 
      }
 	
 	echo "Revised search is: ";
