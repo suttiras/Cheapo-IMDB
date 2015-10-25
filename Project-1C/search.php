@@ -212,7 +212,7 @@ else if ($_GET["query"] != "")
 <!--End Search-->
 
 <p style="text-align:center">
-<a href="./search.php">Search</a>
+Search
 </p>
 
 <h2 style="text-align:center"><font size = "3"><b>Add to Database</b></font></h2>
