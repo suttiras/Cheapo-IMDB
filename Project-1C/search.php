@@ -278,12 +278,8 @@ if($findActor){
 	$formattedURL = '<a href="./browse_movie.php?id=' . $row[id] . '"';
 	$formattedURL = $formattedURL . ">$formatted_name</a>";
 	echo $formattedURL;
-	//echo "<br>Got a movie! <br>";
-	//echo "<option value=$row[id]>$formatted_name</option>"; 
 
 }
-//echo "<br>Got a movie! <br>";
- //echo "</select>";// Closing of list box
    
    echo "<br><br>";
 	
