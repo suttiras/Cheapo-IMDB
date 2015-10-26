@@ -251,32 +251,21 @@ if($findActor){
 	
 	foreach ($pdo_obj->query($queryActor) as $row){//Array or records stored in $row
 	$formatted_name = $row[first] . " " . $row[last] . "<br>" ;
-	//$id = $row[id];
-	//echo $id . "<br>";
-	//$url = "./browse_actor.php?actor_name=" . $id;
-	//echo $url . "<br>";
-	//<a href=$url>$formatted_name</a>
-	//<a href="./browse_actor.php?id=24378234298734">
-	//echo $formatted_name;
-	//echo "<br>Got an actor! <br>";
 	$formattedURL = '<a href="./browse_actor.php?actor_name=' . $row[id] . '"';
 	$formattedURL = $formattedURL . ">$formatted_name</a>";
 	echo $formattedURL;
-	echo "<br>";
+	//echo "<br>";
 
 	//echo "<option value=$row[id]>$formatted_name</option>"; 
 	
 }
 	foreach ($pdo_obj->query($queryActor2) as $row){//Array or records stored in $row
 	$formatted_name = $row[first] . " " . $row[last] . "<br>";
-	echo $formatted_name;
-	//echo "<br>Got an actor! <br>";
-	//echo "<option value=$row[id]>$formatted_name</option>"; 
-	
+	$formattedURL = '<a href="./browse_actor.php?actor_name=' . $row[id] . '"';
+	$formattedURL = $formattedURL . ">$formatted_name</a>";
+	echo $formattedURL;
 }
 
-	//echo "<br>Got an actor! <br>";
-	//echo "</select>";// Closing of list box
 	echo "<br>";
 	}
 	
@@ -285,7 +274,10 @@ if($findActor){
 	
 	foreach ($pdo_obj->query($queryMovie) as $row){//Array or records stored in $row
 	$formatted_name = $row[title] . "<br>";
-	echo $formatted_name;
+	//echo $formatted_name;
+	$formattedURL = '<a href="./browse_movie.php?id=' . $row[id] . '"';
+	$formattedURL = $formattedURL . ">$formatted_name</a>";
+	echo $formattedURL;
 	//echo "<br>Got a movie! <br>";
 	//echo "<option value=$row[id]>$formatted_name</option>"; 
 
