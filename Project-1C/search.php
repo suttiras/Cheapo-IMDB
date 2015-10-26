@@ -140,6 +140,7 @@ else if ($_GET["query"] != "")
 	
 	$queryMovie = 'SELECT id,title FROM Movie WHERE title LIKE "%';
 	$queryActor = 'SELECT id,first,last FROM Actor WHERE first LIKE "%';
+	$queryActor2 = 'SELECT id,first,last FROM Actor WHERE last LIKE "%';
 	/*
 	if (!preg_match("/^[0-9a-zA-Z ]*$/",$trimmedSearch)) {
        echo "Only numbers, letters and white space allowed"; 
@@ -184,48 +185,67 @@ else if ($_GET["query"] != "")
 	}
 	$count = 0;
 	$first = false;
+	$findActor = true;
 	foreach ($searchTerms as $part){
 		//$clauses[]="title LIKE '%" . mysql_real_escape_string($part) . "%'";
 		if (!$first)
 		{
 			$queryActor = $queryActor . $part . '%' . '"';
+			$queryActor2 = $queryActor2 . $part . '%' . '"';
 			$first = true;
 			$count = $count + 1;
 		}
 		else if ($count < 2)
 		{
 			$queryActor = $queryActor . ' AND last LIKE "%' . $part . "%" . '"';
+			$queryActor2 = $queryActor2 . ' AND first LIKE "%' . $part . "%" . '"';
+			$count = $count + 1;
+		}
+		else
+		{
+		/*
+			if ($count > 2)
+			{
+				$findActor = false;
+			}
+			*/
 			$count = $count + 1;
 		}
 	}
-	echo $queryActor;
+	//echo $count;
+	if ($count > 2)
+			{
+				$findActor = false;
+			}
+	//echo $queryActor;
+	//echo $queryActor2;
 	$queryMoviePrep = $pdo_obj->prepare($queryMovie);
+	if($findActor){
 	$queryActorPrep = $pdo_obj->prepare($queryActor);
+	$queryActor2Prep = $pdo_obj->prepare($queryActor2);
+	}
 	//$queryMovie = 'SELECT id, title FROM Movie WHERE title LIKE "%Joe%" AND "%Black%"';
 	//$queryMoviePrep = $pdo_obj->prepare($queryMovie);
 	$rs = $queryMoviePrep->execute();
+	$rs1 = "";
+	$rs2 = "";
+	if($findActor){
 	$rs1 = $queryActorPrep->execute();
-	
-	if ($rs == "" || $rs1 == "")
-	{
-		echo "Couldn't find any movies or actors...";
+	$rs2 = $queryActorPrep->execute();
 	}
-	/*
-	else
+	
+	if ($rs == "")
 	{
-		$result = mysql_fetch_assoc($rs);
-		do
-		{
-			foreach($result as $col)
-			{
-				echo $col; 
-				echo "<br>";
-			}
-		}while ($result = mysql_fetch_assoc($rs));
-	}*/
+		echo "Couldn't find any movies. <br>";
+	}
+	else if ($rs1 == "" && $rs2 == "")
+	{
+		echo "Couldn't find any actor. <br>";
+	}
 	
 	
 //print results
+if($findActor){
 	echo "<b>Actor Database:<b><br>";
 	echo "<select name=actor_name value=''>Actor Name</option>"; // list box select command
 	
@@ -236,10 +256,18 @@ else if ($_GET["query"] != "")
 	echo "<option value=$row[id]>$formatted_name</option>"; 
 	
 }
+	foreach ($pdo_obj->query($queryActor2) as $row){//Array or records stored in $row
+	$formatted_name = $row[first] . " " . $row[last] ;
+	//echo $formatted_name;
+	//echo "<br>Got an actor! <br>";
+	echo "<option value=$row[id]>$formatted_name</option>"; 
+	
+}
 
 	//echo "<br>Got an actor! <br>";
 	echo "</select>";// Closing of list box
 	echo "<br>";
+	}
 	
 	echo "<b>Movie Database:<b><br>";
 	echo "<select name=title value=''>Movie Name</option>"; // list box select command
