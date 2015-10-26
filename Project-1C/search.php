@@ -247,20 +247,26 @@ else if ($_GET["query"] != "")
 //print results
 if($findActor){
 	echo "<b>Actor Database:</b><br>";
-	echo "<select name=actor_name value=''>Actor Name</option>"; // list box select command
+	//echo "<select name=actor_name value=''>Actor Name</option>"; // list box select command
 	
 	foreach ($pdo_obj->query($queryActor) as $row){//Array or records stored in $row
-	$formatted_name = $row[first] . " " . $row[last] ;
+	$formatted_name = $row[first] . " " . $row[last] . "<br>" ;
+	$id = $row[id];
+	//echo $id . "<br>";
+	$url = "./browse_actor.php?actor_name=" . $id;
+	echo $url . "<br>";
+	//<a href=$url>$formatted_name</a>
+	//<a href="./browse_actor.php?id=24378234298734">
 	//echo $formatted_name;
 	//echo "<br>Got an actor! <br>";
-	echo "<option value=$row[id]>$formatted_name</option>"; 
+	//echo "<option value=$row[id]>$formatted_name</option>"; 
 	
 }
 	foreach ($pdo_obj->query($queryActor2) as $row){//Array or records stored in $row
-	$formatted_name = $row[first] . " " . $row[last] ;
-	//echo $formatted_name;
+	$formatted_name = $row[first] . " " . $row[last] . "<br>";
+	echo $formatted_name;
 	//echo "<br>Got an actor! <br>";
-	echo "<option value=$row[id]>$formatted_name</option>"; 
+	//echo "<option value=$row[id]>$formatted_name</option>"; 
 	
 }
 
@@ -270,13 +276,13 @@ if($findActor){
 	}
 	
 	echo "<b>Movie Database:</b><br>";
-	echo "<select name=title value=''>Movie Name</option>"; // list box select command
+	//echo "<select name=title value=''>Movie Name</option>"; // list box select command
 	
 	foreach ($pdo_obj->query($queryMovie) as $row){//Array or records stored in $row
-	$formatted_name = $row[title];
-	//echo $formatted_name;
+	$formatted_name = $row[title] . "<br>";
+	echo $formatted_name;
 	//echo "<br>Got a movie! <br>";
-	echo "<option value=$row[id]>$formatted_name</option>"; 
+	//echo "<option value=$row[id]>$formatted_name</option>"; 
 
 }
 //echo "<br>Got a movie! <br>";
@@ -318,7 +324,7 @@ Search
 <p></p>
 <h2 style="text-align:center"><font size = "3"><b>Browse Database</b></font></h2>
 <p style="text-align:center">
-Actor
+<a href="./browse_actor.php">Actor</a>
 </p>
 
 <p style="text-align:center">
