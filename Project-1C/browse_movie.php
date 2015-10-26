@@ -12,8 +12,12 @@ Movie Information for:
 <p>
 <form action="" method="GET">
 <?php
+if ($_GET["id"] == "")
+{
+	echo "<h1 style='text-align:center'><b>ERROR! No information to display. Go to the Search page to find an actor/movie.</b></h1>";
+}
 
-if ($_GET["id"] != "")
+else if ($_GET["id"] != "")
 {
 	require_once('global_functions.php');
 	$id = $_GET["id"];
