@@ -15,7 +15,7 @@ Search
 <textarea name="query" cols="60" rows="1"></textarea><br />
 <input type="submit" value="Submit" />
 <?php
-
+echo '<a href="./browse_actor.php?actor_name=1427">Brady Anderson</a>';
 if ($_GET["query"] == "")
 {
 	
