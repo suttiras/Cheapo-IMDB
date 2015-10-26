@@ -109,7 +109,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <input type="checkbox" name="check_list[]" value="Thriller"><label>Thriller</label>
 <input type="checkbox" name="check_list[]" value="War"><label>War</label><br/>
 <input type="checkbox" name="check_list[]" value="Western"><label>Western</label><br/>
-
+<br>
 
  
    <input type="submit" name="submit" value="Submit"> 
