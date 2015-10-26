@@ -246,7 +246,7 @@ else if ($_GET["query"] != "")
 	
 //print results
 if($findActor){
-	echo "<b>Actor Database:<b><br>";
+	echo "<b>Actor Database:</b><br>";
 	echo "<select name=actor_name value=''>Actor Name</option>"; // list box select command
 	
 	foreach ($pdo_obj->query($queryActor) as $row){//Array or records stored in $row
@@ -269,7 +269,7 @@ if($findActor){
 	echo "<br>";
 	}
 	
-	echo "<b>Movie Database:<b><br>";
+	echo "<b>Movie Database:</b><br>";
 	echo "<select name=title value=''>Movie Name</option>"; // list box select command
 	
 	foreach ($pdo_obj->query($queryMovie) as $row){//Array or records stored in $row
