@@ -231,7 +231,7 @@ else if ($_GET["query"] != "")
 	$rs2 = "";
 	if($findActor){
 	$rs1 = $queryActorPrep->execute();
-	$rs2 = $queryActorPrep->execute();
+	$rs2 = $queryActor2Prep->execute();
 	}
 	
 	if ($rs == "")
