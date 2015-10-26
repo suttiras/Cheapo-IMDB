@@ -3,8 +3,8 @@
 function get_pdo()
 {
 		global $pdo_obj;
-		//$dsn = 'mysql:dbname=CS143';
-		$dsn = 'mysql:dbname=TEST';
+		$dsn = 'mysql:dbname=CS143';
+		//$dsn = 'mysql:dbname=TEST';
 		$user = 'cs143';
 		$password = 'password';
 		if (empty($pdo_obj) || !isset($pdo_obj))
