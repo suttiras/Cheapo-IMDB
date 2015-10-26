@@ -56,6 +56,11 @@ if ($_GET["actor_name"] != "")
 			echo $row[role] . "<b> in </b>" . $formattedURL;	
 	}
 }
+
+else
+{
+	echo 'No information to display. Click <b><a href="./search.php">here</a></b> to search!';
+}
 ?>
 </form>
 <!--End Search-->
