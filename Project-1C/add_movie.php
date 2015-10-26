@@ -24,19 +24,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
      $movieNameErr = "A movie name is required";
    } else {
      $movieName = test_input($_GET["movie_name"]);
-     // check if name only contains letters and whitespace
-	 /*
-     if (!preg_match("/^[a-zA-Z0-9 ]*$/",$movie_name) {
-       $firstnameErr = "Only letters, numbers, and white space allowed"; 
-     }
-	 */
    }
    if (empty($_GET["year"])) {
      $yearErr = "Year is required";
    } else {
      $year = test_input($_GET["year"]);
      // check if year has only numbers
-     if (!preg_match("/^[0-9]*$/",$year)) { //doesn't completely work...
+     if (!preg_match("/^[0-9]*$/",$year)) {
        $lastnameErr = "Only numbers allowed"; 
      }
    }
@@ -129,6 +123,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		if ($genre_2 == "")
 		{
 			echo "You must pick at least one genre!<br>";
+		}
+		
+		else if (!preg_match("/^[0-9]*$/",$year_2))
+		{
+			echo "Year isn't valid!";
 		}
 		
 		else
