@@ -10,10 +10,15 @@ Search
 </h2>
 
 <!--Search-->
-<p>
 <form action="" method="GET">
+<div class = "buttons">
 <textarea name="query" cols="60" rows="1"></textarea><br />
+<br>
 <input type="submit" value="Submit"/>
+</div>
+<style type="text/css">
+.buttons{text-align: center;}
+</style>
 <?php
 
 if ($_GET["query"] == "")
