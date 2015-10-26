@@ -12,8 +12,6 @@ Browse Actor Page
 <!--Search-->
 <p>
 <form action="" method="GET">
-<textarea name="query" cols="60" rows="1"></textarea><br />
-<input type="submit" value="Submit" />
 <?php
 
 if ($_GET["query"] == "")
