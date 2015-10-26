@@ -5,7 +5,7 @@
 <style>
 .error {color: #FF0000;}
 </style>
-<body>
+<body style="text-align:center">
 <p style="text-align:center"><a href="./Homepage.php"><img src="ImdbLogo.png" alt="Website Logo"></a></p>
 
 <h2 style="text-align:center">
