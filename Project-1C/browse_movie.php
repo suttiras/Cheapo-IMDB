@@ -75,7 +75,7 @@ if ($_GET["id"] != "")
 	foreach ($pdo_obj->query($review_query_2) as $row){//Array or records stored in $row
 	$average_rating = $row[averageRtg];
 	//echo $formatted_name;
-	$review_average = "<b> <p style = 'color:blue'>AVERAGE RATING: " . $average_rating . "</b></p>";
+	$review_average = "<b> <p style = 'color:red'>AVERAGE RATING: " . $average_rating . "</b></p>";
 	echo $review_average;
 	//echo "<br>";
 	}
