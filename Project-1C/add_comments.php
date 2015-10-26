@@ -89,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$selected;
 	if ($_GET["selected"] == "")
 	{
-		$selected = 2;
+		$selected = 3;
 	}
 	else{
 		$selected = $_GET["selected"];
