@@ -1,5 +1,5 @@
 
-<html>
+<html style = "font-family:Trebuchet MS">
 <head>
 	<title>IMDB: Cheapo Version</title>
 </head>
