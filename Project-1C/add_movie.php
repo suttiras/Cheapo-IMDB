@@ -190,6 +190,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				$add_query_1->bindParam(':productionCompany_2', $productionCompany_2, PDO::PARAM_STR);
 				
 				$add_query_2->bindParam(':id', $MaxId, PDO::PARAM_INT);
+				if(!$add_query_1->execute())
+				{
+					echo "Could not add actor to database.";
+					$success = false;
+				}
 				//testing purposes
 				if (!$genre_2)
 				{}//echo "There is nothing in genre";
@@ -206,11 +211,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				
 				
 				
-				if(!$add_query_1->execute())
-				{
-					echo "Could not add actor to database.";
-					$success = false;
-				}
+				
 			
 			//after attempt to add to database
 			if($success)

@@ -192,9 +192,6 @@ if($findActor){
 </form>
 <!--End Search-->
 
-<p style="text-align:center">
-Search
-</p>
 
 <h2 style="text-align:center"><font size = "3"><b>Add to Database</b></font></h2>
 <p style="text-align:center">
