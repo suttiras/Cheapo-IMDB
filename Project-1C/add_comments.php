@@ -148,11 +148,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			
 			if (!$reviewQueryStmt->execute())
 			{
-				echo "Could not add review to database.";
+				echo "<br>Could not add review to database. <br>";
 			}
 			else
 			{
-				echo "Successfully added review to database!";
+				echo "<br><br>Successfully added review to database! <br>";
 			}
 		}
 		

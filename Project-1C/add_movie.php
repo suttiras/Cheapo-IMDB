@@ -191,7 +191,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				$add_query_2->bindParam(':id', $MaxId, PDO::PARAM_INT);
 				if(!$add_query_1->execute())
 				{
-					echo "Could not add actor to database.";
+					echo "Could not add movie to database. <br>";
 					$success = false;
 				}
 				//testing purposes
@@ -226,10 +226,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					echo $genre;
 					echo '<br>';
 				}
+				echo '<br>';
 			}
 			else
 			{
-				echo "Failed to add movie to database.";
+				echo "Failed to add movie to database. <br>";
 			}
 		}
 		}
