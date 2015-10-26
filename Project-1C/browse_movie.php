@@ -124,6 +124,12 @@ else if ($_GET["id"] != "")
 	}
 	echo "<br>";
 	//end of list reviews
+	
+	//add comment button
+	$formattedURL = '<a href="./add_comments.php?movie_name=' . $id . '"';
+	$formattedURL = $formattedURL . ">Add a Review</a>";
+	echo $formattedURL;
+	echo "<br>";
 }
 
 
