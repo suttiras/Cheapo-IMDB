@@ -126,11 +126,11 @@ else if ($_GET["id"] != "")
 	//end of list reviews
 	
 	//add comment button
-	$formattedURL = '<a href="./add_comments.php?title=' . $id . '"';
-	$formattedURL = $formattedURL . "&submit=Submit";
+	$formattedURL = "<b>";
+	$formattedURL = $formattedURL .'<a href="./add_comments.php?selected=' . $id . '"';
 	$formattedURL = $formattedURL . ">Add a Review</a>";
 	echo $formattedURL;
-	echo "<br>";
+	echo "</b><br><br>";
 }
 
 
