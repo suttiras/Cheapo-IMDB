@@ -14,7 +14,10 @@ Movie Information for:
 <?php
 if ($_GET["id"] == "")
 {
-	echo "<h1 style='text-align:center'><b>ERROR! No information to display. Go to the Search page to find an actor/movie.</b></h1>";
+	//echo "<h1 style='text-align:center'><b>ERROR! No information to display. Go to the Search page to find an actor/movie.</b></h1>";
+	echo "<h1 style='text-align:center'>";
+	echo 'No information to display. Click <b><a href="./search.php">here</a></b> to search!';
+	echo "</h1>";
 }
 
 else if ($_GET["id"] != "")
