@@ -5,7 +5,7 @@
 <body>
 <p style="text-align:center"><a href="./Homepage.php"><img src="ImdbLogo.png" alt="Website Logo"></a></p>
 
-<h2>
+<h2 style="text-align:center">
 Movie Information for:
 </h2>
 <!--Search-->
@@ -25,18 +25,21 @@ if ($_GET["id"] != "")
 	
 	foreach ($pdo_obj->query($sql) as $row){//Array or records stored in $row
 	$formatted_name = $row[title];}
-	echo "<h2>";
+	echo "<h1 style='text-align:center'>";
 	echo $formatted_name;
-	echo "<h2>";
+	echo "</h1>";
 	echo "<h3> Actors </h3>";
-	$actor_query = "SELECT CONCAT(Actor.first, ' ', Actor.last) as 'Actor1', MovieActor.role as role
+	$actor_query = "SELECT CONCAT(Actor.first, ' ', Actor.last) as 'Actor1', MovieActor.role as role, Actor.id as id
 	FROM Movie, MovieActor, Actor 
 	WHERE Movie.id = MovieActor.mid AND MovieActor.aid = Actor.id AND Movie.id =" . $id;
 	foreach ($pdo_obj->query($actor_query) as $row){//Array or records stored in $row
 	$formatted_name = $row[Actor1];
 	$role = $row[role];
 	echo "<b>";
-	echo $formatted_name;
+	//echo $formatted_name;
+	$formattedURL = '<a href="./browse_actor.php?actor_name=' . $row[id] . '"';
+	$formattedURL = $formattedURL . ">$formatted_name</a>";
+	echo $formattedURL;
 	echo "</b>";
 	echo " as ";
 	echo $role;
@@ -72,9 +75,9 @@ if ($_GET["id"] != "")
 	foreach ($pdo_obj->query($review_query_2) as $row){//Array or records stored in $row
 	$average_rating = $row[averageRtg];
 	//echo $formatted_name;
-	$review_average = "<b> AVERAGE RATING: " . $average_rating . "</b><br>";
+	$review_average = "<b> <p style = 'color:blue'>AVERAGE RATING: " . $average_rating . "</b></p>";
 	echo $review_average;
-	echo "<br>";
+	//echo "<br>";
 	}
 	
 	foreach ($pdo_obj->query($review_query) as $row){//Array or records stored in $row
