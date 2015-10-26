@@ -139,14 +139,15 @@ else if ($_GET["query"] != "")
 	$trimmedSearch = trim($search, " \t.");
 	
 	$queryMovie = 'SELECT id,title FROM Movie WHERE title LIKE "%';
+	$queryActor = 'SELECT id,first,last FROM Actor WHERE first LIKE "%';
 	/*
 	if (!preg_match("/^[0-9a-zA-Z ]*$/",$trimmedSearch)) {
        echo "Only numbers, letters and white space allowed"; 
      }*/
 	
-	echo "Revised search is: ";
-	echo $trimmedSearch;
-	echo "<br><br>";
+	//echo "Revised search is: ";
+	//echo $trimmedSearch;
+	//echo "<br><br>";
 	
 	//$db_connection = mysql_connect("localhost", "cs143", "");
 	
@@ -160,7 +161,6 @@ else if ($_GET["query"] != "")
 	
 	//$clauses=array();
 	foreach ($searchTerms as $part){
-		//function_description in my case ,  replace it with whatever u want in ur table
 		//$clauses[]="title LIKE '%" . mysql_real_escape_string($part) . "%'";
 		if (!$first)
 		{
@@ -182,15 +182,33 @@ else if ($_GET["query"] != "")
 			//
 		}
 	}
-	echo $queryMovie;
+	$count = 0;
+	$first = false;
+	foreach ($searchTerms as $part){
+		//$clauses[]="title LIKE '%" . mysql_real_escape_string($part) . "%'";
+		if (!$first)
+		{
+			$queryActor = $queryActor . $part . '%' . '"';
+			$first = true;
+			$count = $count + 1;
+		}
+		else if ($count < 2)
+		{
+			$queryActor = $queryActor . ' AND last LIKE "%' . $part . "%" . '"';
+			$count = $count + 1;
+		}
+	}
+	echo $queryActor;
 	$queryMoviePrep = $pdo_obj->prepare($queryMovie);
+	$queryActorPrep = $pdo_obj->prepare($queryActor);
 	//$queryMovie = 'SELECT id, title FROM Movie WHERE title LIKE "%Joe%" AND "%Black%"';
 	//$queryMoviePrep = $pdo_obj->prepare($queryMovie);
 	$rs = $queryMoviePrep->execute();
+	$rs1 = $queryActorPrep->execute();
 	
-	if ($rs == "")
+	if ($rs == "" || $rs1 == "")
 	{
-		echo "Couldn't find any movies...";
+		echo "Couldn't find any movies or actors...";
 	}
 	/*
 	else
@@ -204,13 +222,28 @@ else if ($_GET["query"] != "")
 				echo "<br>";
 			}
 		}while ($result = mysql_fetch_assoc($rs));
-	}
-	*/
+	}*/
+	
 	
 //print results
+	echo "<b>Actor Database:<b><br>";
+	echo "<select name=actor_name value=''>Actor Name</option>"; // list box select command
+	
+	foreach ($pdo_obj->query($queryActor) as $row){//Array or records stored in $row
+	$formatted_name = $row[first] . " " . $row[last] ;
+	//echo $formatted_name;
+	//echo "<br>Got an actor! <br>";
+	echo "<option value=$row[id]>$formatted_name</option>"; 
+	
+}
+
+	//echo "<br>Got an actor! <br>";
+	echo "</select>";// Closing of list box
+	echo "<br>";
+	
+	echo "<b>Movie Database:<b><br>";
 	echo "<select name=title value=''>Movie Name</option>"; // list box select command
 	
-	//$pdo_obj = get_pdo();
 	foreach ($pdo_obj->query($queryMovie) as $row){//Array or records stored in $row
 	$formatted_name = $row[title];
 	//echo $formatted_name;
@@ -218,8 +251,8 @@ else if ($_GET["query"] != "")
 	echo "<option value=$row[id]>$formatted_name</option>"; 
 
 }
-echo "<br>Got a movie! <br>";
- //echo "</select>";// Closing of list box
+//echo "<br>Got a movie! <br>";
+ echo "</select>";// Closing of list box
    
    echo "<br><br>";
 	
