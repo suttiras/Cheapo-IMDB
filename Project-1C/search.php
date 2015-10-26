@@ -15,7 +15,7 @@ Search
 <textarea name="query" cols="60" rows="1"></textarea><br />
 <input type="submit" value="Submit" />
 <?php
-echo '<a href="./browse_actor.php?actor_name=1427">Brady Anderson</a>';
+
 if ($_GET["query"] == "")
 {
 	
@@ -247,25 +247,29 @@ else if ($_GET["query"] != "")
 //print results
 if($findActor){
 	echo "<b>Actor Database:</b><br>";
-	echo "<select name=actor_name value=''>Actor Name</option>"; // list box select command
+	//echo "<select name=actor_name value=''>Actor Name</option>"; // list box select command
 	
 	foreach ($pdo_obj->query($queryActor) as $row){//Array or records stored in $row
 	$formatted_name = $row[first] . " " . $row[last] ;
 	//echo $formatted_name;
 	//echo "<br>Got an actor! <br>";
-	echo "<option value=$row[id]>$formatted_name</option>"; 
+	$formattedURL = '<a href="./browse_actor.php?actor_name=' . $row[id] . '"';
+	$formattedURL = $formattedURL . ">$formatted_name</a>";
+	echo $formattedURL;
+	echo "<br>";
+	//echo "<option value=$row[id]>$formatted_name</option>"; 
 	
 }
 	foreach ($pdo_obj->query($queryActor2) as $row){//Array or records stored in $row
 	$formatted_name = $row[first] . " " . $row[last] ;
 	//echo $formatted_name;
 	//echo "<br>Got an actor! <br>";
-	echo "<option value=$row[id]>$formatted_name</option>"; 
+	//echo "<option value=$row[id]>$formatted_name</option>"; 
 	
 }
 
 	//echo "<br>Got an actor! <br>";
-	echo "</select>";// Closing of list box
+	//echo "</select>";// Closing of list box
 	echo "<br>";
 	}
 	
