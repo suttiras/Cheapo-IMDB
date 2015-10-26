@@ -8,11 +8,11 @@ dob DATE NOT NULL, dod DATE
 CREATE TABLE Director(id INT PRIMARY KEY, last VARCHAR(20) NOT NULL, first VARCHAR(20) NOT NULL, dob DATE NOT NULL, 
 dod DATE)ENGINE = INNODB;
 
-CREATE TABLE MovieGenre(mid INT, genre VARCHAR(20) NOT NULL, CHECK (mid > 0),
+CREATE TABLE MovieGenre(mid INT, genre VARCHAR(20) NOT NULL,
 FOREIGN KEY (mid) references Movie(id)
 )ENGINE = INNODB;
 
-CREATE TABLE MovieDirector(mid INT, did INT, CHECK (mid > 0), CHECK (did > 0),
+CREATE TABLE MovieDirector(mid INT, did INT,
 FOREIGN KEY (did) references Director(id),
 FOREIGN KEY (mid) references Movie(id)
 )ENGINE = INNODB;
