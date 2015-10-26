@@ -8,9 +8,9 @@
 <body>
 <p style="text-align:center"><a href="./Homepage.php"><img src="ImdbLogo.png" alt="Website Logo"></a></p>
 
-<p>
-Movie Page
-</p>
+<h2 style="text-align:center">
+Add Movie Page
+</h2>
 
 <p>
 
@@ -126,6 +126,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		$genre_2 = $_GET['check_list'];
 		
 		$success = false;
+		if ($genre_2 == "")
+		{
+			echo "You must pick at least one genre!<br>";
+		}
+		
+		else
+		{
 		if ($movie_name_2 != "" && $year_2 != "")
 		{	
 			//attempt to add to database
@@ -185,7 +192,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				$add_query_2->bindParam(':id', $MaxId, PDO::PARAM_INT);
 				//testing purposes
 				if (!$genre_2)
-					echo "There is nothing in genre";
+				{}//echo "There is nothing in genre";
 				foreach($genre_2 as $genre)
 				{
 					$add_query_2->bindParam(':genre', $genre, PDO::PARAM_STR);
@@ -224,6 +231,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			{
 				echo "Failed to add movie to database.";
 			}
+		}
 		}
 		
 	?>
