@@ -86,14 +86,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    <?php require_once('global_functions.php');
 
 	$sql="SELECT title,id FROM Movie order by title"; 
-
+	$selected;
+	if ($_GET["selected"] == "")
+	{
+		$selected = 2;
+	}
+	else{
+		$selected = $_GET["selected"];
+	}
+	//$selectStmt = "<select name=title value='" . $selected;
+	
+	//$selectStmt = "<select name=title value='" . $selected . "'>Movie Title</option>";
+	//echo $selectStmt;
 	echo "<select name=title value=''>Movie Title</option>"; // list box select command
 	$pdo_obj = get_pdo();
 	foreach ($pdo_obj->query($sql) as $row){//Array or records stored in $row
-
-	echo "<option value=$row[id]>$row[title]</option>"; 
-
+	if ($selected == $row[id])
+	{
+		echo "<option value=$row[id] selected>$row[title]</option>"; 
+	}
+	else
+	{
+		echo "<option value=$row[id]>$row[title]</option>"; 
+	}
+	
+	//$formattedOption = "<option value=$row[id] <?php if($selected == '$row[id]'){echo";
+	//$formattedOption = $formattedOption . '("selected");}
+	//$formattedOption = $formattedOption . "$row[title]</option>";
+	//echo $formattedOption;
 }
+//echo $formattedOption;
 
  echo "</select>";// Closing of list box
    ?>
@@ -108,7 +130,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	<select name="rating" required>
 	<option value="1">*</option>
 	<option value="2">**</option>
-	<option value="3">***</option>
+	<option value="3" selected>***</option>
 	<option value="4">****</option>
 	<option value="5">*****</option>
 	</select>
