@@ -5,8 +5,8 @@
 <body>
 <p style="text-align:center"><a href="./Homepage.php"><img src="ImdbLogo.png" alt="Website Logo"></a></p>
 
-<h2>
-Browse Actor Page
+<h2 style='text-align:center'>
+Actor Information for:
 </h2>
 
 <!--Search-->
@@ -59,7 +59,9 @@ if ($_GET["actor_name"] != "")
 
 else
 {
+	echo "<h1 style='text-align:center'>";
 	echo 'No information to display. Click <b><a href="./search.php">here</a></b> to search!';
+	echo "</h1>";
 }
 ?>
 </form>
