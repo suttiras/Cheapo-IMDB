@@ -140,17 +140,13 @@ RC SqlEngine::load(const string& table, const string& loadfile, bool index)
 	std::ifstream ifs;
 	string line;
 
-	//string filename = table;
-	//filename.append(".tbl");
-
 	if ((rc = rf.open((table + ".tbl").c_str(), 'w')) < 0) {
 		fprintf(stderr, "Error: table %s does not exist\n", table.c_str());
 		return rc;
 	}
-	//if (!rf.open(filename, 'w'))
+
 	else
 	{
-		//ifstream myfile(loadfile);
 		ifs.open(loadfile.c_str(), std::ifstream::in);
 		if (ifs.fail())
 		{
@@ -163,29 +159,6 @@ RC SqlEngine::load(const string& table, const string& loadfile, bool index)
 			{
 				while (getline(ifs, line))
 				{
-					/*
-					index = 0;
-					string key = "";
-					string value = "";
-					while (index < line.length())
-					{
-					if (line[index] == ',')
-					{
-					index++;
-					while (line[index] != "\n")
-					{
-					value.append(line[index]);
-					index++;
-					}
-
-					}
-					else
-					{
-					key.append(line[index]);
-					}
-					index++;
-					}
-					*/
 					int key;
 					string value;
 					if ((rc = parseLoadLine(line, key, value)) < 0) {
@@ -196,10 +169,6 @@ RC SqlEngine::load(const string& table, const string& loadfile, bool index)
 						fprintf(stderr, "Error: cannot append the file's data to table.\n");
 						return rc;
 					}
-
-					//parseLoadLine(line, key, value);
-					//rf.append(key, value, rid);
-
 				}
 				ifs.close();
 			}
