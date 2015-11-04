@@ -192,7 +192,7 @@ RC SqlEngine::load(const string& table, const string& loadfile, bool index)
 						return rc;
 					}
 					if ((rf.append(key, value, rid))< 0) {
-						fprintf(stderr, "Error: append the file's data to table.\n");
+						fprintf(stderr, "Error: cannot append the file's data to table.\n");
 						return rc;
 					}
 
