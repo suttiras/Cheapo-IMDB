@@ -133,11 +133,12 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 
 RC SqlEngine::load(const string& table, const string& loadfile, bool index)
 {
-	int index = 0;
+	//int index = 0;
 	RecordFile rf;
 	RC     rc;
 	RecordId   rid;
 	std::ifstream ifs;
+	string line;
 
 	//string filename = table;
 	//filename.append(".tbl");
@@ -162,29 +163,29 @@ RC SqlEngine::load(const string& table, const string& loadfile, bool index)
 			{
 				while (getline(ifs, line))
 				{
-				/*
-				index = 0;
-				string key = "";
-				string value = "";
-				while (index < line.length())
-				{
-				if (line[index] == ',')
-				{
-				index++;
-				while (line[index] != "\n")
-				{
-				value.append(line[index]);
-				index++;
-				}
+					/*
+					index = 0;
+					string key = "";
+					string value = "";
+					while (index < line.length())
+					{
+					if (line[index] == ',')
+					{
+					index++;
+					while (line[index] != "\n")
+					{
+					value.append(line[index]);
+					index++;
+					}
 
-				}
-				else
-				{
-				key.append(line[index]);
-				}
-				index++;
-				}
-				*/
+					}
+					else
+					{
+					key.append(line[index]);
+					}
+					index++;
+					}
+					*/
 					int key;
 					string value;
 					if ((rc = parseLoadLine(line, key, value)) < 0) {
@@ -200,10 +201,11 @@ RC SqlEngine::load(const string& table, const string& loadfile, bool index)
 					//rf.append(key, value, rid);
 
 				}
-			ifs.close();
+				ifs.close();
+			}
+			rf.close();
+
 		}
-		rf.close();
-	
 	}
 
   return 0;
