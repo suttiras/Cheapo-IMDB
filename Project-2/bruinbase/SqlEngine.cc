@@ -133,24 +133,35 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 
 RC SqlEngine::load(const string& table, const string& loadfile, bool index)
 {
-  /* your code here */
 	int index = 0;
 	RecordFile rf;
 	RC     rc;
 	RecordId   rid;
 	std::ifstream ifs;
 
-	string filename = table;
-	filename.append(".tbl");
+	//string filename = table;
+	//filename.append(".tbl");
 
-	if (!rf.open(filename, 'w'))
+	if ((rc = rf.open((table + ".tbl").c_str(), 'w')) < 0) {
+		fprintf(stderr, "Error: table %s does not exist\n", table.c_str());
+		return rc;
+	}
+	//if (!rf.open(filename, 'w'))
+	else
 	{
 		//ifstream myfile(loadfile);
 		ifs.open(loadfile.c_str(), std::ifstream::in);
-		if (ifs.is_open())
+		if (ifs.fail())
 		{
-			while (getline(ifs, line))
+			ifs.close();
+			return RC_FILE_READ_FAILED;
+		}
+		else
+		{
+			if (ifs.is_open())
 			{
+				while (getline(ifs, line))
+				{
 				/*
 				index = 0;
 				string key = "";
@@ -174,12 +185,12 @@ RC SqlEngine::load(const string& table, const string& loadfile, bool index)
 				index++;
 				}
 				*/
-				int key;
-				string value;
-				parseLoadLine(line, key, value);
-				rf.append(key, value, rid);
+					int key;
+					string value;
+					parseLoadLine(line, key, value);
+					rf.append(key, value, rid);
 
-			}
+				}
 			ifs.close();
 		}
 		rf.close();
