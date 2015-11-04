@@ -133,6 +133,7 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 
 RC SqlEngine::load(const string& table, const string& loadfile, bool index)
 {
+<<<<<<< HEAD
   /* your code here */
 	int index = 0;
 	RecordFile rf;
@@ -183,6 +184,13 @@ RC SqlEngine::load(const string& table, const string& loadfile, bool index)
 		rf.close();
 	
 	}
+=======
+	std::ifstream ifs;
+
+	ifs.open(loadfile.c_str(), std::ifstream::in);
+
+
+>>>>>>> origin/master
 
   return 0;
 }
