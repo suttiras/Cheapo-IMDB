@@ -133,22 +133,23 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 
 RC SqlEngine::load(const string& table, const string& loadfile, bool index)
 {
-<<<<<<< HEAD
   /* your code here */
 	int index = 0;
 	RecordFile rf;
 	RC     rc;
 	RecordId   rid;
+	std::ifstream ifs;
 
-	string filename = loadfile;
+	string filename = table;
 	filename.append(".tbl");
 
 	if (!rf.open(filename, 'w'))
 	{
-		ifstream myfile(loadfile);
-		if (myfile.is_open())
+		//ifstream myfile(loadfile);
+		ifs.open(loadfile.c_str(), std::ifstream::in);
+		if (ifs.is_open())
 		{
-			while (getline(myfile, line))
+			while (getline(ifs, line))
 			{
 				/*
 				index = 0;
@@ -179,18 +180,11 @@ RC SqlEngine::load(const string& table, const string& loadfile, bool index)
 				rf.append(key, value, rid);
 
 			}
-			myfile.close();
+			ifs.close();
 		}
 		rf.close();
 	
 	}
-=======
-	std::ifstream ifs;
-
-	ifs.open(loadfile.c_str(), std::ifstream::in);
-
-
->>>>>>> origin/master
 
   return 0;
 }
