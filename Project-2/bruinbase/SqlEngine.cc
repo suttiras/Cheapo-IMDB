@@ -132,7 +132,11 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 
 RC SqlEngine::load(const string& table, const string& loadfile, bool index)
 {
-  /* your code here */
+	std::ifstream ifs;
+
+	ifs.open(loadfile.c_str(), std::ifstream::in);
+
+
 
   return 0;
 }
