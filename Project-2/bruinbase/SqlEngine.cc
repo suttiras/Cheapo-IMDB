@@ -14,6 +14,7 @@
 #include <fstream>
 #include "Bruinbase.h"
 #include "SqlEngine.h"
+#include <string>
 
 using namespace std;
 
@@ -133,6 +134,55 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 RC SqlEngine::load(const string& table, const string& loadfile, bool index)
 {
   /* your code here */
+	int index = 0;
+	RecordFile rf;
+	RC     rc;
+	RecordId   rid;
+
+	string filename = loadfile;
+	filename.append(".tbl");
+
+	if (!rf.open(filename, 'w'))
+	{
+		ifstream myfile(loadfile);
+		if (myfile.is_open())
+		{
+			while (getline(myfile, line))
+			{
+				/*
+				index = 0;
+				string key = "";
+				string value = "";
+				while (index < line.length())
+				{
+				if (line[index] == ',')
+				{
+				index++;
+				while (line[index] != "\n")
+				{
+				value.append(line[index]);
+				index++;
+				}
+
+				}
+				else
+				{
+				key.append(line[index]);
+				}
+				index++;
+				}
+				*/
+				int key;
+				string value;
+				parseLoadLine(line, key, value);
+				rf.append(key, value, rid);
+
+			}
+			myfile.close();
+		}
+		rf.close();
+	
+	}
 
   return 0;
 }
