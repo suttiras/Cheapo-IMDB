@@ -187,8 +187,17 @@ RC SqlEngine::load(const string& table, const string& loadfile, bool index)
 				*/
 					int key;
 					string value;
-					parseLoadLine(line, key, value);
-					rf.append(key, value, rid);
+					if ((rc = parseLoadLine(line, key, value)) < 0) {
+						fprintf(stderr, "Error: cannot parse loadfile.\n");
+						return rc;
+					}
+					if ((rf.append(key, value, rid))< 0) {
+						fprintf(stderr, "Error: append the file's data to table.\n");
+						return rc;
+					}
+
+					//parseLoadLine(line, key, value);
+					//rf.append(key, value, rid);
 
 				}
 			ifs.close();
