@@ -133,7 +133,6 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 
 RC SqlEngine::load(const string& table, const string& loadfile, bool index)
 {
-	//int index = 0;
 	RecordFile rf;
 	RC     rc;
 	RecordId   rid;
@@ -173,7 +172,6 @@ RC SqlEngine::load(const string& table, const string& loadfile, bool index)
 				ifs.close();
 			}
 			rf.close();
-
 		}
 	}
 
