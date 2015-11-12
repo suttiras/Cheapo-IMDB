@@ -25,7 +25,7 @@ BTLeafNode::BTLeafNode()
  */
 RC BTLeafNode::read(PageId pid, const PageFile& pf)
 { 
-	memset(buffer, 0, PageFile::PAGE_SIZE);
+	//memset(buffer, 0, PageFile::PAGE_SIZE);
 	RC rc = pf.read(pid, buffer);
 	return rc;
 }
@@ -48,10 +48,7 @@ RC BTLeafNode::write(PageId pid, PageFile& pf)
  */
 int BTLeafNode::getKeyCount()
 { 
-	int numOfKeys;
-	memcpy(&numOfKeys, buffer, sizeof(int));
 	return numOfKeys; 
-
 }
 
 /*
@@ -61,7 +58,10 @@ int BTLeafNode::getKeyCount()
  * @return 0 if successful. Return an error code if the node is full.
  */
 RC BTLeafNode::insert(int key, const RecordId& rid)
-{ return 0; }
+{ 
+
+	return 0;
+}
 
 /*
  * Insert the (key, rid) pair to the node
@@ -158,8 +158,6 @@ RC BTNonLeafNode::write(PageId pid, PageFile& pf)
  */
 int BTNonLeafNode::getKeyCount()
 { 
-	int numOfKeys;
-	memcpy(&numOfKeys, buffer, sizeof(int));
 	return numOfKeys;
 }
 
