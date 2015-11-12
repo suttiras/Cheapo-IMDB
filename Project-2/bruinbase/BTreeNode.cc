@@ -125,7 +125,30 @@ RC BTLeafNode::insert(int key, const RecordId& rid)
  */
 RC BTLeafNode::insertAndSplit(int key, const RecordId& rid, 
                               BTLeafNode& sibling, int& siblingKey)
-{ return 0; }
+{ 
+	memset(sibling.buffer, 0, PageFile::PAGE_SIZE);
+	int maxNumKeys = getKeyCount();
+	int median = ceil(maxNumKeys/2);
+	
+	for(int index = median; index < maxNumKeys; index++)
+	{		
+		int new_key;
+		RecordId new_rid;
+		readEntry(index, new_key, new_rid);
+		sibling.insert(new_key, new_rid);
+		if (index == median)
+		{
+			siblingKey = new_key;
+		}
+	}
+	FLAG_ADDED_NEW_KEY = 1;
+	int new_eid;
+	if (locate(key, new_eid) != 0)
+		sibling.insert(key,rid);
+	else
+		insert(key, rid);
+	return 0;
+}
 
 /**
  * If searchKey exists in the node, set eid to the index entry
