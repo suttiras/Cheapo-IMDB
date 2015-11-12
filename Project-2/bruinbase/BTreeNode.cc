@@ -9,6 +9,9 @@ using namespace std;
 
 int entryPairLeafNodeSize = sizeof(RecordId) + sizeof(int);
 int entryPairNonLeafNodeSize = sizeof(PageId) + sizeof(int);
+int INTEGER_SIZE = sizeof(int);
+int MAX_KEYS_LEAF_NODE = floor(PageFile::PAGE_SIZE/entryPairLeafNodeSize);
+int MAX_KEYS_NON_LEAF_NODE = floor(PageFile::PAGE_SIZE/entryPairNonLeafNodeSize);
 
 BTLeafNode::BTLeafNode()
 {
