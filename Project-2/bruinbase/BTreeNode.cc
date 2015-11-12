@@ -52,6 +52,23 @@ RC BTLeafNode::write(PageId pid, PageFile& pf)
  */
 int BTLeafNode::getKeyCount()
 { 
+	if (FLAG_ADDED_NEW_KEY == 1)	//a new key(s) was added
+	{
+		numOfKeys = 0;
+		//int index = 0;
+		int indexInBuffer = 0;
+		int key_holder;
+		char* char_key_holder = buffer;
+		memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
+		while(numOfKeys < MAX_KEYS_LEAF_NODE && key_holder != 0)
+		//while((indexInBuffer < PageFile::PAGE_SIZE - entryPairLeafNodeSize) && key_holder != 0)
+		{
+			numOfKeys++;
+			indexInBuffer+=entryPairLeafNodeSize;
+			char_key_holder += entryPairLeafNodeSize;
+			memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
+		}
+	}
 	return numOfKeys; 
 }
 
