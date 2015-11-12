@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 using namespace std;
 
@@ -62,7 +63,13 @@ int BTLeafNode::getKeyCount()
  */
 RC BTLeafNode::insert(int key, const RecordId& rid)
 { 
-
+	/*
+		if (numOfKeys == 0)
+	{
+		memcpy(buffer, rid, sizeof(RecordId));
+	}
+	*/
+	
 	return 0;
 }
 
