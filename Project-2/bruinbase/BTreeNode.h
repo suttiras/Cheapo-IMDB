@@ -100,6 +100,11 @@ class BTLeafNode {
     RC write(PageId pid, PageFile& pf);
 	
 	void print();	//testing purposes
+	
+	void set_FLAG()
+	{
+		FLAG_ADDED_NEW_KEY = 1;
+	}
 
   private:
    /**
@@ -183,6 +188,11 @@ class BTNonLeafNode {
     RC write(PageId pid, PageFile& pf);
 	
 	void print();	//testing purposes
+	
+	void set_FLAG()
+	{
+		FLAG_ADDED_NEW_KEY = 1;
+	}
 	
   private:
    /**

@@ -142,6 +142,7 @@ RC BTLeafNode::insertAndSplit(int key, const RecordId& rid,
 		}
 	}
 	FLAG_ADDED_NEW_KEY = 1;
+	sibling.set_FLAG();
 	int new_eid;
 	if (locate(key, new_eid) != 0)
 		sibling.insert(key,rid);
