@@ -84,13 +84,32 @@ int BTLeafNode::getKeyCount()
  */
 RC BTLeafNode::insert(int key, const RecordId& rid)
 { 
-	/*
-		if (numOfKeys == 0)
+	//there are no entries in the node
+	if (numOfKeys == 0)	
 	{
-		memcpy(buffer, rid, sizeof(RecordId));
+		memcpy(buffer, &rid, sizeof(RecordId));
+		memcpy(buffer + sizeof(RecordId), &key, INTEGER_SIZE);
 	}
-	*/
-	
+	//there are max number of entries in the node
+	else if (numOfKeys >= MAX_KEYS_LEAF_NODE)	
+	{
+		return -1;
+	}
+	//there are less than max number of entries in the node
+	else
+	{
+		int eid;
+		locate(key, eid);
+		char temp[(numOfKeys - eid)*entryPairLeafNodeSize];
+		//try to copy all entries after new entry
+		memcpy(&temp, buffer + (eid*entryPairLeafNodeSize), (numOfKeys - eid)*entryPairLeafNodeSize);
+
+		memcpy(buffer + ((eid+1)*entryPairLeafNodeSize), &temp, (numOfKeys - eid)*entryPairLeafNodeSize);
+
+		memcpy(buffer + (eid*entryPairLeafNodeSize), &rid, sizeof(RecordId));
+		memcpy(buffer + (eid*entryPairLeafNodeSize) + sizeof(RecordId), &key, INTEGER_SIZE);
+	}
+	FLAG_ADDED_NEW_KEY = 1;
 	return 0;
 }
 
