@@ -1,7 +1,16 @@
 #include "BTreeNode.h"
+#include "RecordFile.h"
+#include "PageFile.h"
 #include <iostream>
+#include <stdio.h>
+#include <string.h>
 
 using namespace std;
+
+BTLeafNode::BTLeafNode()
+{
+	memset(buffer, 0, PageFile::PAGE_SIZE);
+}
 
 /*
  * Read the content of the node from the page pid in the PageFile pf.
@@ -90,6 +99,9 @@ PageId BTLeafNode::getNextNodePtr()
 RC BTLeafNode::setNextNodePtr(PageId pid)
 { return 0; }
 
+void BTLeafNode::print()
+{  }
+
 /*
  * Read the content of the node from the page pid in the PageFile pf.
  * @param pid[IN] the PageId to read
@@ -157,3 +169,6 @@ RC BTNonLeafNode::locateChildPtr(int searchKey, PageId& pid)
  */
 RC BTNonLeafNode::initializeRoot(PageId pid1, int key, PageId pid2)
 { return 0; }
+
+void BTNonLeafNode::print()
+{  }
