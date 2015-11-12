@@ -33,7 +33,7 @@ RC BTLeafNode::read(PageId pid, const PageFile& pf)
  */
 RC BTLeafNode::write(PageId pid, PageFile& pf)
 { 
-	RC rc = pf.wrie(pid, buffer);
+	RC rc = pf.write(pid, buffer);
 	return rc; 
 }
 
