@@ -109,6 +109,12 @@ RC BTLeafNode::setNextNodePtr(PageId pid)
 void BTLeafNode::print()
 {  }
 
+////////////////////////////////////////////BTNonLeafNode//////////////////////////////////////////
+BTNonLeafNode::BTNonLeafNode()
+{
+	memset(buffer, 0, PageFile::PAGE_SIZE);
+}
+
 /*
  * Read the content of the node from the page pid in the PageFile pf.
  * @param pid[IN] the PageId to read
