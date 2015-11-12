@@ -68,6 +68,7 @@ int BTLeafNode::getKeyCount()
 			char_key_holder += entryPairLeafNodeSize;
 			memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
 		}
+		FLAG_ADDED_NEW_KEY = 0;
 	}
 	return numOfKeys; 
 }
