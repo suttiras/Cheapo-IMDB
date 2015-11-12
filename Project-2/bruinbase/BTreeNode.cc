@@ -66,7 +66,10 @@ int BTLeafNode::getKeyCount()
 			numOfKeys++;
 			indexInBuffer+=entryPairLeafNodeSize;
 			char_key_holder += entryPairLeafNodeSize;
-			memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
+			if (numOfKeys < MAX_KEYS_LEAF_NODE)
+			{
+				memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
+			}
 		}
 		FLAG_ADDED_NEW_KEY = 0;
 	}
