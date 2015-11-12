@@ -120,7 +120,21 @@ RC BTLeafNode::insertAndSplit(int key, const RecordId& rid,
  * @return 0 if searchKey is found. Otherwise return an error code.
  */
 RC BTLeafNode::locate(int searchKey, int& eid)
-{ return 0; }
+{ 
+	int maxNumKeys = getKeyCount();
+	RecordId RID;
+	int retrieved_key;
+	for(int index = 0; index < maxNumKeys; index++)
+	{
+		readEntry(index, retrieved_key, RID);
+		if (retrieved_key >= searchKey)
+		{
+			eid = index;
+			return 0;
+		}
+	}
+	return RC_NO_SUCH_RECORD;	//failed to find the searchKey
+}
 
 /*
  * Read the (key, rid) pair from the eid entry.
@@ -130,7 +144,9 @@ RC BTLeafNode::locate(int searchKey, int& eid)
  * @return 0 if successful. Return an error code if there is an error.
  */
 RC BTLeafNode::readEntry(int eid, int& key, RecordId& rid)
-{ return 0; }
+{ 
+return 0;
+}
 
 /*
  * Return the pid of the next sibling node.
