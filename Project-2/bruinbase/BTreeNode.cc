@@ -10,6 +10,8 @@ using namespace std;
 BTLeafNode::BTLeafNode()
 {
 	memset(buffer, 0, PageFile::PAGE_SIZE);
+	numOfKeys = 0;
+	FLAG_ADDED_NEW_KEY = 0;
 }
 
 /*
@@ -92,14 +94,14 @@ RC BTLeafNode::readEntry(int eid, int& key, RecordId& rid)
 { return 0; }
 
 /*
- * Return the pid of the next slibling node.
+ * Return the pid of the next sibling node.
  * @return the PageId of the next sibling node 
  */
 PageId BTLeafNode::getNextNodePtr()
 { return 0; }
 
 /*
- * Set the pid of the next slibling node.
+ * Set the pid of the next sibling node.
  * @param pid[IN] the PageId of the next sibling node 
  * @return 0 if successful. Return an error code if there is an error.
  */
@@ -113,6 +115,8 @@ void BTLeafNode::print()
 BTNonLeafNode::BTNonLeafNode()
 {
 	memset(buffer, 0, PageFile::PAGE_SIZE);
+	numOfKeys = 0;
+	FLAG_ADDED_NEW_KEY = 0;
 }
 
 /*

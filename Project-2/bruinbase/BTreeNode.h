@@ -106,7 +106,8 @@ class BTLeafNode {
     * The main memory buffer for loading the content of the disk page 
     * that contains the node.
     */
-	//int numOfKeys;
+	int numOfKeys;
+	int FLAG_ADDED_NEW_KEY;
     char buffer[PageFile::PAGE_SIZE];
 }; 
 
@@ -188,7 +189,8 @@ class BTNonLeafNode {
     * The main memory buffer for loading the content of the disk page 
     * that contains the node.
     */
-	//int numOfKeys;
+	int numOfKeys;
+	int FLAG_ADDED_NEW_KEY;
     char buffer[PageFile::PAGE_SIZE];
 }; 
 
