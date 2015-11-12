@@ -7,6 +7,9 @@
 
 using namespace std;
 
+int entryPairLeafNodeSize = sizeof(RecordId) + sizeof(int);
+int entryPairNonLeafNodeSize = sizeof(PageId) + sizeof(int);
+
 BTLeafNode::BTLeafNode()
 {
 	memset(buffer, 0, PageFile::PAGE_SIZE);
@@ -44,7 +47,11 @@ RC BTLeafNode::write(PageId pid, PageFile& pf)
  * @return the number of keys in the node
  */
 int BTLeafNode::getKeyCount()
-{ return 0; }
+{ 
+	
+return 0; 
+
+}
 
 /*
  * Insert a (key, rid) pair to the node.
