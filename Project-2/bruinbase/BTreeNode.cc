@@ -51,6 +51,11 @@ RC BTLeafNode::write(PageId pid, PageFile& pf)
  */
 int BTLeafNode::getKeyCount()
 { 
+<<<<<<< HEAD
+=======
+	//int numOfKeys;
+	memcpy(&numOfKeys, buffer, sizeof(int));
+>>>>>>> origin/master
 	return numOfKeys; 
 }
 
