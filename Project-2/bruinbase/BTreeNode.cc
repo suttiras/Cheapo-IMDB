@@ -144,8 +144,22 @@ RC BTLeafNode::locate(int searchKey, int& eid)
  * @return 0 if successful. Return an error code if there is an error.
  */
 RC BTLeafNode::readEntry(int eid, int& key, RecordId& rid)
-{ 
-return 0;
+{
+	if (eid < 0 || eid >= getKeyCount())
+	{
+		return -1;
+	}
+	else
+	{
+		int entryKey;
+		memcpy(&entryKey, buffer + (eid*entryPairLeafNodeSize), INTEGER_SIZE);
+		key = entryKey;
+		RecordId entryId;
+		memcpy(&entryId, buffer + (eid*entryPairLeafNodeSize)+INTEGER_SIZE, sizeof(RecordId));
+		rid = entryId;
+	}
+
+	return 0;
 }
 
 /*
