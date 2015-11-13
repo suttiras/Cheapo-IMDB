@@ -326,7 +326,7 @@ RC BTNonLeafNode::locate(int searchKey, int& eid)
 RC BTNonLeafNode::insert(int key, PageId pid)
 { 
 	//there are no entries in the node
-	if (numOfKeys == 0)
+	if (getKeyCount() == 0)
 	{
 		memcpy(buffer, &pid, PAGE_ID_SIZE);
 		memcpy(buffer + PAGE_ID_SIZE, &key, INTEGER_SIZE);
@@ -365,7 +365,45 @@ RC BTNonLeafNode::insert(int key, PageId pid)
  * @return 0 if successful. Return an error code if there is an error.
  */
 RC BTNonLeafNode::insertAndSplit(int key, PageId pid, BTNonLeafNode& sibling, int& midKey)
-{ return 0; }
+{ 
+	//memset(sibling.buffer, 0, PageFile::PAGE_SIZE);
+	int maxNumKeys = getKeyCount();
+	int median = ceil(maxNumKeys / 2);
+
+	for (int index = median; index < maxNumKeys; index++)
+	{
+		int new_key;
+		PageId new_pid;
+		//readEntry(index, new_key, new_pid);
+		//sibling.insert(new_key, new_pid);
+		memcpy(&new_key, buffer + (PAGE_ID_SIZE + index*(entryPairNonLeafNodeSize)), INTEGER_SIZE);
+		memcpy(&new_pid, buffer + (PAGE_ID_SIZE + index*(entryPairNonLeafNodeSize)) + INTEGER_SIZE, PAGE_ID_SIZE);
+
+		if (sibling.getKeyCount() > 0)
+		{
+			sibling.insert(new_key, new_pid);
+		}
+
+		else
+		{
+			PageId new_pid_root;
+			memcpy(&new_pid_root, buffer + (index*(entryPairNonLeafNodeSize)), PAGE_ID_SIZE);
+			sibling.initializeRoot(new_pid_root, new_key, new_pid);
+		}
+	}
+	memcpy(buffer, &median, INTEGER_SIZE);
+	FLAG_ADDED_NEW_KEY = 1;
+	sibling.set_FLAG();
+	int new_eid;
+	if (locate(key, new_eid) != 0)
+		sibling.insert(key, pid);
+	else
+		insert(key, pid);
+	midKey = getKeyCount() - 1;
+	memcpy(&key, buffer + PAGE_ID_SIZE + midKey*(entryPairNonLeafNodeSize), INTEGER_SIZE);
+	midKey = key;
+	return 0;
+}
 
 /*
  * Given the searchKey, find the child-node pointer to follow and
