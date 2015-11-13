@@ -342,9 +342,9 @@ RC BTNonLeafNode::initializeRoot(PageId pid1, int key, PageId pid2)
 { 
 	char* buffer_ptr = buffer;
 	memcpy(buffer_ptr, &pid1, PAGE_ID_SIZE);
-	buffer_ptr = buffer_ptr + PAGE_ID_SIZE;
+	buffer_ptr += PAGE_ID_SIZE;
 	memcpy(buffer_ptr, &key, INTEGER_SIZE);
-	buffer_ptr = buffer_ptr + INTEGER_SIZE;
+	buffer_ptr += INTEGER_SIZE;
 	memcpy(buffer_ptr, &pid2, PAGE_ID_SIZE);
 	FLAG_ADDED_NEW_KEY = 1;
 	return 0;
