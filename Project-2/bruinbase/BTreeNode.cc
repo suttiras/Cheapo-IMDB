@@ -213,7 +213,8 @@ RC BTLeafNode::readEntry(int eid, int& key, RecordId& rid)
 PageId BTLeafNode::getNextNodePtr()
 {
 	PageId pid;
-	memcpy(&pid, buffer+PageFile::PAGE_SIZE-sizeof(PageId), sizeof(PageId));
+	//memcpy(&pid, buffer+PageFile::PAGE_SIZE-sizeof(PageId), sizeof(PageId));
+	memcpy(&pid, buffer+PageFile::PAGE_SIZE-PAGE_ID_SIZE, PAGE_ID_SIZE);
 	return pid;
 }
 
@@ -226,7 +227,8 @@ RC BTLeafNode::setNextNodePtr(PageId pid)
 { 
 	if (pid >= 0)
 	{
-		memcpy(buffer+(PageFile::PAGE_SIZE-sizeof(PageId)),&pid,sizeof(PageId));
+		//memcpy(buffer+(PageFile::PAGE_SIZE-sizeof(PageId)),&pid,sizeof(PageId));
+		memcpy(buffer+(PageFile::PAGE_SIZE-PAGE_ID_SIZE),&pid,PAGE_ID_SIZE);
 		return 0;
 	}
 	return RC_INVALID_PID;
