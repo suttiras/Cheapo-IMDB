@@ -123,6 +123,8 @@ class BTLeafNode {
 class BTNonLeafNode {
   public:
 	BTNonLeafNode();
+
+	RC locate(int searchKey, int& eid);
    /**
     * Insert a (key, pid) pair to the node.
     * Remember that all keys inside a B+tree node should be kept sorted.
@@ -130,6 +132,7 @@ class BTNonLeafNode {
     * @param pid[IN] the PageId to insert
     * @return 0 if successful. Return an error code if the node is full.
     */
+
     RC insert(int key, PageId pid);
 
    /**

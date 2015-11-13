@@ -289,7 +289,7 @@ int BTNonLeafNode::getKeyCount()
 		{
 			numOfKeys++;
 			indexInBuffer+=entryPairNonLeafNodeSize;
-			char_key_holder += entryPairNon;
+			char_key_holder += entryPairNonLeafNodeSize;
 			if (numOfKeys < MAX_KEYS_NON_LEAF_NODE)
 			{
 				memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
@@ -301,6 +301,22 @@ int BTNonLeafNode::getKeyCount()
 }
 
 
+RC BTNonLeafNode::locate(int searchKey, int& eid)
+{
+	int maxNumKeys = getKeyCount();
+	int retrieved_key;
+	for (int index = 0; index < maxNumKeys; index++)
+	{
+		memcpy(&retrieved_key, buffer + (PAGE_ID_SIZE + index*(entryPairNonLeafNodeSize)), INTEGER_SIZE);
+		if (retrieved_key >= searchKey)
+		{
+			eid = index;
+			return 0;
+		}
+	}
+	return RC_NO_SUCH_RECORD;	//failed to find the searchKey
+}
+
 /*
  * Insert a (key, pid) pair to the node.
  * @param key[IN] the key to insert
@@ -308,7 +324,35 @@ int BTNonLeafNode::getKeyCount()
  * @return 0 if successful. Return an error code if the node is full.
  */
 RC BTNonLeafNode::insert(int key, PageId pid)
-{ return 0; }
+{ 
+	//there are no entries in the node
+	if (numOfKeys == 0)
+	{
+		memcpy(buffer, &pid, PAGE_ID_SIZE);
+		memcpy(buffer + PAGE_ID_SIZE, &key, INTEGER_SIZE);
+	}
+	//there are max number of entries in the node
+	else if (numOfKeys >= MAX_KEYS_NON_LEAF_NODE)
+	{
+		return -1;
+	}
+	//there are less than max number of entries in the node
+	else
+	{
+		int eid;
+		locate(key, eid);
+		char temp[(numOfKeys - eid)*entryPairNonLeafNodeSize];
+		//try to copy all entries after new entry
+		memcpy(&temp, buffer + (PAGE_ID_SIZE + eid*entryPairNonLeafNodeSize), (numOfKeys - eid)*entryPairNonLeafNodeSize);
+
+		memcpy(buffer + (PAGE_ID_SIZE + (eid + 1)*entryPairNonLeafNodeSize), &temp, (numOfKeys - eid)*entryPairNonLeafNodeSize);
+
+		memcpy(buffer + (PAGE_ID_SIZE + eid*entryPairNonLeafNodeSize), &key, INTEGER_SIZE);
+		memcpy(buffer + (PAGE_ID_SIZE + INTEGER_SIZE + eid*entryPairNonLeafNodeSize) + PAGE_ID_SIZE, &pid, PAGE_ID_SIZE);
+	}
+	FLAG_ADDED_NEW_KEY = 1;
+	return 0;
+}
 
 /*
  * Insert the (key, pid) pair to the node
