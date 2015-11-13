@@ -13,6 +13,7 @@ int entryPairNonLeafNodeSize = sizeof(PageId) + sizeof(int);
 int INTEGER_SIZE = sizeof(int);
 int MAX_KEYS_LEAF_NODE = floor((PageFile::PAGE_SIZE - sizeof(PageId))/entryPairLeafNodeSize);
 int MAX_KEYS_NON_LEAF_NODE = floor((PageFile::PAGE_SIZE - sizeof(PageId))/entryPairNonLeafNodeSize);
+int PAGE_ID_SIZE = sizeof(PageId);
 
 BTLeafNode::BTLeafNode()
 {
@@ -338,7 +339,16 @@ RC BTNonLeafNode::locateChildPtr(int searchKey, PageId& pid)
  * @return 0 if successful. Return an error code if there is an error.
  */
 RC BTNonLeafNode::initializeRoot(PageId pid1, int key, PageId pid2)
-{ return 0; }
+{ 
+	char* buffer_ptr = buffer;
+	memcpy(buffer_ptr, &pid1, PAGE_ID_SIZE);
+	buffer_ptr = buffer_ptr + PAGE_ID_SIZE;
+	memcpy(buffer_ptr, &key, INTEGER_SIZE);
+	buffer_ptr = buffer_ptr + INTEGER_SIZE;
+	memcpy(buffer_ptr, &pid2, PAGE_ID_SIZE);
+	FLAG_ADDED_NEW_KEY = 1;
+	return 0;
+}
 
 void BTNonLeafNode::print()
 {  }
