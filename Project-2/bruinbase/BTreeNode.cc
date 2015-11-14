@@ -90,6 +90,7 @@ int BTLeafNode::getKeyCount()
  */
 RC BTLeafNode::insert(int key, const RecordId& rid)
 { 
+	numKeys = getKeyCount();
 	//there are no entries in the node
 	if (numOfKeys == 0)	
 	{
