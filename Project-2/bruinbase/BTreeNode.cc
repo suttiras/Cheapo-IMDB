@@ -197,6 +197,7 @@ RC BTLeafNode::insertAndSplit(int key, const RecordId& rid,
                               BTLeafNode& sibling, int& siblingKey)
 { 
 	memset(sibling.buffer, 0, PageFile::PAGE_SIZE);
+	insert(key, rid);
 	int maxNumKeys = getKeyCount();
 	int median = ceil(maxNumKeys/2);
 	
@@ -206,6 +207,9 @@ RC BTLeafNode::insertAndSplit(int key, const RecordId& rid,
 		RecordId new_rid;
 		readEntry(index, new_key, new_rid);
 		sibling.insert(new_key, new_rid);
+		//new
+		memset(buffer + index*entryPairLeafNodeSize, 0, entryPairLeafNodeSize);
+		//end of new
 		if (index == median)
 		{
 			siblingKey = new_key;
@@ -213,11 +217,13 @@ RC BTLeafNode::insertAndSplit(int key, const RecordId& rid,
 	}
 	FLAG_ADDED_NEW_KEY = 1;
 	sibling.set_FLAG();
+	/*
 	int new_eid;
 	if (locate(key, new_eid) != 0)
 		sibling.insert(key,rid);
 	else
 		insert(key, rid);
+		*/
 	return 0;
 }
 

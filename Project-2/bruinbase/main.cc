@@ -39,7 +39,19 @@ int main()
 
 	b1->print();
 
+	BTLeafNode* b2 = new BTLeafNode();
 	
+	PageId p3 = 3;
+
+	RecordId r3 =
+	{
+		p3,
+		3,
+	};
+	
+	int siblingKeyb2;
+	
+	b1->insertAndSplit(3, r3, *b2, siblingKeyb2);
 
   return 0;
 }
