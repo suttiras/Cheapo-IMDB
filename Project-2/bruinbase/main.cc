@@ -39,7 +39,33 @@ int main()
 
 	b1->print();
 
-	
+	PageId p4 = 4;
+
+	RecordId r4 =
+	{
+		p4,
+		4,
+	};
+
+	int key4 = 4;
+
+	b1->insert(key4, r4);
+
+	b1->print();
+
+	PageId p3 = 3;
+
+	RecordId r3 =
+	{
+		p3,
+		3,
+	};
+
+	int key3 = 3;
+
+	b1->insert(key3, r3);
+
+	b1->print();
 
   return 0;
 }

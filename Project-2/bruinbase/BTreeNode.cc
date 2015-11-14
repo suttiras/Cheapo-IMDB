@@ -115,14 +115,23 @@ RC BTLeafNode::insert(int key, const RecordId& rid)
 		{
 			if (numOfKeys > 1)
 			{
-				char temp[(numOfKeys - eid)*entryPairLeafNodeSize];
-				//try to copy all entries after new entry
-				memcpy(&temp, buffer + (eid*entryPairLeafNodeSize), (numOfKeys - eid)*entryPairLeafNodeSize);
+				//if key is the max key
+				if (eid == numOfKeys - 1)
+				{
+					memcpy(buffer + ((eid + 1)*entryPairLeafNodeSize), &rid, sizeof(RecordId));
+					memcpy(buffer + ((eid + 1)*entryPairLeafNodeSize) + sizeof(RecordId), &key, INTEGER_SIZE);
+				}
+				else
+				{
+					char temp[(numOfKeys - eid)*entryPairLeafNodeSize];
+					//try to copy all entries after new entry
+					memcpy(&temp, buffer + (eid*entryPairLeafNodeSize), (numOfKeys - eid)*entryPairLeafNodeSize);
 
-				memcpy(buffer + ((eid + 1)*entryPairLeafNodeSize), &temp, (numOfKeys - eid)*entryPairLeafNodeSize);
+					memcpy(buffer + ((eid + 1)*entryPairLeafNodeSize), &temp, (numOfKeys - eid)*entryPairLeafNodeSize);
 
-				memcpy(buffer + (eid*entryPairLeafNodeSize), &rid, sizeof(RecordId));
-				memcpy(buffer + (eid*entryPairLeafNodeSize) + sizeof(RecordId), &key, INTEGER_SIZE);
+					memcpy(buffer + (eid*entryPairLeafNodeSize), &rid, sizeof(RecordId));
+					memcpy(buffer + (eid*entryPairLeafNodeSize) + sizeof(RecordId), &key, INTEGER_SIZE);
+				}
 			}
 			//if there is only one key
 			else if (numOfKeys == 1)
