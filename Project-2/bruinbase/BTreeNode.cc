@@ -483,7 +483,7 @@ RC BTNonLeafNode::insert(int key, PageId pid)
  */
 RC BTNonLeafNode::insertAndSplit(int key, PageId pid, BTNonLeafNode& sibling, int& midKey)
 { 
-	//memset(sibling.buffer, 0, PageFile::PAGE_SIZE);
+	memset(sibling.buffer, 0, PageFile::PAGE_SIZE);
 	int maxNumKeys = getKeyCount();
 	double median = ceil((double)maxNumKeys / 2);
 	insert(key, pid);
