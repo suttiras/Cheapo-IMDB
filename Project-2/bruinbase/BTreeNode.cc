@@ -96,6 +96,7 @@ RC BTLeafNode::insert(int key, const RecordId& rid)
 	{
 		memcpy(buffer, &rid, sizeof(RecordId));
 		memcpy(buffer + sizeof(RecordId), &key, INTEGER_SIZE);
+		FLAG_ADDED_NEW_KEY = 1;
 	}
 	//there are max number of entries in the node
 	else if (numOfKeys >= MAX_KEYS_LEAF_NODE)	
@@ -106,17 +107,49 @@ RC BTLeafNode::insert(int key, const RecordId& rid)
 	else
 	{
 		int eid;
-		locate(key, eid);
-		char temp[(numOfKeys - eid)*entryPairLeafNodeSize];
-		//try to copy all entries after new entry
-		memcpy(&temp, buffer + (eid*entryPairLeafNodeSize), (numOfKeys - eid)*entryPairLeafNodeSize);
+		RC rc = locate(key, eid);
+		int temp_key;
+		RecordId temp_rid;
+		readEntry(eid, temp_key, temp_rid);
+		if (temp_key < key)
+		{
+			if (numOfKeys > 1)
+			{
+				char temp[(numOfKeys - eid)*entryPairLeafNodeSize];
+				//try to copy all entries after new entry
+				memcpy(&temp, buffer + (eid*entryPairLeafNodeSize), (numOfKeys - eid)*entryPairLeafNodeSize);
 
-		memcpy(buffer + ((eid+1)*entryPairLeafNodeSize), &temp, (numOfKeys - eid)*entryPairLeafNodeSize);
+				memcpy(buffer + ((eid + 1)*entryPairLeafNodeSize), &temp, (numOfKeys - eid)*entryPairLeafNodeSize);
 
-		memcpy(buffer + (eid*entryPairLeafNodeSize), &rid, sizeof(RecordId));
-		memcpy(buffer + (eid*entryPairLeafNodeSize) + sizeof(RecordId), &key, INTEGER_SIZE);
+				memcpy(buffer + (eid*entryPairLeafNodeSize), &rid, sizeof(RecordId));
+				memcpy(buffer + (eid*entryPairLeafNodeSize) + sizeof(RecordId), &key, INTEGER_SIZE);
+			}
+			//if there is only one key
+			else if (numOfKeys == 1)
+			{
+				if (temp_key < key)
+				{
+					memcpy(buffer + entryPairLeafNodeSize, &rid, sizeof(RecordId));
+					memcpy(buffer + entryPairLeafNodeSize + sizeof(RecordId), &key, INTEGER_SIZE);
+				}
+				else if (temp_key >= key)
+				{
+					char temp[(numOfKeys - eid)*entryPairLeafNodeSize];
+					//try to copy all entries after new entry
+					memcpy(&temp, buffer + (eid*entryPairLeafNodeSize), (numOfKeys - eid)*entryPairLeafNodeSize);
+
+					memcpy(buffer + ((eid + 1)*entryPairLeafNodeSize), &temp, (numOfKeys - eid)*entryPairLeafNodeSize);
+
+					memcpy(buffer + (eid*entryPairLeafNodeSize), &rid, sizeof(RecordId));
+					memcpy(buffer + (eid*entryPairLeafNodeSize) + sizeof(RecordId), &key, INTEGER_SIZE);
+				}
+			}
+		}
+
+		FLAG_ADDED_NEW_KEY = 1;
+		
 	}
-	FLAG_ADDED_NEW_KEY = 1;
+	
 	return 0;
 }
 
@@ -174,7 +207,8 @@ RC BTLeafNode::locate(int searchKey, int& eid)
 	int maxNumKeys = getKeyCount();
 	RecordId RID;
 	int retrieved_key;
-	for(int index = 0; index < maxNumKeys; index++)
+	int index;
+	for(index = 0; index < maxNumKeys; index++)
 	{
 		readEntry(index, retrieved_key, RID);
 		if (retrieved_key >= searchKey)
@@ -183,6 +217,7 @@ RC BTLeafNode::locate(int searchKey, int& eid)
 			return 0;
 		}
 	}
+
 	eid = index - 1;	//set eid to the index entry immediately after the largest index key 
 						//that is smaller than searchKey
 	return RC_NO_SUCH_RECORD;	//failed to find the searchKey

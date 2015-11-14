@@ -12,6 +12,19 @@ int main()
 	BTLeafNode* b1 = new BTLeafNode();
 	b1->print();
 
+	PageId p2 = 2;
+
+	RecordId r2 =
+	{
+		p2,
+		2,
+	};
+
+	int key2 = 2;
+	b1->insert(key2, r2);
+
+	b1->print();
+
 	PageId p1 = 1;
 
 	RecordId r1 =
@@ -26,18 +39,7 @@ int main()
 
 	b1->print();
 
-	PageId p2 = 2;
-
-	RecordId r2 =
-	{
-		p2,
-		2,
-	};
-
-	int key2 = 1;
-	b1->insert(key2, r2);
-
-	b1->print();
+	
 
   return 0;
 }
