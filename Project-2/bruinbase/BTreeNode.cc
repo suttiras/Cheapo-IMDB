@@ -253,11 +253,11 @@ void BTLeafNode::print()
 	{
 		if (index == 0)
 		{
-			memcpy(&temp_key, buffer + PAGE_ID_SIZE, INTEGER_SIZE);
+			memcpy(&temp_key, buffer + sizeof(RecordId), INTEGER_SIZE);
 		}
 		else
 		{
-			memcpy(&temp_key, buffer + PAGE_ID_SIZE + (index*entryPairLeafNodeSize), INTEGER_SIZE);
+			memcpy(&temp_key, buffer + sizeof(RecordId) + (index*entryPairLeafNodeSize), INTEGER_SIZE);
 		}
 		
 		if (temp_key == 0)
