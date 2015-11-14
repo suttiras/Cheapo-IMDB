@@ -203,14 +203,14 @@ RC BTLeafNode::insert(int key, const RecordId& rid)
  * @return 0 if successful. Return an error code if there is an error.
  */
 RC BTLeafNode::insertAndSplit(int key, const RecordId& rid, 
-                              BTLeafNode& sibling, int& siblingKey)
+                              BTLeafNode& sibling, int& siblingKey)	//called assuming that leaf node is not full
 { 
 	memset(sibling.buffer, 0, PageFile::PAGE_SIZE);
 	insert(key, rid);
 	int maxNumKeys = getKeyCount();
-	int median = ceil(maxNumKeys/2);
+	double median = ceil((double)maxNumKeys/2);
 	
-	for(int index = median; index < maxNumKeys; index++)
+	for(int index = (int) median; index < maxNumKeys; index++)
 	{		
 		int new_key;
 		RecordId new_rid;
@@ -485,14 +485,15 @@ RC BTNonLeafNode::insertAndSplit(int key, PageId pid, BTNonLeafNode& sibling, in
 { 
 	//memset(sibling.buffer, 0, PageFile::PAGE_SIZE);
 	int maxNumKeys = getKeyCount();
-	int median = ceil(maxNumKeys / 2);
+	double median = ceil((double)maxNumKeys / 2);
+	insert(key, pid);
 
-	for (int index = median; index < maxNumKeys; index++)
+	for (int index = (int)median; index < maxNumKeys; index++)
 	{
 		int new_key;
 		PageId new_pid;
-		//readEntry(index, new_key, new_pid);
-		//sibling.insert(new_key, new_pid);
+		readEntry(index, new_key, new_pid);
+		sibling.insert(new_key, new_pid);
 		memcpy(&new_key, buffer + (PAGE_ID_SIZE + index*(entryPairNonLeafNodeSize)), INTEGER_SIZE);
 		memcpy(&new_pid, buffer + (PAGE_ID_SIZE + index*(entryPairNonLeafNodeSize)) + INTEGER_SIZE, PAGE_ID_SIZE);
 
@@ -507,18 +508,24 @@ RC BTNonLeafNode::insertAndSplit(int key, PageId pid, BTNonLeafNode& sibling, in
 			memcpy(&new_pid_root, buffer + (index*(entryPairNonLeafNodeSize)), PAGE_ID_SIZE);
 			sibling.initializeRoot(new_pid_root, new_key, new_pid);
 		}
+		//new - clear buffer
+		memset(buffer + index*entryPairNonLeafNodeSize, 0, entryPairNonLeafNodeSize);
+		//end of new
 	}
 	memcpy(buffer, &median, INTEGER_SIZE);
 	FLAG_ADDED_NEW_KEY = 1;
 	sibling.set_FLAG();
+	/*
 	int new_eid;
 	if (locate(key, new_eid) != 0)
 		sibling.insert(key, pid);
 	else
 		insert(key, pid);
+		*/
 	midKey = getKeyCount() - 1;
 	memcpy(&key, buffer + PAGE_ID_SIZE + midKey*(entryPairNonLeafNodeSize), INTEGER_SIZE);
 	midKey = key;
+	
 	return 0;
 }
 
