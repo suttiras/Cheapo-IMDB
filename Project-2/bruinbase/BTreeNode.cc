@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -14,6 +16,9 @@ int INTEGER_SIZE = sizeof(int);
 int MAX_KEYS_LEAF_NODE = floor((PageFile::PAGE_SIZE - sizeof(PageId))/entryPairLeafNodeSize);
 int MAX_KEYS_NON_LEAF_NODE = floor((PageFile::PAGE_SIZE - sizeof(PageId))/entryPairNonLeafNodeSize);
 int PAGE_ID_SIZE = sizeof(PageId);
+
+#define SSTR( x ) dynamic_cast< std::ostringstream & >( \
+        ( std::ostringstream() << std::dec << x ) ).str()
 
 BTLeafNode::BTLeafNode()
 {
@@ -235,7 +240,36 @@ RC BTLeafNode::setNextNodePtr(PageId pid)
 }
 
 void BTLeafNode::print()
-{  }
+{ 
+	int temp_key;
+	//char counter[PageFile::PAGE_SIZE];
+	//counter = buffer;
+	int index = 0;
+
+	std::cout << SSTR("Key Count: " << getKeyCount() << '\n');
+
+	while (temp_key != 0 || index < MAX_KEYS_LEAF_NODE)
+	{
+		if (index == 0)
+		{
+			memcpy(&temp_key, buffer + PAGE_ID_SIZE, INTEGER_SIZE);
+		}
+		else
+		{
+			memcpy(&temp_key, buffer + PAGE_ID_SIZE + (index*entryPairLeafNodeSize), INTEGER_SIZE);
+		}
+		
+		if (temp_key == 0)
+		{
+			break;
+		}
+		//string temp = to_string(temp_key);
+		//cout << temp << '\n';
+		std::cout << SSTR("Key: " << temp_key << '\n');
+		//counter = counter + PAGE_ID_SIZE;
+		index++;
+	}
+}
 
 ////////////////////////////////////////////BTNonLeafNode//////////////////////////////////////////
 BTNonLeafNode::BTNonLeafNode()
