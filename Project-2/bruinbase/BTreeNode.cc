@@ -447,6 +447,26 @@ RC BTNonLeafNode::locate(int searchKey, int& eid)
 	return RC_NO_SUCH_RECORD;	//failed to find the searchKey
 }
 
+
+RC BTNonLeafNode::readEntry(int eid, int& key, PageId& pid)
+{
+	if (eid < 0 || eid >= getKeyCount())
+	{
+		return -1;
+	}
+	else
+	{
+		int entryKey;
+		memcpy(&entryKey, buffer + PAGE_ID_SIZE + (eid*entryPairNonLeafNodeSize), INTEGER_SIZE);
+		key = entryKey;
+		PageId entryId;
+		memcpy(&entryId, buffer + PAGE_ID_SIZE + (eid*entryPairNonLeafNodeSize) + INTEGER_SIZE, sizeof(PageId));
+		pid = entryId;
+	}
+
+	return 0;
+}
+
 /*
  * Insert a (key, pid) pair to the node.
  * @param key[IN] the key to insert
@@ -455,7 +475,113 @@ RC BTNonLeafNode::locate(int searchKey, int& eid)
  */
 RC BTNonLeafNode::insert(int key, PageId pid)
 { 
+	numOfKeys = getKeyCount();
 	//there are no entries in the node
+	if (numOfKeys == 0)
+	{
+		memcpy(buffer, &pid, PAGE_ID_SIZE);
+		memcpy(buffer + PAGE_ID_SIZE, &key, INTEGER_SIZE);
+		FLAG_ADDED_NEW_KEY = 1;
+	}
+	//there are max number of entries in the node
+	else if (numOfKeys >= MAX_KEYS_LEAF_NODE)
+	{
+		return -1;
+	}
+	//there are less than max number of entries in the node
+	else
+	{
+		int eid;
+		RC rc = locate(key, eid);
+		int temp_key;
+		PageId temp_pid;
+		readEntry(eid, temp_key, temp_pid);
+		if (temp_key < key)
+		{
+			if (numOfKeys > 1)
+			{
+				//if key is the max key
+				if (eid == numOfKeys - 1)
+				{
+					memcpy(buffer + ((eid + 1)*entryPairNonLeafNodeSize), &pid, PAGE_ID_SIZE);
+					memcpy(buffer + ((eid + 1)*entryPairNonLeafNodeSize) + PAGE_ID_SIZE, &key, INTEGER_SIZE);
+				}
+				else
+				{
+					char temp[(numOfKeys - eid)*entryPairNonLeafNodeSize];
+					//try to copy all entries after new entry
+					memcpy(&temp, buffer + (PAGE_ID_SIZE + eid*entryPairNonLeafNodeSize), (numOfKeys - eid)*entryPairNonLeafNodeSize);
+
+					memcpy(buffer + (PAGE_ID_SIZE + (eid + 1)*entryPairNonLeafNodeSize), &temp, (numOfKeys - eid)*entryPairNonLeafNodeSize);
+
+					memcpy(buffer + (PAGE_ID_SIZE + eid*entryPairNonLeafNodeSize), &key, INTEGER_SIZE);
+					memcpy(buffer + (PAGE_ID_SIZE + INTEGER_SIZE + eid*entryPairNonLeafNodeSize) + PAGE_ID_SIZE, &pid, PAGE_ID_SIZE);
+				}
+			}
+			//if there is only one key
+			else if (numOfKeys == 1)
+			{
+				if (temp_key < key)
+				{
+					memcpy(buffer + entryPairNonLeafNodeSize, &pid, PAGE_ID_SIZE);
+					memcpy(buffer + entryPairNonLeafNodeSize + PAGE_ID_SIZE, &key, INTEGER_SIZE);
+				}
+				else if (temp_key >= key)
+				{
+					char temp[(numOfKeys - eid)*entryPairNonLeafNodeSize];
+					//try to copy all entries after new entry
+					memcpy(&temp, buffer + (PAGE_ID_SIZE + eid*entryPairNonLeafNodeSize), (numOfKeys - eid)*entryPairNonLeafNodeSize);
+
+					memcpy(buffer + (PAGE_ID_SIZE + (eid + 1)*entryPairNonLeafNodeSize), &temp, (numOfKeys - eid)*entryPairNonLeafNodeSize);
+
+					memcpy(buffer + (PAGE_ID_SIZE + eid*entryPairNonLeafNodeSize), &key, INTEGER_SIZE);
+					memcpy(buffer + (PAGE_ID_SIZE + INTEGER_SIZE + eid*entryPairNonLeafNodeSize) + PAGE_ID_SIZE, &pid, PAGE_ID_SIZE);
+				}
+			}
+			FLAG_ADDED_NEW_KEY = 1;
+		}
+
+		else if (temp_key > key)
+		{
+			if (numOfKeys > 1)
+			{
+				char temp[(numOfKeys - eid)*entryPairNonLeafNodeSize];
+				//try to copy all entries after new entry
+				memcpy(&temp, buffer + (PAGE_ID_SIZE + eid*entryPairNonLeafNodeSize), (numOfKeys - eid)*entryPairNonLeafNodeSize);
+
+				memcpy(buffer + (PAGE_ID_SIZE + (eid + 1)*entryPairNonLeafNodeSize), &temp, (numOfKeys - eid)*entryPairNonLeafNodeSize);
+
+				memcpy(buffer + (PAGE_ID_SIZE + eid*entryPairNonLeafNodeSize), &key, INTEGER_SIZE);
+				memcpy(buffer + (PAGE_ID_SIZE + INTEGER_SIZE + eid*entryPairNonLeafNodeSize) + PAGE_ID_SIZE, &pid, PAGE_ID_SIZE);
+			}
+			//if there is only one key
+			else if (numOfKeys == 1)
+			{
+
+				char temp[(numOfKeys - eid)*entryPairNonLeafNodeSize];
+				//try to copy all entries after new entry
+				memcpy(&temp, buffer + (PAGE_ID_SIZE + eid*entryPairNonLeafNodeSize), (numOfKeys - eid)*entryPairNonLeafNodeSize);
+
+				memcpy(buffer + (PAGE_ID_SIZE + (eid + 1)*entryPairNonLeafNodeSize), &temp, (numOfKeys - eid)*entryPairNonLeafNodeSize);
+
+				memcpy(buffer + (PAGE_ID_SIZE + eid*entryPairNonLeafNodeSize), &key, INTEGER_SIZE);
+				memcpy(buffer + (PAGE_ID_SIZE + INTEGER_SIZE + eid*entryPairNonLeafNodeSize) + PAGE_ID_SIZE, &pid, PAGE_ID_SIZE); 
+			}
+			FLAG_ADDED_NEW_KEY = 1;
+		}
+
+
+
+	}
+
+	return 0;
+
+
+
+
+	
+	//there are no entries in the node
+	/*
 	if (getKeyCount() == 0)
 	{
 		memcpy(buffer, &pid, PAGE_ID_SIZE);
@@ -482,6 +608,7 @@ RC BTNonLeafNode::insert(int key, PageId pid)
 	}
 	FLAG_ADDED_NEW_KEY = 1;
 	return 0;
+	*/
 }
 
 /*
