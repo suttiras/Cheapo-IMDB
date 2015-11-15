@@ -232,7 +232,7 @@ RC BTLeafNode::insertAndSplit(int key, const RecordId& rid,
 	
 	//to set the new sibling node end page file to point to the old end page file
 	int currentNumKeysSib = sibling.getKeyCount();
-	memcpy(sibling.buffer + currentNumKeysSib*entryPairLeafNodeSize, buffer + currentNumKeys*entryPairLeafNodeSize, PAGE_ID_SIZE);
+	memcpy(sibling.buffer + currentNumKeysSib*entryPairLeafNodeSize, buffer + currentNumKeysSib*entryPairLeafNodeSize, PAGE_ID_SIZE);
 
 	//to set the end page file to point to the sibling node
 	int currentNumKeys = getKeyCount();
@@ -765,15 +765,20 @@ RC BTNonLeafNode::insertAndSplit(int key, PageId pid, BTNonLeafNode& sibling, in
 	if(key < first_half_key)
 	{
 		//memcpy(sibling.buffer+entryPairNonLeafNodeSize, buffer + half, PageFile::PAGE_SIZE-half);
-		memcpy(sibling.buffer+PAGE_ID_SIZE, buffer + half, PageFile::PAGE_SIZE-half);
+		//memcpy(sibling.buffer+PAGE_ID_SIZE, buffer + half, PageFile::PAGE_SIZE-half);
+		memcpy(sibling.buffer, buffer + half, PageFile::PAGE_SIZE-half);
+		
 		sibling.set_FLAG();
 		//memcpy(&midKey, buffer+half-entryPairNonLeafNodeSize, INTEGER_SIZE);
 		memcpy(&midKey, buffer+half-INTEGER_SIZE, INTEGER_SIZE);
 		//memcpy(sibling.buffer, buffer+half-4, PAGE_ID_SIZE);
-		memcpy(sibling.buffer, buffer+half-8, PAGE_ID_SIZE);
-		memset(buffer+half-entryPairNonLeafNodeSize, 0, PageFile::PAGE_SIZE - half+entryPairNonLeafNodeSize);
+		//memcpy(sibling.buffer, buffer+half-8, PAGE_ID_SIZE);
+		//memset(buffer+half-entryPairNonLeafNodeSize, 0, PageFile::PAGE_SIZE - half+entryPairNonLeafNodeSize);
+		memset(buffer+half-INTEGER_SIZE, 0, PageFile::PAGE_SIZE - half+INTEGER_SIZE);
 		set_FLAG();
-		insert(key, pid);
+		memcpy(buffer+half-INTEGER_SIZE, &key, INTEGER_SIZE);
+		memcpy(buffer+half, &pid, PAGE_ID_SIZE);
+		//insert(key, pid);
 	}
 	else if (key > second_half_key)
 	{
@@ -783,18 +788,19 @@ RC BTNonLeafNode::insertAndSplit(int key, PageId pid, BTNonLeafNode& sibling, in
 		//memcpy(&midKey, buffer+half+entryPairNonLeafNodeSize, INTEGER_SIZE);
 		memcpy(&midKey, buffer+half+PAGE_ID_SIZE, INTEGER_SIZE);
 		//memcpy(sibling.buffer, buffer+half+4, PAGE_ID_SIZE);
-		memcpy(sibling.buffer, buffer+half, PAGE_ID_SIZE);
-		memset(buffer+half, 0, PageFile::PAGE_SIZE - half);
+		//memcpy(sibling.buffer, buffer+half, PAGE_ID_SIZE);
+		memcpy(sibling.buffer, buffer+half+INTEGER_SIZE, PAGE_ID_SIZE);
+		memset(buffer+half+PAGE_ID_SIZE, 0, PageFile::PAGE_SIZE - half-PAGE_ID_SIZE);
 		set_FLAG();
 		sibling.insert(key, pid);
 	}
 	else
 	{
 		//memcpy(sibling.buffer+entryPairNonLeafNodeSize, buffer + half, PageFile::PAGE_SIZE-half);
-		memcpy(sibling.buffer+PAGE_ID_SIZE, buffer + half, PageFile::PAGE_SIZE-half);
+		memcpy(sibling.buffer+PAGE_ID_SIZE, buffer + half, PageFile::PAGE_SIZE-half-PAGE_ID_SIZE);
 		sibling.set_FLAG();
 
-		memset(buffer+half, 0, PageFile::PAGE_SIZE - half);
+		memset(buffer+half+PAGE_ID_SIZE, 0, PageFile::PAGE_SIZE - half-PAGE_ID_SIZE);
 		set_FLAG();
 		midKey = key;
 		memcpy(sibling.buffer, &pid, PAGE_ID_SIZE);

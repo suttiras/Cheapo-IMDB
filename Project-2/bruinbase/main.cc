@@ -89,7 +89,7 @@ int main()
 	
 	PageId np1 = 1;
 
-	nb1->insert(nkey2, np2);
+	//nb1->insert(nkey2, np2);
 
 	//nb1->insert(nkey3, np3);
 	
@@ -113,11 +113,11 @@ int main()
 	int nkey4 = 4;
 	
 	//nb1->insert(nkey4, np4);
-	//nb1->insert(nkey3, np3);
-	//nb1->insert(nkey4, np4);
-	//nb1->insertAndSplit(nkey2, np2, *nb2, midKey);	//midKey = 2
+	nb1->insert(nkey3, np3);
+	nb1->insert(nkey4, np4);
+	nb1->insertAndSplit(nkey2, np2, *nb2, midKey);	//midKey = 2
 	
-	nb1->insertAndSplit(nkey3, np3, *nb2, midKey);	//midKey = 2
+	//nb1->insertAndSplit(nkey3, np3, *nb2, midKey);	//midKey = 2
 	
 	BTNonLeafNode* nb4 = new BTNonLeafNode();
 	nb4->insert(nkey1, np1);
@@ -125,7 +125,22 @@ int main()
 	nb4->insert(nkey4, np4);
 	
 	BTNonLeafNode* nb3 = new BTNonLeafNode();
-	nb4->insertAndSplit(nkey2, np2, *nb3, midKey);
+	nb4->insertAndSplit(nkey2, np2, *nb3, midKey);	//case 1
+	
+	BTNonLeafNode* nb7 = new BTNonLeafNode();
+	nb7->insert(nkey1, np1);
+	nb7->insert(nkey2, np2);
+	
+	BTNonLeafNode* nb8 = new BTNonLeafNode();
+	nb7->insertAndSplit(nkey3, np3, *nb8, midKey);	//case 2
+	
+	BTNonLeafNode* nb5 = new BTNonLeafNode();
+	nb5->insert(nkey1, np1);
+	nb5->insert(nkey2, np2);
+	nb5->insert(nkey4, np4);
+	
+	BTNonLeafNode* nb6 = new BTNonLeafNode();
+	nb5->insertAndSplit(nkey3, np3, *nb6, midKey);	//case 3
 
 	nb1->print();
 	nb2->print();
