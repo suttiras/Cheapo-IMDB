@@ -91,20 +91,20 @@ int main()
 
 	//nb1->insert(nkey3, np3);
 	
-	
+	int nkey1 = 1;
 
-	nb1->print();
+	//nb1->print();
 
 	nb1->insert(nkey1, np1);
 	
-	nb1->print();
+	//nb1->print();
 
 	int midKey;
 	BTNonLeafNode* nb2 = new BTNonLeafNode();
 	
-	//PageId np3 = 3;
+	PageId np3 = 3;
 
-	//int nkey3 = 3;
+	int nkey3 = 3;
 	
 	nb1->insertAndSplit(nkey3, np3, *nb2, midKey);	//midKey = 2
 
