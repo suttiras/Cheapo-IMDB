@@ -66,6 +66,8 @@ int main()
 	int siblingKeyb2;
 	
 	b1->insertAndSplit(3, r3, *b2, siblingKeyb2);
+	b1->print();
+	b2->print();
 	int eid;
 	b1->locate(4, eid);	//should be 1
 
