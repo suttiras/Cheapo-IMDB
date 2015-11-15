@@ -256,10 +256,15 @@ RC BTLeafNode::locate(int searchKey, int& eid)
 	for(index = 0; index < maxNumKeys; index++)
 	{
 		readEntry(index, retrieved_key, RID);
-		if (retrieved_key >= searchKey)
+		if (retrieved_key == searchKey)
 		{
 			eid = index;
 			return 0;
+		}
+		else if (retrieved_key > searchKey)	//couldn't find search key
+		{
+			eid = index;
+			return RC_NO_SUCH_RECORD;
 		}
 	}
 
@@ -425,10 +430,16 @@ RC BTNonLeafNode::locate(int searchKey, int& eid)
 	for (int index = 0; index < maxNumKeys; index++)
 	{
 		memcpy(&retrieved_key, buffer + (PAGE_ID_SIZE + index*(entryPairNonLeafNodeSize)), INTEGER_SIZE);
-		if (retrieved_key >= searchKey)
+		//if (retrieved_key >= searchKey)
+		if (retrieved_key == searchKey)
 		{
 			eid = index;
 			return 0;
+		}
+		if (retrieved_key > searchKey)
+		{
+			eid = index;
+			return RC_NO_SUCH_RECORD;
 		}
 	}
 	return RC_NO_SUCH_RECORD;	//failed to find the searchKey
@@ -492,8 +503,8 @@ RC BTNonLeafNode::insertAndSplit(int key, PageId pid, BTNonLeafNode& sibling, in
 	{
 		int new_key;
 		PageId new_pid;
-		readEntry(index, new_key, new_pid);
-		sibling.insert(new_key, new_pid);
+		//readEntry(index, new_key, new_pid);
+		//sibling.insert(new_key, new_pid);
 		memcpy(&new_key, buffer + (PAGE_ID_SIZE + index*(entryPairNonLeafNodeSize)), INTEGER_SIZE);
 		memcpy(&new_pid, buffer + (PAGE_ID_SIZE + index*(entryPairNonLeafNodeSize)) + INTEGER_SIZE, PAGE_ID_SIZE);
 

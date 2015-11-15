@@ -66,12 +66,39 @@ int main()
 	int siblingKeyb2;
 	
 	b1->insertAndSplit(3, r3, *b2, siblingKeyb2);
+	int eid;
+	b1->locate(4, eid);	//should be 3
 
 	//int key3 = 3;
 
 	//b1->insert(key3, r3);
 
 	//b1->print();
+	
+	BTNonLeafNode* nb1 = new BTNonLeafNode();
+	nb1->print();
 
+	PageId np2 = 2;
+
+	int nkey2 = 2;
+	nb1->insert(nkey2, np2);
+
+	nb1->print();
+	
+	PageId np1 = 1;
+
+	int nkey1 = 1;
+	
+	nb1->insert(nkey1, np1);
+	
+	int midKey;
+	BTNonLeafNode* nb2 = new BTNonLeafNode();
+	
+	PageId np3 = 3;
+
+	int nkey3 = 3;
+	
+	nb1->insertAndSplit(nkey3, np3, *nb2, midKey);
+	
   return 0;
 }
