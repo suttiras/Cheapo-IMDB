@@ -133,6 +133,8 @@ class BTNonLeafNode {
     * @return 0 if successful. Return an error code if the node is full.
     */
 
+	RC readEntry(int eid, int& key, PageId& pid);
+
     RC insert(int key, PageId pid);
 
    /**
