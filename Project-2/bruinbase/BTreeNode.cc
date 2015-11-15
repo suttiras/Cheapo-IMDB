@@ -381,6 +381,7 @@ BTNonLeafNode::BTNonLeafNode()
 	memset(buffer, 0, PageFile::PAGE_SIZE);
 	numOfKeys = 0;
 	FLAG_ADDED_NEW_KEY = 0;
+	FLAG_KEY_BEFORE_PID = 0;
 }
 
 /*
@@ -473,12 +474,24 @@ RC BTNonLeafNode::readEntry(int eid, int& key, PageId& pid)
 	}
 	else
 	{
-		int entryKey;
-		memcpy(&entryKey, buffer + PAGE_ID_SIZE + (eid*entryPairNonLeafNodeSize), INTEGER_SIZE);
-		key = entryKey;
-		PageId entryId;
-		memcpy(&entryId, buffer + PAGE_ID_SIZE + (eid*entryPairNonLeafNodeSize) + INTEGER_SIZE, sizeof(PageId));
-		pid = entryId;
+		//if(FLAG_KEY_BEFORE_PID == 1)
+		//{
+			int entryKey;
+			memcpy(&entryKey, buffer + PAGE_ID_SIZE + (eid*entryPairNonLeafNodeSize), INTEGER_SIZE);
+			key = entryKey;
+			PageId entryId;
+			memcpy(&entryId, buffer + PAGE_ID_SIZE + (eid*entryPairNonLeafNodeSize) + INTEGER_SIZE, sizeof(PageId));
+			pid = entryId;
+		/*}
+		else
+		{
+			int entryKey;
+			memcpy(&entryKey, buffer + PAGE_ID_SIZE + (eid*entryPairNonLeafNodeSize) + INTEGER_SIZE, INTEGER_SIZE);
+			key = entryKey;
+			PageId entryId;
+			memcpy(&entryId, buffer + PAGE_ID_SIZE + (eid*entryPairNonLeafNodeSize), sizeof(PageId));
+			pid = entryId;
+		}*/
 	}
 
 	return 0;
@@ -691,7 +704,7 @@ RC BTNonLeafNode::insertAndSplit(int key, PageId pid, BTNonLeafNode& sibling, in
 		midKey = key;
 		memcpy(sibling.buffer, &pid, PAGE_ID_SIZE);
 	}
-	
+	FLAG_KEY_BEFORE_PID = 1;
 	/*
 	insert(key, pid);
 	int maxNumKeys = getKeyCount();

@@ -206,6 +206,7 @@ class BTNonLeafNode {
     */
 	int numOfKeys;
 	int FLAG_ADDED_NEW_KEY;
+	int FLAG_KEY_BEFORE_PID;
     char buffer[PageFile::PAGE_SIZE];
 }; 
 
