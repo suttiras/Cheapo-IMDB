@@ -427,7 +427,8 @@ RC BTNonLeafNode::locate(int searchKey, int& eid)
 {
 	int maxNumKeys = getKeyCount();
 	int retrieved_key;
-	for (int index = 0; index < maxNumKeys; index++)
+	int index;
+	for (index = 0; index < maxNumKeys; index++)
 	{
 		memcpy(&retrieved_key, buffer + (PAGE_ID_SIZE + index*(entryPairNonLeafNodeSize)), INTEGER_SIZE);
 		//if (retrieved_key >= searchKey)
