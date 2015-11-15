@@ -761,13 +761,15 @@ RC BTNonLeafNode::insertAndSplit(int key, PageId pid, BTNonLeafNode& sibling, in
 	else if (key > second_half_key)
 	{
 		//memcpy(sibling.buffer+entryPairNonLeafNodeSize, buffer + half+entryPairNonLeafNodeSize, PageFile::PAGE_SIZE-half - entryPairNonLeafNodeSize);
-		memcpy(sibling.buffer+PAGE_ID_SIZE, buffer + half+entryPairNonLeafNodeSize, PageFile::PAGE_SIZE-half - entryPairNonLeafNodeSize);
+		//memcpy(sibling.buffer+PAGE_ID_SIZE, buffer + half+entryPairNonLeafNodeSize, PageFile::PAGE_SIZE-half - entryPairNonLeafNodeSize);
+		memcpy(sibling.buffer+PAGE_ID_SIZE, buffer + half+entryPairNonLeafNodeSize+PAGE_ID_SIZE, PageFile::PAGE_SIZE-half - entryPairNonLeafNodeSize-PAGE_ID_SIZE);
 		sibling.set_FLAG();
 		//memcpy(&midKey, buffer+half+entryPairNonLeafNodeSize, INTEGER_SIZE);
 		memcpy(&midKey, buffer+half+PAGE_ID_SIZE, INTEGER_SIZE);
 		//memcpy(sibling.buffer, buffer+half+4, PAGE_ID_SIZE);
 		//memcpy(sibling.buffer, buffer+half, PAGE_ID_SIZE);
-		memcpy(sibling.buffer, buffer+half+INTEGER_SIZE, PAGE_ID_SIZE);
+		//memcpy(sibling.buffer, buffer+half+INTEGER_SIZE, PAGE_ID_SIZE);
+		memcpy(sibling.buffer, buffer+half+entryPairNonLeafNodeSize, PAGE_ID_SIZE);
 		memset(buffer+half+PAGE_ID_SIZE, 0, PageFile::PAGE_SIZE - half-PAGE_ID_SIZE);
 		set_FLAG();
 		sibling.insert(key, pid);
@@ -775,7 +777,8 @@ RC BTNonLeafNode::insertAndSplit(int key, PageId pid, BTNonLeafNode& sibling, in
 	else
 	{
 		//memcpy(sibling.buffer+entryPairNonLeafNodeSize, buffer + half, PageFile::PAGE_SIZE-half);
-		memcpy(sibling.buffer+PAGE_ID_SIZE, buffer + half, PageFile::PAGE_SIZE-half-PAGE_ID_SIZE);
+		//memcpy(sibling.buffer+PAGE_ID_SIZE, buffer + half, PageFile::PAGE_SIZE-half-PAGE_ID_SIZE);
+		memcpy(sibling.buffer+PAGE_ID_SIZE, buffer + half+PAGE_ID_SIZE, PageFile::PAGE_SIZE-half-PAGE_ID_SIZE);
 		sibling.set_FLAG();
 
 		memset(buffer+half+PAGE_ID_SIZE, 0, PageFile::PAGE_SIZE - half-PAGE_ID_SIZE);
