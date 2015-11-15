@@ -88,18 +88,34 @@ int main()
 	PageId np1 = 1;
 
 	int nkey1 = 1;
-	
-	nb1->insert(nkey1, np1);
-	nb1->insert(nkey2, np2);
-	
-	int midKey;
-	BTNonLeafNode* nb2 = new BTNonLeafNode();
-	
+
 	PageId np3 = 3;
 
 	int nkey3 = 3;
+
+	nb1->insert(nkey2, np2);
+
+	//nb1->insert(nkey3, np3);
+	
+	
+
+	nb1->print();
+
+	nb1->insert(nkey1, np1);
+	
+	nb1->print();
+
+	int midKey;
+	BTNonLeafNode* nb2 = new BTNonLeafNode();
+	
+	//PageId np3 = 3;
+
+	//int nkey3 = 3;
 	
 	nb1->insertAndSplit(nkey3, np3, *nb2, midKey);	//midKey = 2
+
+	nb1->print();
+	nb2->print();
 	
   return 0;
 }
