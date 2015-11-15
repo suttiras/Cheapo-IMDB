@@ -64,7 +64,7 @@ int BTLeafNode::getKeyCount()
 		//int index = 0;
 		int indexInBuffer = 0;
 		int key_holder;
-		char* char_key_holder = buffer + sizeOf(RecordId);
+		char* char_key_holder = buffer + sizeof(RecordId);
 		memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
 		while(numOfKeys < MAX_KEYS_LEAF_NODE && key_holder != 0)
 		//while((indexInBuffer < PageFile::PAGE_SIZE - entryPairLeafNodeSize) && key_holder != 0)
