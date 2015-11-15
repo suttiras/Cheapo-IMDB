@@ -100,6 +100,8 @@ class BTLeafNode {
     RC write(PageId pid, PageFile& pf);
 	
 	void print();	//testing purposes
+
+	RC insertPid(PageId pid);
 	
 	void set_FLAG()
 	{
