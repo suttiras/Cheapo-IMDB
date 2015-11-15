@@ -87,12 +87,6 @@ int main()
 	
 	PageId np1 = 1;
 
-	int nkey1 = 1;
-
-	PageId np3 = 3;
-
-	int nkey3 = 3;
-
 	nb1->insert(nkey2, np2);
 
 	//nb1->insert(nkey3, np3);

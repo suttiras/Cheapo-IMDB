@@ -624,9 +624,10 @@ RC BTNonLeafNode::insert(int key, PageId pid)
 RC BTNonLeafNode::insertAndSplit(int key, PageId pid, BTNonLeafNode& sibling, int& midKey)
 { 
 	memset(sibling.buffer, 0, PageFile::PAGE_SIZE);
+	
+	insert(key, pid);
 	int maxNumKeys = getKeyCount();
 	double median = ceil((double)maxNumKeys / 2);
-	insert(key, pid);
 
 	for (int index = (int)median; index < maxNumKeys; index++)
 	{
@@ -634,8 +635,10 @@ RC BTNonLeafNode::insertAndSplit(int key, PageId pid, BTNonLeafNode& sibling, in
 		PageId new_pid;
 		//readEntry(index, new_key, new_pid);
 		//sibling.insert(new_key, new_pid);
-		memcpy(&new_key, buffer + (PAGE_ID_SIZE + index*(entryPairNonLeafNodeSize)), INTEGER_SIZE);
-		memcpy(&new_pid, buffer + (PAGE_ID_SIZE + index*(entryPairNonLeafNodeSize)) + INTEGER_SIZE, PAGE_ID_SIZE);
+		//memcpy(&new_key, buffer + (PAGE_ID_SIZE + index*(entryPairNonLeafNodeSize)), INTEGER_SIZE);
+		//memcpy(&new_pid, buffer + (PAGE_ID_SIZE + index*(entryPairNonLeafNodeSize)) + INTEGER_SIZE, PAGE_ID_SIZE);
+		memcpy(&new_key, buffer + (index*(entryPairNonLeafNodeSize)), INTEGER_SIZE);
+		memcpy(&new_pid, buffer + (index*(entryPairNonLeafNodeSize)) + INTEGER_SIZE, PAGE_ID_SIZE);
 
 		if (sibling.getKeyCount() > 0)
 		{
@@ -652,8 +655,9 @@ RC BTNonLeafNode::insertAndSplit(int key, PageId pid, BTNonLeafNode& sibling, in
 		memset(buffer + index*entryPairNonLeafNodeSize, 0, entryPairNonLeafNodeSize);
 		//end of new
 	}
-	memcpy(buffer, &median, INTEGER_SIZE);
-	FLAG_ADDED_NEW_KEY = 1;
+	//memcpy(buffer, &median, INTEGER_SIZE);
+	//FLAG_ADDED_NEW_KEY = 1;
+	set_FLAG();
 	sibling.set_FLAG();
 	/*
 	int new_eid;
