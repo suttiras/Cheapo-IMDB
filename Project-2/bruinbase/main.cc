@@ -108,7 +108,24 @@ int main()
 
 	int nkey3 = 3;
 	
+	PageId np4 = 4;
+
+	int nkey4 = 4;
+	
+	//nb1->insert(nkey4, np4);
+	//nb1->insert(nkey3, np3);
+	//nb1->insert(nkey4, np4);
+	//nb1->insertAndSplit(nkey2, np2, *nb2, midKey);	//midKey = 2
+	
 	nb1->insertAndSplit(nkey3, np3, *nb2, midKey);	//midKey = 2
+	
+	BTNonLeafNode* nb4 = new BTNonLeafNode();
+	nb4->insert(nkey1, np1);
+	nb4->insert(nkey3, np3);
+	nb4->insert(nkey4, np4);
+	
+	BTNonLeafNode* nb3 = new BTNonLeafNode();
+	nb4->insertAndSplit(nkey2, np2, *nb3, midKey);
 
 	nb1->print();
 	nb2->print();

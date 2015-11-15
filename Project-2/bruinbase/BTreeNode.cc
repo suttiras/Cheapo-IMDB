@@ -249,6 +249,7 @@ RC BTLeafNode::insertAndSplit(int key, const RecordId& rid,
 		insert(key, rid);
 		*/
 	return 0;
+	//return RC_NO_SEARCH_RECORD;
 }
 
 /**
@@ -640,7 +641,58 @@ RC BTNonLeafNode::insert(int key, PageId pid)
 RC BTNonLeafNode::insertAndSplit(int key, PageId pid, BTNonLeafNode& sibling, int& midKey)
 { 
 	memset(sibling.buffer, 0, PageFile::PAGE_SIZE);
+	int maxNumKeys = getKeyCount();
+	double median = ceil((double)maxNumKeys / 2);
 	
+	//int half = median * entryPairNonLeafNodeSize + entryPairNonLeafNodeSize;
+	int half = median * entryPairNonLeafNodeSize;
+	
+	int first_half_key;
+	int second_half_key;
+	
+	//memcpy(&first_half_key, buffer + half - entryPairNonLeafNodeSize, INTEGER_SIZE);
+	memcpy(&first_half_key, buffer + half - INTEGER_SIZE, INTEGER_SIZE);
+	memcpy(&second_half_key, buffer + half + PAGE_ID_SIZE, INTEGER_SIZE);
+	
+	if(key < first_half_key)
+	{
+		//memcpy(sibling.buffer+entryPairNonLeafNodeSize, buffer + half, PageFile::PAGE_SIZE-half);
+		memcpy(sibling.buffer+PAGE_ID_SIZE, buffer + half, PageFile::PAGE_SIZE-half);
+		sibling.set_FLAG();
+		//memcpy(&midKey, buffer+half-entryPairNonLeafNodeSize, INTEGER_SIZE);
+		memcpy(&midKey, buffer+half-INTEGER_SIZE, INTEGER_SIZE);
+		//memcpy(sibling.buffer, buffer+half-4, PAGE_ID_SIZE);
+		memcpy(sibling.buffer, buffer+half-8, PAGE_ID_SIZE);
+		memset(buffer+half-entryPairNonLeafNodeSize, 0, PageFile::PAGE_SIZE - half+entryPairNonLeafNodeSize);
+		set_FLAG();
+		insert(key, pid);
+	}
+	else if (key > second_half_key)
+	{
+		//memcpy(sibling.buffer+entryPairNonLeafNodeSize, buffer + half+entryPairNonLeafNodeSize, PageFile::PAGE_SIZE-half - entryPairNonLeafNodeSize);
+		memcpy(sibling.buffer+PAGE_ID_SIZE, buffer + half+entryPairNonLeafNodeSize, PageFile::PAGE_SIZE-half - entryPairNonLeafNodeSize);
+		sibling.set_FLAG();
+		//memcpy(&midKey, buffer+half+entryPairNonLeafNodeSize, INTEGER_SIZE);
+		memcpy(&midKey, buffer+half+PAGE_ID_SIZE, INTEGER_SIZE);
+		//memcpy(sibling.buffer, buffer+half+4, PAGE_ID_SIZE);
+		memcpy(sibling.buffer, buffer+half, PAGE_ID_SIZE);
+		memset(buffer+half, 0, PageFile::PAGE_SIZE - half);
+		set_FLAG();
+		sibling.insert(key, pid);
+	}
+	else
+	{
+		//memcpy(sibling.buffer+entryPairNonLeafNodeSize, buffer + half, PageFile::PAGE_SIZE-half);
+		memcpy(sibling.buffer+PAGE_ID_SIZE, buffer + half, PageFile::PAGE_SIZE-half);
+		sibling.set_FLAG();
+
+		memset(buffer+half, 0, PageFile::PAGE_SIZE - half);
+		set_FLAG();
+		midKey = key;
+		memcpy(sibling.buffer, &pid, PAGE_ID_SIZE);
+	}
+	
+	/*
 	insert(key, pid);
 	int maxNumKeys = getKeyCount();
 	double median = ceil((double)maxNumKeys / 2);
@@ -671,21 +723,14 @@ RC BTNonLeafNode::insertAndSplit(int key, PageId pid, BTNonLeafNode& sibling, in
 		memset(buffer + index*entryPairNonLeafNodeSize, 0, entryPairNonLeafNodeSize);
 		//end of new
 	}
-	//memcpy(buffer, &median, INTEGER_SIZE);
-	//FLAG_ADDED_NEW_KEY = 1;
+	
 	set_FLAG();
 	sibling.set_FLAG();
-	/*
-	int new_eid;
-	if (locate(key, new_eid) != 0)
-		sibling.insert(key, pid);
-	else
-		insert(key, pid);
-		*/
+	
 	midKey = getKeyCount() - 1;
 	memcpy(&key, buffer + PAGE_ID_SIZE + midKey*(entryPairNonLeafNodeSize), INTEGER_SIZE);
 	midKey = key;
-	
+	*/
 	return 0;
 }
 
