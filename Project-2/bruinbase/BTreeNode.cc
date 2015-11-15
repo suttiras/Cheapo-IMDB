@@ -236,11 +236,15 @@ RC BTLeafNode::insertAndSplit(int key, const RecordId& rid,
 	}
 	FLAG_ADDED_NEW_KEY = 1;
 	sibling.set_FLAG();
+	
+	//to set the new sibling node end page file to point to the old end page file
+	int currentNumKeysSib = sibling.getKeyCount();
+	memcpy(sibling.buffer + currentNumKeysSib*entryPairLeafNodeSize, buffer + currentNumKeys*entryPairLeafNodeSize, PAGE_ID_SIZE);
 
 	//to set the end page file to point to the sibling node
 	int currentNumKeys = getKeyCount();
 	memcpy(buffer + currentNumKeys*entryPairLeafNodeSize, &pointerToSiblingNode, PAGE_ID_SIZE);
-
+	
 	/*
 	int new_eid;
 	if (locate(key, new_eid) != 0)
