@@ -9,6 +9,9 @@ int main()
   // run the SQL engine taking user commands from standard input (console).
   //SqlEngine::run(stdin);
 
+
+	//leaf node test cases
+	/*
 	BTLeafNode* b1 = new BTLeafNode();
 	b1->print();
 
@@ -84,6 +87,7 @@ int main()
 	b2->print();
 	int eid;
 	b1->locate(4, eid);	//should be 1
+	*/
 
 	//int key3 = 3;
 
@@ -92,22 +96,22 @@ int main()
 	//b1->print();
 	
 	BTNonLeafNode* nb1 = new BTNonLeafNode();
-	nb1->print();
+	//nb1->print();
 
 	PageId np2 = 2;
 
 	int nkey2 = 2;
 	//nb1->insert(nkey2, np2);
 
-	nb1->print();
+	//nb1->print();
 	
-	PageId np1 = 1;
+	PageId np1 = 0;
 
 	//nb1->insert(nkey2, np2);
 
 	//nb1->insert(nkey3, np3);
 	
-	int nkey1 = 1;
+	int nkey1 = 0;
 
 	//nb1->print();
 
@@ -130,6 +134,9 @@ int main()
 	nb1->insert(nkey3, np3);
 	nb1->insert(nkey4, np4);
 	nb1->insertAndSplit(nkey2, np2, *nb2, midKey);	//midKey = 2
+
+	//nb1->print();
+	//nb2->print();
 	
 	//nb1->insertAndSplit(nkey3, np3, *nb2, midKey);	//midKey = 2
 	
@@ -147,6 +154,8 @@ int main()
 	
 	BTNonLeafNode* nb8 = new BTNonLeafNode();
 	nb7->insertAndSplit(nkey3, np3, *nb8, midKey);	//case 2
+	nb7->print();
+	nb8->print();
 	
 	BTNonLeafNode* nb5 = new BTNonLeafNode();
 	nb5->insert(nkey1, np1);
@@ -156,8 +165,8 @@ int main()
 	BTNonLeafNode* nb6 = new BTNonLeafNode();
 	nb5->insertAndSplit(nkey3, np3, *nb6, midKey);	//case 3
 
-	nb1->print();
-	nb2->print();
+	nb5->print();
+	nb6->print();
 	
   return 0;
 }

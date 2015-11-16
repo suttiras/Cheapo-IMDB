@@ -69,6 +69,7 @@ int BTLeafNode::getKeyCount()	//doesn't work for when key == 0
 		char* char_key_holder = buffer + sizeof(RecordId);
 		char check_null_key_holder;
 		memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
+
 		//memcpy(&check_null_key_holder, char_key_holder, INTEGER_SIZE);
 		if (FLAG_ADDED_ZERO == 1 && previousNumOfKeys == 0)
 		{
@@ -450,6 +451,66 @@ RC BTNonLeafNode::write(PageId pid, PageFile& pf)
  */
 int BTNonLeafNode::getKeyCount()
 { 
+	int previousNumOfKeys = numOfKeys;
+	if (FLAG_ADDED_NEW_KEY == 1)	//a new key(s) was added
+	{
+		numOfKeys = 0;
+		//int index = 0;
+		int indexInBuffer = 0;
+		int key_holder;
+		int FLAG_UNTIL_POSITIVE = 0;
+		char* char_key_holder = buffer + PAGE_ID_SIZE;
+		char check_null_key_holder;
+		int previous_key_holder;
+		memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
+		previous_key_holder = key_holder + 1;
+		//memcpy(&check_null_key_holder, char_key_holder, INTEGER_SIZE);
+		if (FLAG_ADDED_ZERO == 1 && previousNumOfKeys == 0)
+		{
+			numOfKeys = 1;
+		}
+		else if (FLAG_ADDED_ZERO == 1 && previousNumOfKeys == 1)
+		{
+			numOfKeys = 2;
+		}
+		else
+		{
+
+			while (numOfKeys < MAX_KEYS_NON_LEAF_NODE && key_holder != '\0' || (FLAG_ADDED_ZERO == 1 && FLAG_UNTIL_POSITIVE == 0 && previousNumOfKeys > 1))
+				//while((indexInBuffer < PageFile::PAGE_SIZE - entryPairLeafNodeSize) && key_holder != 0)
+			{
+				if (numOfKeys > previousNumOfKeys)
+				{
+					break;
+				}
+
+				if (previous_key_holder == key_holder)
+				{
+					break;
+				}
+				numOfKeys++;
+				indexInBuffer += entryPairNonLeafNodeSize;
+				char_key_holder += entryPairNonLeafNodeSize;
+				if (numOfKeys < MAX_KEYS_NON_LEAF_NODE)
+				{
+					//memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
+					previous_key_holder = key_holder;
+					memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
+					if (key_holder > 0)
+					{
+						FLAG_UNTIL_POSITIVE = 1;	//reached a positive number
+					}
+				}
+			}
+			FLAG_ADDED_NEW_KEY = 0;
+		}
+
+	}
+
+	return numOfKeys;
+
+
+	/*
 	if (FLAG_ADDED_NEW_KEY == 1)	//a new key(s) was added
 	{
 		numOfKeys = 0;
@@ -473,6 +534,7 @@ int BTNonLeafNode::getKeyCount()
 		FLAG_ADDED_NEW_KEY = 0;
 	}
 	return numOfKeys; 
+	*/
 }
 
 
@@ -777,6 +839,11 @@ RC BTNonLeafNode::insertAndSplit(int key, PageId pid, BTNonLeafNode& sibling, in
 	memset(sibling.buffer, 0, PageFile::PAGE_SIZE);
 	int maxNumKeys = getKeyCount();
 	double median = ceil((double)maxNumKeys / 2);
+
+	if (FLAG_ADDED_ZERO == 1)
+	{
+		sibling.set_ZERO_FLAG();
+	}
 	
 	//int half = median * entryPairNonLeafNodeSize + entryPairNonLeafNodeSize;
 	int half = median * entryPairNonLeafNodeSize;
@@ -940,7 +1007,7 @@ void BTNonLeafNode::print()
 
 	std::cout << SSTR("Key Count: " << getKeyCount() << '\n');
 
-	while (temp_key != 0 || index < MAX_KEYS_NON_LEAF_NODE)
+	while (index < numOfKeys)
 	{
 		if (index == 0)
 		{
@@ -951,10 +1018,6 @@ void BTNonLeafNode::print()
 			memcpy(&temp_key, buffer + PAGE_ID_SIZE + (index*entryPairNonLeafNodeSize), INTEGER_SIZE);
 		}
 
-		if (temp_key == 0)
-		{
-			break;
-		}
 		//string temp = to_string(temp_key);
 		//cout << temp << '\n';
 		std::cout << SSTR("Key: " << temp_key << '\n');
