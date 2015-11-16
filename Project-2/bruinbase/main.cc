@@ -39,6 +39,20 @@ int main()
 
 	b1->print();
 
+	PageId p0 = 0;
+
+	RecordId r0 =
+	{
+		p0,
+		0,
+	};
+
+	int key0 = 0;
+
+	b1->insert(key0, r0);
+
+	b1->print();
+
 	BTLeafNode* b2 = new BTLeafNode();
 	
 	PageId p4 = 4;

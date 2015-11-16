@@ -22,7 +22,7 @@ int PAGE_ID_SIZE = sizeof(PageId);
 
 BTLeafNode::BTLeafNode()
 {
-	memset(buffer, 0, PageFile::PAGE_SIZE);
+	memset(buffer, '\0', PageFile::PAGE_SIZE);
 	numOfKeys = 0;
 	FLAG_ADDED_NEW_KEY = 0;
 }
@@ -35,7 +35,7 @@ BTLeafNode::BTLeafNode()
  */
 RC BTLeafNode::read(PageId pid, const PageFile& pf)
 { 
-	//memset(buffer, 0, PageFile::PAGE_SIZE);
+	memset(buffer, '\0', PageFile::PAGE_SIZE);
 	RC rc = pf.read(pid, buffer);
 	return rc;
 }
@@ -56,29 +56,56 @@ RC BTLeafNode::write(PageId pid, PageFile& pf)
  * Return the number of keys stored in the node.
  * @return the number of keys in the node
  */
-int BTLeafNode::getKeyCount()
+int BTLeafNode::getKeyCount()	//doesn't work for when key == 0
 { 
+	int previousNumOfKeys = numOfKeys;
 	if (FLAG_ADDED_NEW_KEY == 1)	//a new key(s) was added
 	{
 		numOfKeys = 0;
 		//int index = 0;
 		int indexInBuffer = 0;
 		int key_holder;
+		int FLAG_UNTIL_POSITIVE = 0;
 		char* char_key_holder = buffer + sizeof(RecordId);
+		char check_null_key_holder;
 		memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
-		while(numOfKeys < MAX_KEYS_LEAF_NODE && key_holder != 0)
-		//while((indexInBuffer < PageFile::PAGE_SIZE - entryPairLeafNodeSize) && key_holder != 0)
+		//memcpy(&check_null_key_holder, char_key_holder, INTEGER_SIZE);
+		if (FLAG_ADDED_ZERO == 1 && previousNumOfKeys == 0)
 		{
-			numOfKeys++;
-			indexInBuffer+=entryPairLeafNodeSize;
-			char_key_holder += entryPairLeafNodeSize;
-			if (numOfKeys < MAX_KEYS_LEAF_NODE)
-			{
-				memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
-			}
+			numOfKeys = 1;
 		}
-		FLAG_ADDED_NEW_KEY = 0;
+		else if (FLAG_ADDED_ZERO == 1 && previousNumOfKeys == 1)
+		{
+			numOfKeys = 2;
+		}
+		else
+		{
+
+			while (numOfKeys < MAX_KEYS_LEAF_NODE && key_holder != '\0' || (FLAG_ADDED_ZERO == 1 && FLAG_UNTIL_POSITIVE == 0 && previousNumOfKeys > 1))
+				//while((indexInBuffer < PageFile::PAGE_SIZE - entryPairLeafNodeSize) && key_holder != 0)
+			{
+				if (numOfKeys > previousNumOfKeys)
+				{
+					break;
+				}
+				numOfKeys++;
+				indexInBuffer += entryPairLeafNodeSize;
+				char_key_holder += entryPairLeafNodeSize;
+				if (numOfKeys < MAX_KEYS_LEAF_NODE)
+				{
+					//memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
+					memcpy(&key_holder, char_key_holder - INTEGER_SIZE, INTEGER_SIZE);
+					if (key_holder > 0)
+					{
+						FLAG_UNTIL_POSITIVE = 1;	//reached a positive number
+					}
+				}
+			}
+			FLAG_ADDED_NEW_KEY = 0;
+		}
+		
 	}
+	
 	return numOfKeys; 
 }
 
@@ -97,6 +124,10 @@ RC BTLeafNode::insertPid(PageId pid)
 RC BTLeafNode::insert(int key, const RecordId& rid)
 {
 	numOfKeys = getKeyCount();
+	if (key == 0)
+	{
+		FLAG_ADDED_ZERO = 1;
+	}
 	//there are no entries in the node
 	if (numOfKeys == 0)
 	{
@@ -160,6 +191,8 @@ RC BTLeafNode::insert(int key, const RecordId& rid)
 				}
 			}
 			FLAG_ADDED_NEW_KEY = 1;
+			//new
+			//numOfKeys++;
 		}
 
 		else if (temp_key > key)
@@ -173,6 +206,7 @@ RC BTLeafNode::insert(int key, const RecordId& rid)
 			memcpy(buffer + (eid*entryPairLeafNodeSize), &rid, sizeof(RecordId));
 			memcpy(buffer + (eid*entryPairLeafNodeSize) + sizeof(RecordId), &key, INTEGER_SIZE);
 			FLAG_ADDED_NEW_KEY = 1;
+			//numOfKeys++;
 		}
 	}
 
@@ -200,7 +234,12 @@ RC BTLeafNode::insertAndSplit(int key, const RecordId& rid,
 	insert(key, rid);
 	int maxNumKeys = getKeyCount();
 	double median = ceil((double)maxNumKeys/2);
-	
+
+	if (FLAG_ADDED_ZERO == 1)
+	{
+		sibling.set_ZERO_FLAG();
+	}
+
 	PageId pointerToSiblingNode;
 	PageId last_pid;
 
@@ -220,7 +259,7 @@ RC BTLeafNode::insertAndSplit(int key, const RecordId& rid,
 
 		sibling.insert(new_key, new_rid);
 		//new
-		memset(buffer + index*entryPairLeafNodeSize, 0, entryPairLeafNodeSize);
+		memset(buffer + index*entryPairLeafNodeSize, '\0', entryPairLeafNodeSize);
 		//end of new
 		if (index == median)
 		{
@@ -345,7 +384,7 @@ void BTLeafNode::print()
 
 	std::cout << SSTR("Key Count: " << getKeyCount() << '\n');
 
-	while (temp_key != 0 || index < MAX_KEYS_LEAF_NODE)
+	while (index < numOfKeys)
 	{
 		if (index == 0)
 		{
@@ -356,10 +395,13 @@ void BTLeafNode::print()
 			memcpy(&temp_key, buffer + sizeof(RecordId) + (index*entryPairLeafNodeSize), INTEGER_SIZE);
 		}
 		
+		/*
 		if (temp_key == 0)
 		{
-			break;
+		break;
 		}
+		*/
+		
 		//string temp = to_string(temp_key);
 		//cout << temp << '\n';
 		std::cout << SSTR("Key: " << temp_key << '\n');
@@ -590,6 +632,12 @@ RC BTNonLeafNode::insert(int key, PageId pid)
 	//if flag is set
 	//else
 	//{
+
+	if (key == 0)
+	{
+		FLAG_ADDED_ZERO = 1;
+	}
+
 		//there are no entries in the node
 		if (numOfKeys == 0)
 		{

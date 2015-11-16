@@ -108,6 +108,11 @@ class BTLeafNode {
 		FLAG_ADDED_NEW_KEY = 1;
 	}
 
+	void set_ZERO_FLAG()
+	{
+		FLAG_ADDED_NEW_KEY = 1;
+	}
+
   private:
    /**
     * The main memory buffer for loading the content of the disk page 
@@ -115,6 +120,7 @@ class BTLeafNode {
     */
 	int numOfKeys;
 	int FLAG_ADDED_NEW_KEY;
+	int FLAG_ADDED_ZERO;
     char buffer[PageFile::PAGE_SIZE];
 }; 
 
@@ -200,7 +206,12 @@ class BTNonLeafNode {
 	{
 		FLAG_ADDED_NEW_KEY = 1;
 	}
-	
+
+	void set_ZERO_FLAG()
+	{
+		FLAG_ADDED_NEW_KEY = 1;
+	}
+
   private:
    /**
     * The main memory buffer for loading the content of the disk page 
@@ -209,6 +220,7 @@ class BTNonLeafNode {
 	int numOfKeys;
 	int FLAG_ADDED_NEW_KEY;
 	int FLAG_KEY_BEFORE_PID;
+	int FLAG_ADDED_ZERO;
     char buffer[PageFile::PAGE_SIZE];
 }; 
 
