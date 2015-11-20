@@ -15,7 +15,7 @@
 #include "BTreeNode.h"
 #include "RecordFile.h"
 
-#include <cstudio.h>
+#include <cstdio>
 #include <vector>
 
 using namespace std;
