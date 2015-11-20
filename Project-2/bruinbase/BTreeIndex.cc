@@ -18,6 +18,9 @@ using namespace std;
 BTreeIndex::BTreeIndex()
 {
     rootPid = -1;
+	treeHeight = 0;
+	prev_page = -1;
+	cursor_node = BTLeafNode();
 }
 
 /*
