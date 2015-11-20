@@ -21,7 +21,7 @@ int IND_PAGE_ID_SIZE = sizeof(PageId);
  */
 BTreeIndex::BTreeIndex()
 {
-    rootPid = -1;
+	rootPid = -1;
 	treeHeight = 0;
 	prev_page = -1;
 	cursor_node = BTLeafNode();
@@ -130,5 +130,54 @@ RC BTreeIndex::locate(int searchKey, IndexCursor& cursor)
  */
 RC BTreeIndex::readForward(IndexCursor& cursor, int& key, RecordId& rid)
 {
-    return 0;
+	if (prev_page != cursor.pid)
+	{
+		if (cursor_node.read(cursor.pid, pf) < 0)
+		{
+			return -1;
+		}
+		prev_page = cursor.pid;
+	}
+	
+	if(cursor.eid == cursor_node.getKeyCount())
+	{
+		char buffer[IND_PAGE_ID_SIZE];
+		/*
+		int index = 0;
+		while(index < IND_PAGE_ID_SIZE)
+		{
+			buffer[index] = 0;
+			index++;
+		}
+		*/
+		
+		memset(buffer, '\0', IND_PAGE_ID_SIZE);
+		
+		if(memcmp(buffer, &cursor.pid, IND_PAGE_ID_SIZE) == 0)
+		{
+			return -1;
+		}
+		
+		cursor.pid = cursor_node.getNextNodePtr();
+		cursor.eid = 0;
+		if(cursor.pid == 0)
+		{
+			return -1;
+		}
+		if(cursor_node.read(cursor.pid, pf) < 0)
+		{
+			return -1;
+		}
+		prev_page = cursor.pid;
+	}
+	if (cursor_node.readEntry(cursor.eid, key, rid) < 0)
+	{
+		return -1;
+	}
+	else
+	{
+		cursor.eid++;
+	}
+	
+	return 0;
 }
