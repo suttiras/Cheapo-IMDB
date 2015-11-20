@@ -142,15 +142,6 @@ RC BTreeIndex::readForward(IndexCursor& cursor, int& key, RecordId& rid)
 	if(cursor.eid == cursor_node.getKeyCount())
 	{
 		char buffer[IND_PAGE_ID_SIZE];
-		/*
-		int index = 0;
-		while(index < IND_PAGE_ID_SIZE)
-		{
-			buffer[index] = 0;
-			index++;
-		}
-		*/
-		
 		memset(buffer, '\0', IND_PAGE_ID_SIZE);
 		
 		if(memcmp(buffer, &cursor.pid, IND_PAGE_ID_SIZE) == 0)
