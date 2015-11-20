@@ -15,6 +15,9 @@
 #include "BTreeNode.h"
 #include "RecordFile.h"
 
+#include <stdio.h>
+#include <cstring>
+
 #include <cstdio>
 #include <vector>
 

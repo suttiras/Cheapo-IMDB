@@ -10,7 +10,11 @@
 #include "BTreeIndex.h"
 #include "BTreeNode.h"
 
+
 using namespace std;
+
+int IND_INTEGER_SIZE = sizeof(int);
+int IND_PAGE_ID_SIZE = sizeof(PageId);
 
 /*
  * BTreeIndex constructor
@@ -32,6 +36,36 @@ BTreeIndex::BTreeIndex()
  */
 RC BTreeIndex::open(const string& indexname, char mode)
 {
+	char buffer[PageFile::PAGE_SIZE];
+
+	//checks if pagefile can open
+	if (pf.open(indexname, mode) != 0)
+	{
+		return -1;
+	}
+	
+	//checks if pagefile is empty
+	//that is, there is no b+ tree
+	if (pf.endPid() <= 0)
+	{
+		rootPid = -1;
+		treeHeight = 0;
+		close();
+		return pf.open(indexname, mode);
+	}
+
+	//pagefile is not empty
+	//there must be an existing b+ tree
+	else
+	{
+		//read first disk page into buffer
+		if (pf.read(0, buffer) != 0)
+		{
+			return -1;
+		}
+		memcpy(&rootPid, buffer, IND_PAGE_ID_SIZE);
+		memcpy(&treeHeight, buffer + IND_PAGE_ID_SIZE, IND_INTEGER_SIZE);
+	}
     return 0;
 }
 
@@ -41,7 +75,15 @@ RC BTreeIndex::open(const string& indexname, char mode)
  */
 RC BTreeIndex::close()
 {
-    return 0;
+	char buffer[PageFile::PAGE_SIZE];
+	memcpy(buffer, &rootPid, IND_PAGE_ID_SIZE);
+	memcpy(buffer + IND_PAGE_ID_SIZE, &treeHeight, IND_INTEGER_SIZE);
+
+	if (pf.write(0, buffer) != 0)
+	{
+		return -1;
+	}
+    return pf.close();
 }
 
 /*
