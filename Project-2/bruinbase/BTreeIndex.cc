@@ -19,7 +19,7 @@ int IND_ENTRY_PAIR_LEAF_NODE_SIZE = sizeof(RecordId) + IND_INTEGER_SIZE;
 int IND_ENTRY_PAIR_NON_LEAF_NODE_SIZE = IND_PAGE_ID_SIZE + IND_INTEGER_SIZE;
 int IND_MAX_KEYS_LEAF_NODE = floor((PageFile::PAGE_SIZE - IND_PAGE_ID_SIZE)/IND_ENTRY_PAIR_LEAF_NODE_SIZE);
 int IND_MAX_KEYS_NON_LEAF_NODE = floor((PageFile::PAGE_SIZE - IND_PAGE_ID_SIZE)/IND_ENTRY_PAIR_NON_LEAF_NODE_SIZE);
-int OVERFLOW = 1;
+const int IND_OVERFLOW = 1;
 int ERROR_IN_INSERT = -1;
 int OKAY = 0;
 
@@ -97,7 +97,7 @@ RC BTreeIndex::insert_helper(int& key, const RecordId& rid, int height, PageId c
 {
 	if (height = treeHeight)	//currently at a leaf node
 	{
-		BTLeafNode leaf = new BTLeafNode();
+		BTLeafNode leaf = BTLeafNode();
 		leaf.read(currentPid, pf);
 		if(leaf.getKeyCount() < IND_MAX_KEYS_LEAF_NODE)	//there is room in the leaf node
 		{
@@ -107,27 +107,27 @@ RC BTreeIndex::insert_helper(int& key, const RecordId& rid, int height, PageId c
 		}
 		else	//we have to split
 		{
-			BTLeafNode sibling_node = new BTLeafNode();
+			BTLeafNode sibling_node = BTLeafNode();
 			leaf.insertAndSplit(key, rid, sibling_node, ikey);
 			ipid = pf.endPid();
 			sibling_node.setNextNodePtr(leaf.getNextNodePtr());
 			leaf.setNextNodePtr(ipid);
 			leaf.write(currentPid, pf);
 			sibling_node.write(ipid, pf);
-			return OVERFLOW;
+			return IND_OVERFLOW;
 		}
 	}
 	
 	else	//we are at a non leaf node
 	{
-		BTNonLeafNode non_leaf = new BTNonLeafNode();
+		BTNonLeafNode non_leaf = BTNonLeafNode();
 		non_leaf.read(currentPid, pf);
 		
 		PageId child_pid;
 		non_leaf.locateChildPtr(key, child_pid);
 		
 		int res = insert_helper(key, rid, height + 1, child_pid, ikey, ipid);
-		if(res == OVERFLOW)	//overflow
+		if(res == IND_OVERFLOW)	//overflow
 		{
 			if(non_leaf.getKeyCount() < IND_MAX_KEYS_NON_LEAF_NODE)
 			{
@@ -138,7 +138,7 @@ RC BTreeIndex::insert_helper(int& key, const RecordId& rid, int height, PageId c
 			}
 			else	//overflow
 			{
-				BTNonLeafNode sibling_node = new BTNonLeafNode();
+				BTNonLeafNode sibling_node = BTNonLeafNode();
 				int sibling_key;
 				
 				non_leaf.insertAndSplit(ikey, ipid, sibling_node, sibling_key);
@@ -146,7 +146,7 @@ RC BTreeIndex::insert_helper(int& key, const RecordId& rid, int height, PageId c
 				ipid = pf.endPid();
 				sibling_node.write(ipid, pf);
 				non_leaf.write(currentPid, pf);
-				return OVERFLOW;
+				return IND_OVERFLOW;
 			}
 		}
 		
@@ -167,7 +167,7 @@ RC BTreeIndex::insert(int key, const RecordId& rid)
 {
 	if (treeHeight == 0)	//empty B+ Tree
 	{
-		BTLeafNode leaf = new BTLeafNode();
+		BTLeafNode leaf = BTLeafNode();
 		leaf.insert(key, rid);
 		rootPid = pf.endPid();
 		leaf.write(rootPid, pf);
@@ -180,9 +180,9 @@ RC BTreeIndex::insert(int key, const RecordId& rid)
 		int ikey;
 		PageId ipid;
 		int res = insert_helper(key, rid, 1, rootPid, ikey, ipid);
-		if(res == OVERFLOW)
+		if(res == IND_OVERFLOW)
 		{
-			BTNonLeafNode parent = new BTNonLeafNode();
+			BTNonLeafNode parent = BTNonLeafNode();
 			parent.initializeRoot(rootPid, ikey, ipid);
 			rootPid = pf.endPid();
 			parent.write(rootPid, pf);
@@ -308,4 +308,9 @@ RC BTreeIndex::readForward(IndexCursor& cursor, int& key, RecordId& rid)
 	}
 	
 	return 0;
+}
+
+void BTreeIndex::print()
+{
+
 }
