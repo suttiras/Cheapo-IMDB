@@ -976,8 +976,9 @@ RC BTNonLeafNode::locateChildPtr(int searchKey, PageId& pid)
 	while(index < numKeys)
 	{
 		memcpy(&left, buffer + (index*entryPairNonLeafNodeSize), PAGE_ID_SIZE);
-		memcpy(&right, buffer + entryPairNonLeafNodeSize + INTEGER_SIZE + (index*entryPairNonLeafNodeSize) , PAGE_ID_SIZE);	//entry pair + key + all previous entry pairs
-		memcpy(&key_holder, buffer + entryPairNonLeafNodeSize + (index*entryPairNonLeafNodeSize) , INTEGER_SIZE);	//entry pair + all previous entry pairs
+		//memcpy(&right, buffer + entryPairNonLeafNodeSize + INTEGER_SIZE + (index*entryPairNonLeafNodeSize) , PAGE_ID_SIZE);	//entry pair + key + all previous entry pairs
+		memcpy(&key_holder, buffer + INTEGER_SIZE + (index*entryPairNonLeafNodeSize), PAGE_ID_SIZE);	//entry pair + key + all previous entry pairs
+		memcpy(&right, buffer + entryPairNonLeafNodeSize + (index*entryPairNonLeafNodeSize), INTEGER_SIZE);	//entry pair + all previous entry pairs
 		if (key_holder > searchKey)	//got child ptr
 		{
 			pid = left;
