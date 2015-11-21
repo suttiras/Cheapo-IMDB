@@ -251,16 +251,16 @@ int main()
 	cout << "TEST 4 ------------------------------" << endl;
 	BTLeafNode leaf4;
 	assert(leaf4.insert(4,rid) == 0); //entry 1
-	assert(leaf4.locate(3,eid) == 0);
-	
+	assert(leaf4.locate(3,eid) != 0);	//made a mistake?
+
 	assert(leaf4.insert(9,rid) == 0); //entry 2
-	assert(leaf4.locate(3,eid) == 0);
+	assert(leaf4.locate(3,eid) != 0);
 	assert(eid == 0);
 	assert(leaf4.insert(5,rid) == 0);	//entry 3
-	assert(leaf4.locate(8,eid) == 0);
+	assert(leaf4.locate(8,eid) != 0);
 	assert(eid == 2);
 
-	assert(leaf4.locate(6,eid) == 0);
+	assert(leaf4.locate(6,eid) != 0);
 	assert(eid == 2);
 	
 	assert(leaf4.locate(9,eid) == 0);
