@@ -322,7 +322,7 @@ int main()
 	//cout << "max: " << leaf5.maxKeyCount() << endl;
 	
 
-	assert(leaf5.locate(0,eid) == 0);
+	assert(leaf5.locate(0,eid) != 0);
 	assert(eid == 0);
 	
 	assert(leaf5.locate(10,eid) != 0);
