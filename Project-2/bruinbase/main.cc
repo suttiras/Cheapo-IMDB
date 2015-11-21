@@ -280,16 +280,16 @@ int main()
 	cout << "newcount leaf4split: " << leaf4split.getKeyCount() << endl;	
 	
 	leaf4.readEntry(0,key,rid);
-	cout << "@Eid 0: " << key << endl;
+	cout << "@leaf4 Eid 0: " << key << endl;
 	assert(key == 4);
-	assert(leaf4.readEntry(1,key,rid) != 0);
+	assert(leaf4.readEntry(1,key,rid) == 0);
 	
 	leaf4split.readEntry(0,key,rid);
-	cout << "@Eid 0: " << key << endl;
+	cout << "leaf4split @Eid 0: " << key << endl;
 	leaf4split.readEntry(1,key,rid);
-	cout << "@Eid 1: " << key << endl;  
-	leaf4split.readEntry(2,key,rid);
-	cout << "@Eid 2: " << key << endl;  
+	cout << "leaf4split @Eid 1: " << key << endl;  
+	//leaf4split.readEntry(2,key,rid);
+	//cout << "@Eid 2: " << key << endl;  
 	assert(leaf4split.readEntry(4,key,rid) != 0);
 	assert(key == 100);
 	cout << "TEST 5 ------------------------------" << endl; 
