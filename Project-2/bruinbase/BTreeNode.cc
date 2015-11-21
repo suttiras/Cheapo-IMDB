@@ -573,7 +573,8 @@ RC BTNonLeafNode::locate(int searchKey, int& eid)
 			return RC_NO_SUCH_RECORD;
 		}
 	}
-	eid = index - 1;
+	//eid = index - 1;
+	eid = index;
 	return RC_NO_SUCH_RECORD;	//failed to find the searchKey
 }
 
