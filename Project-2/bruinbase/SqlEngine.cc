@@ -68,12 +68,13 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
   //while (rid < rf.endRid()) {
     // read the tuple
     //if ((rc = rf.read(rid, key, value)) < 0) {
+	/*
 	if ((rc = rf.open(table + ".tbl", 'r')) < 0) {
-      fprintf(stderr, "Error: while reading a tuple from table %s\n. Table does not exist.\n", table.c_str());
+      fprintf(stderr, "Error in select: while reading a tuple from table %s\n. Table does not exist.\n", table.c_str());
       goto exit_select;
 	  //return rc;
     }
-
+*/
 	
     // check the conditions on the tuple
 	
@@ -122,7 +123,7 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 			if(attr != 4)
 			{
 				if ((rc = rf.read(rid, key, value)) < 0) {
-					fprintf(stderr, "Error: while reading a tuple from table %s\n. Table does not exist.\n", table.c_str());
+					fprintf(stderr, "Error while readForward: while reading a tuple from table %s\n. Table does not exist.\n", table.c_str());
 					goto exit_select;
 				}
 			}
@@ -218,7 +219,7 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 			while (rid < rf.endRid()) {
 				// read the tuple
 				if ((rc = rf.read(rid, key, value)) < 0) {
-					fprintf(stderr, "Error: while reading a tuple from table %s\n", table.c_str());
+					fprintf(stderr, "Error while reading with no index available: while reading a tuple from table %s\n", table.c_str());
 					goto exit_select;
 				}
 
