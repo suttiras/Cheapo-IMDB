@@ -319,7 +319,6 @@ RC BTLeafNode::locate(int searchKey, int& eid)
 
 	//eid = index - 1;	//set eid to the index entry immediately after the largest index key 
 						//that is smaller than searchKey
-
 	eid = index;
 	return RC_NO_SUCH_RECORD;	//failed to find the searchKey
 }
