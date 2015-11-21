@@ -337,12 +337,26 @@ RC BTLeafNode::readEntry(int eid, int& key, RecordId& rid)
 	}
 	else
 	{
-		int entryKey;
-		memcpy(&entryKey, buffer + (eid*entryPairLeafNodeSize), INTEGER_SIZE);
-		key = entryKey;
-		RecordId entryId;
-		memcpy(&entryId, buffer + (eid*entryPairLeafNodeSize)+INTEGER_SIZE, sizeof(RecordId));
-		rid = entryId;
+		if (eid != 0)
+		{
+			RecordId entryId;
+			memcpy(&entryId, buffer + (eid*entryPairLeafNodeSize), sizeof(RecordId));
+			rid = entryId;
+			int entryKey;
+			//memcpy(&entryKey, buffer + entryPairLeafNodeSize, INTEGER_SIZE);
+			memcpy(&entryKey, buffer + (eid*entryPairLeafNodeSize) + 2*INTEGER_SIZE, INTEGER_SIZE);
+			key = entryKey;
+		}
+		else
+		{
+			RecordId entryId;
+			memcpy(&entryId, buffer, sizeof(RecordId));
+			rid = entryId;
+			int entryKey;
+			//memcpy(&entryKey, buffer + entryPairLeafNodeSize, INTEGER_SIZE);
+			memcpy(&entryKey, buffer + 2*INTEGER_SIZE, INTEGER_SIZE);
+			key = entryKey;
+		}
 	}
 
 	return 0;
