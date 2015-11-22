@@ -246,7 +246,7 @@ RC BTLeafNode::insertAndSplit(int key, const RecordId& rid,
                               BTLeafNode& sibling, int& siblingKey)	//called assuming that leaf node is not full
 { 
 	memset(sibling.buffer, 0, PageFile::PAGE_SIZE);
-	insert(key, rid);
+	//insert(key, rid);
 	int maxNumKeys = getKeyCount();
 	double median = ceil((double)maxNumKeys/2);
 
@@ -260,6 +260,8 @@ RC BTLeafNode::insertAndSplit(int key, const RecordId& rid,
 	PageId pointerToSiblingNode;
 	PageId last_pid;
 
+	int medianKey;
+
 	//memcpy(&last_pid, buffer + (maxNumKeys*entryPairLeafNodeSize), PAGE_ID_SIZE);
 	sibling.setNextNodePtr(getNextNodePtr());
 
@@ -268,7 +270,18 @@ RC BTLeafNode::insertAndSplit(int key, const RecordId& rid,
 		int new_key;
 		RecordId new_rid;
 		readEntry(index, new_key, new_rid);
+		if (index == median)
+		{
+			medianKey = new_key;
+		}
+		
+		/*
+		if (new_key == 85)
+		{
+			//cout << "Reached key 85\n";
 
+		}
+		*/
 		//to keep the pid of the sibling node
 		/*
 		if (index == median)
@@ -285,11 +298,28 @@ RC BTLeafNode::insertAndSplit(int key, const RecordId& rid,
 		{
 			siblingKey = new_key;
 		}
-	}
 
+		if (index == maxNumKeys - 1)
+		{
+
+		}
+	}
+	/*
+	sibling.print();
+	cout << "\n";
+	*/
 	for (int index = (int)median; index < maxNumKeys; index++)
 	{
 		memset(buffer + index*entryPairLeafNodeSize, '\0', entryPairLeafNodeSize);
+	}
+
+	if (key >= medianKey)
+	{
+		sibling.insert(key, rid);
+	}
+	else
+	{
+		insert(key, rid);
 	}
 
 	FLAG_ADDED_NEW_KEY = 1;
@@ -447,7 +477,7 @@ void BTLeafNode::print()
 		
 		//string temp = to_string(temp_key);
 		//cout << temp << '\n';
-		std::cout << SSTR("Key: " << temp_key << '\n');
+		std::cout << SSTR("Key: " << temp_key << " ");
 		//counter = counter + PAGE_ID_SIZE;
 		index++;
 	}
@@ -494,8 +524,8 @@ RC BTNonLeafNode::write(PageId pid, PageFile& pf)
 int BTNonLeafNode::getKeyCount()
 { 
 	int previousNumOfKeys = numOfKeys;
-	if (FLAG_ADDED_NEW_KEY == 1)	//a new key(s) was added
-	{
+	//if (FLAG_ADDED_NEW_KEY == 1)	//a new key(s) was added
+	//{
 		numOfKeys = 0;
 		//int index = 0;
 		int indexInBuffer = 0;
@@ -547,7 +577,7 @@ int BTNonLeafNode::getKeyCount()
 				/*
 				if (key_holder > 0)
 				{
-					FLAG_UNTIL_POSITIVE = 1;	//reached a positive number
+				FLAG_UNTIL_POSITIVE = 1;	//reached a positive number
 				}
 				*/
 
@@ -558,7 +588,7 @@ int BTNonLeafNode::getKeyCount()
 				}
 				//
 			}
-		}
+		//}
 		FLAG_ADDED_NEW_KEY = 0;
 		//}
 
@@ -1079,7 +1109,7 @@ void BTNonLeafNode::print()
 
 		//string temp = to_string(temp_key);
 		//cout << temp << '\n';
-		std::cout << SSTR("Key: " << temp_key << '\n');
+		std::cout << SSTR("Key: " << temp_key << " ");
 		//counter = counter + PAGE_ID_SIZE;
 		index++;
 	}
