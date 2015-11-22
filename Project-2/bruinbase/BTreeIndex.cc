@@ -48,6 +48,7 @@ RC BTreeIndex::open(const string& indexname, char mode)
 	//checks if pagefile can open
 	if (pf.open(indexname, mode) != 0)
 	{
+		fprintf(stderr, "Error opening pagefile\n");
 		return -1;
 	}
 	
@@ -68,6 +69,7 @@ RC BTreeIndex::open(const string& indexname, char mode)
 		//read first disk page into buffer
 		if (pf.read(0, buffer) != 0)
 		{
+			fprintf(stderr, "Error reading pagefile\n");
 			return -1;
 		}
 		memcpy(&rootPid, buffer, IND_PAGE_ID_SIZE);
@@ -88,6 +90,7 @@ RC BTreeIndex::close()
 
 	if (pf.write(0, buffer) != 0)
 	{
+		fprintf(stderr, "Error writing into pagefile\n");
 		return -1;
 	}
     return pf.close();
@@ -114,6 +117,7 @@ RC BTreeIndex::insert_helper(int& key, const RecordId& rid, int height, PageId c
 			leaf.setNextNodePtr(ipid);
 			leaf.write(currentPid, pf);
 			sibling_node.write(ipid, pf);
+			fprintf(stderr, "We have to split due to overflow\n");
 			return IND_OVERFLOW;
 		}
 	}
@@ -146,6 +150,7 @@ RC BTreeIndex::insert_helper(int& key, const RecordId& rid, int height, PageId c
 				ipid = pf.endPid();
 				sibling_node.write(ipid, pf);
 				non_leaf.write(currentPid, pf);
+				fprintf(stderr, "Error: insert_helper OVERFLOW\n");
 				return IND_OVERFLOW;
 			}
 		}
@@ -230,11 +235,13 @@ RC BTreeIndex::locate(int searchKey, IndexCursor& cursor)
 		{
 			if (nonLeaf.read(pid, pf) != 0)
 			{
+				fprintf(stderr, "Error: could not read nonLeaf\n");
 				return -1;
 			}
 
 			if (nonLeaf.locateChildPtr(searchKey, pid) != 0)
 			{
+				fprintf(stderr, "Error: could not read nonLeaf child pointer\n");
 				return -1;
 			}
 			index++;

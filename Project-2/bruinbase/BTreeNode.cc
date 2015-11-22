@@ -244,8 +244,8 @@ RC BTLeafNode::insertAndSplit(int key, const RecordId& rid,
 	PageId pointerToSiblingNode;
 	PageId last_pid;
 
-	memcpy(&last_pid, buffer + (maxNumKeys*entryPairLeafNodeSize), PAGE_ID_SIZE);
-
+	//memcpy(&last_pid, buffer + (maxNumKeys*entryPairLeafNodeSize), PAGE_ID_SIZE);
+	sibling.setNextNodePtr(getNextNodePtr());
 	for(int index = (int) median; index < maxNumKeys; index++)
 	{		
 		int new_key;
@@ -253,10 +253,10 @@ RC BTLeafNode::insertAndSplit(int key, const RecordId& rid,
 		readEntry(index, new_key, new_rid);
 
 		//to keep the pid of the sibling node
-		if (index == median)
-		{
-			pointerToSiblingNode = new_rid.pid;
-		}
+		//if (index == median)
+		//{
+		//	pointerToSiblingNode = new_rid.pid;
+		//}
 
 		sibling.insert(new_key, new_rid);
 		//new
@@ -271,9 +271,9 @@ RC BTLeafNode::insertAndSplit(int key, const RecordId& rid,
 	sibling.set_FLAG();
 
 	//to set the end page file to point to the sibling node
-	int currentNumKeys = getKeyCount();
-	memcpy(buffer + currentNumKeys*entryPairLeafNodeSize, &pointerToSiblingNode, PAGE_ID_SIZE);
-	sibling.insertPid(last_pid);
+	//int currentNumKeys = getKeyCount();
+	//memcpy(buffer + currentNumKeys*entryPairLeafNodeSize, &pointerToSiblingNode, PAGE_ID_SIZE);
+	//sibling.insertPid(last_pid);
 	/*
 	int new_eid;
 	if (locate(key, new_eid) != 0)
