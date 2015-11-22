@@ -149,12 +149,19 @@ int BTLeafNode::getKeyCount()	//doesn't work for when key == 0	//works!
 	return numOfKeys; 
 }
 
+RC BTLeafNode::insertPid(PageId pid)
+{
+	numOfKeys = getKeyCount();
+	memcpy(buffer + (numOfKeys * entryPairLeafNodeSize), &pid, PAGE_ID_SIZE);
+}
+
 /*
  * Insert a (key, rid) pair to the node.
  * @param key[IN] the key to insert
  * @param rid[IN] the RecordId to insert
  * @return 0 if successful. Return an error code if the node is full.
  */
+/*
 RC BTLeafNode::insert(int key, const RecordId& rid)
 {
 	//Save last 4 bytes (the pid) for reconstructing the inserted leaf
@@ -228,6 +235,123 @@ RC BTLeafNode::insert(int key, const RecordId& rid)
 	numKeys++;
 	
 	return 0;
+}
+*/
+
+/*
+* Insert a (key, rid) pair to the node.
+* @param key[IN] the key to insert
+* @param rid[IN] the RecordId to insert
+* @return 0 if successful. Return an error code if the node is full.
+*/
+
+RC BTLeafNode::insert(int key, const RecordId& rid)
+{
+	numOfKeys = getKeyCount();
+	/*
+	if (key == 0)
+	{
+	FLAG_ADDED_ZERO = 1;
+	}
+	*/
+	//there are no entries in the node
+	if (numOfKeys == 0)
+	{
+		//memcpy(buffer, &rid, sizeof(RecordId));
+		memcpy(buffer, &key, INTEGER_SIZE);
+		memcpy(buffer + INTEGER_SIZE, &rid, sizeof(RecordId));
+		FLAG_ADDED_NEW_KEY = 1;
+	}
+	//there are max number of entries in the node
+	else if (numOfKeys >= MAX_KEYS_LEAF_NODE)
+	{
+		//return -1;
+		return RC_NODE_FULL;
+	}
+	//there are less than max number of entries in the node
+	else
+	{
+		int eid;
+		RC rc = locate(key, eid);
+		int temp_key = 0;
+		RecordId temp_rid;
+		readEntry(eid, temp_key, temp_rid);
+		if (temp_key < key)
+		{
+			if (numOfKeys > 1)
+			{
+				//if key is the max key
+				if (eid == numOfKeys - 1)
+					//if (eid >= numOfKeys)
+				{
+					//memcpy(buffer + ((eid + 1)*entryPairLeafNodeSize), &rid, sizeof(RecordId));
+					//memcpy(buffer + ((eid + 1)*entryPairLeafNodeSize) + sizeof(RecordId), &key, INTEGER_SIZE);
+					
+					memcpy(buffer + ((eid + 1)*entryPairLeafNodeSize), &key, INTEGER_SIZE);
+					memcpy(buffer + ((eid + 1)*entryPairLeafNodeSize) + INTEGER_SIZE, &rid, sizeof(RecordId));
+				}
+				else
+				{
+					char temp[(numOfKeys - eid)*entryPairLeafNodeSize];
+					//try to copy all entries after new entry
+					memcpy(&temp, buffer + (eid*entryPairLeafNodeSize), (numOfKeys - eid)*entryPairLeafNodeSize);
+
+					memcpy(buffer + ((eid + 1)*entryPairLeafNodeSize), &temp, (numOfKeys - eid)*entryPairLeafNodeSize);
+
+					//memcpy(buffer + (eid*entryPairLeafNodeSize), &rid, sizeof(RecordId));
+					//memcpy(buffer + (eid*entryPairLeafNodeSize) + sizeof(RecordId), &key, INTEGER_SIZE);
+					memcpy(buffer + (eid*entryPairLeafNodeSize), &key, INTEGER_SIZE);
+					memcpy(buffer + (eid*entryPairLeafNodeSize) + INTEGER_SIZE, &rid, sizeof(RecordId));
+				}
+			}
+			//if there is only one key
+			else if (numOfKeys == 1)
+			{
+				if (temp_key < key)
+				{
+					//memcpy(buffer + entryPairLeafNodeSize, &rid, sizeof(RecordId));
+					//memcpy(buffer + entryPairLeafNodeSize + sizeof(RecordId), &key, INTEGER_SIZE);
+					memcpy(buffer + entryPairLeafNodeSize, &key, INTEGER_SIZE);
+					memcpy(buffer + entryPairLeafNodeSize + INTEGER_SIZE, &rid, sizeof(RecordId));
+				}
+				else if (temp_key >= key)
+				{
+					char temp[(numOfKeys - eid)*entryPairLeafNodeSize];
+					//try to copy all entries after new entry
+					memcpy(&temp, buffer + (eid*entryPairLeafNodeSize), (numOfKeys - eid)*entryPairLeafNodeSize);
+
+					memcpy(buffer + ((eid + 1)*entryPairLeafNodeSize), &temp, (numOfKeys - eid)*entryPairLeafNodeSize);
+
+					//memcpy(buffer + (eid*entryPairLeafNodeSize), &rid, sizeof(RecordId));
+					//memcpy(buffer + (eid*entryPairLeafNodeSize) + sizeof(RecordId), &key, INTEGER_SIZE);
+					memcpy(buffer + (eid*entryPairLeafNodeSize), &key, INTEGER_SIZE);
+					memcpy(buffer + (eid*entryPairLeafNodeSize) + INTEGER_SIZE, &rid, sizeof(RecordId));
+				}
+			}
+			FLAG_ADDED_NEW_KEY = 1;
+			//new
+			//numOfKeys++;
+		}
+
+		else if (temp_key > key)
+		{
+			char temp[(numOfKeys - eid)*entryPairLeafNodeSize];
+			//try to copy all entries after new entry
+			memcpy(&temp, buffer + (eid*entryPairLeafNodeSize), (numOfKeys - eid)*entryPairLeafNodeSize);
+
+			memcpy(buffer + ((eid + 1)*entryPairLeafNodeSize), &temp, (numOfKeys - eid)*entryPairLeafNodeSize);
+
+			//memcpy(buffer + (eid*entryPairLeafNodeSize), &rid, sizeof(RecordId));
+			//memcpy(buffer + (eid*entryPairLeafNodeSize) + sizeof(RecordId), &key, INTEGER_SIZE);
+			memcpy(buffer + (eid*entryPairLeafNodeSize), &key, INTEGER_SIZE);
+			memcpy(buffer + (eid*entryPairLeafNodeSize) + INTEGER_SIZE, &rid, sizeof(RecordId));
+			FLAG_ADDED_NEW_KEY = 1;
+			//numOfKeys++;
+		}
+	}
+
+	return 0;
+
 }
 
 /*
