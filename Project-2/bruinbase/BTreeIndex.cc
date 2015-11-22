@@ -327,3 +327,13 @@ void BTreeIndex::print()
 {
 
 }
+
+int BTreeIndex::getTreeHeight()
+{
+	return treeHeight;
+}
+
+PageId BTreeIndex::getRootPid()
+{
+	return rootPid;
+}

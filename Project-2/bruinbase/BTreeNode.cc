@@ -160,7 +160,7 @@ RC BTLeafNode::insert(int key, const RecordId& rid)
 	{
 		int eid;
 		RC rc = locate(key, eid);
-		int temp_key;
+		int temp_key = 0;
 		RecordId temp_rid;
 		readEntry(eid, temp_key, temp_rid);
 		if (temp_key < key)
@@ -169,6 +169,7 @@ RC BTLeafNode::insert(int key, const RecordId& rid)
 			{
 				//if key is the max key
 				if (eid == numOfKeys - 1)
+				//if (eid >= numOfKeys)
 				{
 					memcpy(buffer + ((eid + 1)*entryPairLeafNodeSize), &rid, sizeof(RecordId));
 					memcpy(buffer + ((eid + 1)*entryPairLeafNodeSize) + sizeof(RecordId), &key, INTEGER_SIZE);

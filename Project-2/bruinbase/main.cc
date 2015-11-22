@@ -15,7 +15,7 @@ using namespace std;
 int main()
 {
 	// run the SQL engine taking user commands from standard input (console).
-	//SqlEngine::run(stdin);
+	SqlEngine::run(stdin);
 	/*
 	BTLeafNode* b1 = new BTLeafNode();
 	b1->print();
@@ -803,7 +803,7 @@ int main()
 	*/
 
 
-	
+/*
 	int key;
 	BTLeafNode leaf;
 	BTLeafNode siblingLeaf;
@@ -817,7 +817,7 @@ int main()
 	leaf.print();
 	cout << "MEDIAN KEY: " << key << endl;
 	siblingLeaf.print();
-	/*
+	
 	BTNonLeafNode nonLeaf;
 	BTNonLeafNode siblingNonLeaf;
 	for(int i=1; i<135; i++)
@@ -833,7 +833,7 @@ int main()
 	*/
 
 
-	/*
+/*
 	IndexCursor c;
 	//test BTreeIndex
 	BTreeIndex test;
@@ -869,10 +869,10 @@ int main()
 
 	cout << "test2 treeHeight: " << test2.getTreeHeight() << endl;
 	test2.close();
-
 	*/
+	
 
-	/*
+/*
 
 	IndexCursor c;
 	//test BTreeIndex
@@ -890,7 +890,7 @@ int main()
 	//test.insert(2342, (RecordId) {1,0});
 
 	test.close();
+	
 	*/
-
 	return 0;
 }

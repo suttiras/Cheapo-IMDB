@@ -100,6 +100,10 @@ class BTreeIndex {
   RC readForward(IndexCursor& cursor, int& key, RecordId& rid);
 
   void print();
+
+  int getTreeHeight();
+
+  PageId getRootPid();
   
  private:
   PageFile pf;         /// the PageFile used to store the actual b+tree in disk
