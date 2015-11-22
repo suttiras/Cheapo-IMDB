@@ -989,8 +989,8 @@ RC BTNonLeafNode::locateChildPtr(int searchKey, PageId& pid)
 	memcpy(&pid, temp-4, sizeof(PageId));
 	return 0;
 }*/
-/*
-RC BTNonLeafNode::locateChildPtr(int searchKey, PageId& pid)
+
+RC BTNonLeafNode::locateChildPtr(int searchKey, PageId& pid)	//works!
 {
 	int key_holder;
 	PageId left;
@@ -1001,8 +1001,13 @@ RC BTNonLeafNode::locateChildPtr(int searchKey, PageId& pid)
 	{
 		memcpy(&key_holder, buffer + ((index + 1)*entryPairNonLeafNodeSize), PAGE_ID_SIZE);
 		//memcpy(&right, buffer + entryPairNonLeafNodeSize + INTEGER_SIZE + (index*entryPairNonLeafNodeSize) , PAGE_ID_SIZE);	//entry pair + key + all previous entry pairs
-		memcpy(&left, buffer + INTEGER_SIZE + (index*entryPairNonLeafNodeSize), PAGE_ID_SIZE);	//entry pair + key + all previous entry pairs
-		memcpy(&right, buffer + entryPairNonLeafNodeSize + (index*entryPairNonLeafNodeSize), INTEGER_SIZE);	//entry pair + all previous entry pairs
+		if (index == 0)
+		{
+			memcpy(&left, buffer, PAGE_ID_SIZE);
+		}
+		else
+			memcpy(&left, buffer + ((index+1)*entryPairNonLeafNodeSize)- INTEGER_SIZE , PAGE_ID_SIZE);	//entry pair + key + all previous entry pairs
+		memcpy(&right, buffer + INTEGER_SIZE + ((index+1)*entryPairNonLeafNodeSize), INTEGER_SIZE);	//entry pair + all previous entry pairs
 		if (key_holder > searchKey)	//got child ptr
 		{
 			pid = left;
@@ -1016,9 +1021,9 @@ RC BTNonLeafNode::locateChildPtr(int searchKey, PageId& pid)
 			pid = right;
 			return 0;
 	}
-	return RC_INVALID_PID;
+	return 0;
 }
-*/
+
 /*
  * Initialize the root node with (pid1, key, pid2).
  * @param pid1[IN] the first PageId to insert
