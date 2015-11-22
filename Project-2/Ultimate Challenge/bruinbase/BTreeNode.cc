@@ -542,10 +542,17 @@ BTNonLeafNode::BTNonLeafNode()	//works!
  * @param pf[IN] PageFile to read from
  * @return 0 if successful. Return an error code if there is an error.
  */
+ /*
 RC BTNonLeafNode::read(PageId pid, const PageFile& pf)
 {
 	//Use PageFile to read from selected page into buffer
 	return pf.read(pid, buffer);
+}*/
+RC BTNonLeafNode::read(PageId pid, const PageFile& pf)	//works!
+{ 
+	memset(buffer, 0, PageFile::PAGE_SIZE);
+	RC rc = pf.read(pid, buffer);
+	return rc;
 }
     
 /*
@@ -554,16 +561,16 @@ RC BTNonLeafNode::read(PageId pid, const PageFile& pf)
  * @param pf[IN] PageFile to write to
  * @return 0 if successful. Return an error code if there is an error.
  */
-RC BTNonLeafNode::write(PageId pid, PageFile& pf)
-{
-	//Use PageFile to write from buffer into selected page
-	return pf.write(pid, buffer);
+RC BTNonLeafNode::write(PageId pid, PageFile& pf)	//works!
+{ 
+	RC rc = pf.write(pid, buffer);
+	return rc;
 }
 
 /*
  * Return the number of keys stored in the node.
  * @return the number of keys in the node
- */
+ *//*
 int BTNonLeafNode::getKeyCount()
 {
 	//return numKeys;
@@ -593,6 +600,109 @@ int BTNonLeafNode::getKeyCount()
 	}
 	
 	return count;
+}*/
+
+int BTNonLeafNode::getKeyCount()	//works!
+{ 
+	int previousNumOfKeys = numOfKeys;
+	//if (FLAG_ADDED_NEW_KEY == 1)	//a new key(s) was added
+	//{
+		numOfKeys = 0;
+		//int index = 0;
+		int indexInBuffer = 0;
+		int key_holder;
+		int FLAG_UNTIL_POSITIVE = 0;
+		char* char_key_holder = buffer + PAGE_ID_SIZE + INTEGER_SIZE;
+		char check_null_key_holder;
+		int previous_key_holder;
+		memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
+		previous_key_holder = key_holder + 1;
+		//memcpy(&check_null_key_holder, char_key_holder, INTEGER_SIZE);
+		/*
+		if (FLAG_ADDED_ZERO == 1 && previousNumOfKeys == 0)
+		{
+		numOfKeys = 1;
+		}
+		else if (FLAG_ADDED_ZERO == 1 && previousNumOfKeys == 1)
+		{
+		numOfKeys = 2;
+		}
+		else
+		{
+		*/
+
+		//while (numOfKeys < MAX_KEYS_NON_LEAF_NODE && key_holder != '\0' || (FLAG_ADDED_ZERO == 1 && FLAG_UNTIL_POSITIVE == 0 && previousNumOfKeys > 1))
+		//while((indexInBuffer < PageFile::PAGE_SIZE - entryPairLeafNodeSize) && key_holder != 0)
+		while (numOfKeys < MAX_KEYS_NON_LEAF_NODE && key_holder != '\0')
+		{
+			/*
+			if (numOfKeys > previousNumOfKeys)
+			{
+				break;
+			}
+			*/
+			/*
+			if (previous_key_holder == key_holder)
+			{
+				break;
+			}
+			*/
+			numOfKeys++;
+			indexInBuffer += entryPairNonLeafNodeSize;
+			char_key_holder += entryPairNonLeafNodeSize;
+			if (numOfKeys < MAX_KEYS_NON_LEAF_NODE)
+			{
+				//memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
+				previous_key_holder = key_holder;
+				memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
+				/*
+				if (key_holder > 0)
+				{
+				FLAG_UNTIL_POSITIVE = 1;	//reached a positive number
+				}
+				*/
+
+				//new
+				if (key_holder == 0)
+				{
+					break;
+				}
+				//
+			}
+		//}
+		FLAG_ADDED_NEW_KEY = 0;
+		//}
+
+	}
+
+	return numOfKeys;
+
+
+	/*
+	if (FLAG_ADDED_NEW_KEY == 1)	//a new key(s) was added
+	{
+		numOfKeys = 0;
+		//int index = 0;
+		int indexInBuffer = 0;
+		int key_holder;
+		char* char_key_holder = buffer + PAGE_ID_SIZE;
+		//memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
+		memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
+		while(numOfKeys < MAX_KEYS_NON_LEAF_NODE && key_holder != 0)
+		//while((indexInBuffer < PageFile::PAGE_SIZE - entryPairLeafNodeSize) && key_holder != 0)
+		{
+			numOfKeys++;
+			indexInBuffer+=entryPairNonLeafNodeSize;
+			char_key_holder += entryPairNonLeafNodeSize;
+			if (numOfKeys < MAX_KEYS_NON_LEAF_NODE)
+			{
+				memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
+			}
+		}
+		FLAG_ADDED_NEW_KEY = 0;
+	}
+	return numOfKeys; 
+	*/
 }
 
 /*
