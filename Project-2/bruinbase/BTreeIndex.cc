@@ -103,7 +103,8 @@ RC BTreeIndex::insert_helper(int& key, const RecordId& rid, int height, PageId c
 	{
 		BTLeafNode leaf = BTLeafNode();
 		leaf.read(currentPid, pf);
-		if(leaf.getKeyCount() < leaf.maxKeyCount())	//there is room in the leaf node
+		//if(leaf.getKeyCount() < leaf.maxKeyCount())	//there is room in the leaf node
+		if(leaf.getKeyCount() < IND_MAX_KEYS_LEAF_NODE)	//there is room in the leaf node
 		{
 			leaf.insert(key, rid);
 			leaf.write(currentPid, pf);
@@ -134,7 +135,8 @@ RC BTreeIndex::insert_helper(int& key, const RecordId& rid, int height, PageId c
 		int res = insert_helper(key, rid, height + 1, child_pid, ikey, ipid);
 		if(res == 1)	//overflow
 		{
-			if(non_leaf.getKeyCount() < non_leaf.maxKeyCount())
+			if(non_leaf.getKeyCount() < IND_ENTRY_PAIR_NON_LEAF_NODE_SIZE)
+			if(non_leaf.getKeyCount() < IND_ENTRY_PAIR_NON_LEAF_NODE_SIZE)
 			{
 				non_leaf.insert(ikey, ipid);
 				non_leaf.write(currentPid, pf);
