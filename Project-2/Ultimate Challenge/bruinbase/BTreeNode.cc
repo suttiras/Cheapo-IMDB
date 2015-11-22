@@ -773,6 +773,64 @@ RC BTNonLeafNode::insert(int key, PageId pid)
 	return 0;
 }
 
+
+
+RC BTNonLeafNode::locate(int searchKey, int& eid)
+{
+	int maxNumKeys = getKeyCount();
+	int retrieved_key;
+	int index;
+	for (index = 0; index < maxNumKeys; index++)
+	{
+		memcpy(&retrieved_key, buffer + (PAGE_ID_SIZE + INTEGER_SIZE + index*(entryPairNonLeafNodeSize)), INTEGER_SIZE);
+		//if (retrieved_key >= searchKey)
+		if (retrieved_key == searchKey)
+		{
+			eid = index;
+			return 0;
+		}
+		if (retrieved_key > searchKey)
+		{
+			eid = index;
+			return RC_NO_SUCH_RECORD;
+		}
+	}
+	//eid = index - 1;
+	eid = index;
+	return RC_NO_SUCH_RECORD;	//failed to find the searchKey
+}
+
+RC BTNonLeafNode::readEntry(int eid, int& key, PageId& pid)
+{
+	if (eid < 0 || eid >= getKeyCount())
+	{
+		return -1;
+	}
+	else
+	{
+		//if(FLAG_KEY_BEFORE_PID == 1)
+		//{
+			int entryKey;
+			memcpy(&entryKey, buffer + entryPairLeafNodeSize + (eid*entryPairNonLeafNodeSize), INTEGER_SIZE);
+			key = entryKey;
+			PageId entryId;
+			memcpy(&entryId, buffer + entryPairLeafNodeSize + (eid*entryPairNonLeafNodeSize) + INTEGER_SIZE, sizeof(PageId));
+			pid = entryId;
+		/*}
+		else
+		{
+			int entryKey;
+			memcpy(&entryKey, buffer + PAGE_ID_SIZE + (eid*entryPairNonLeafNodeSize) + INTEGER_SIZE, INTEGER_SIZE);
+			key = entryKey;
+			PageId entryId;
+			memcpy(&entryId, buffer + PAGE_ID_SIZE + (eid*entryPairNonLeafNodeSize), sizeof(PageId));
+			pid = entryId;
+		}*/
+	}
+
+	return 0;
+}
+
 /*
  * Insert the (key, pid) pair to the node
  * and split the node half and half with sibling.
@@ -891,6 +949,7 @@ RC BTNonLeafNode::insertAndSplit(int key, PageId pid, BTNonLeafNode& sibling, in
  * @param pid[OUT] the pointer to the child node to follow.
  * @return 0 if successful. Return an error code if there is an error.
  */
+ /*
 RC BTNonLeafNode::locateChildPtr(int searchKey, PageId& pid)
 {
 	//This is the size in bytes of an entry pair
@@ -929,8 +988,37 @@ RC BTNonLeafNode::locateChildPtr(int searchKey, PageId& pid)
 	//Remember that temp is now on the next non-existent node's position, so we need to decrement by 4 bytes
 	memcpy(&pid, temp-4, sizeof(PageId));
 	return 0;
-}
+}*/
+/*
+RC BTNonLeafNode::locateChildPtr(int searchKey, PageId& pid)
+{
+	int key_holder;
+	PageId left;
+	PageId right;
+	int numKeys = getKeyCount();
+	int index = 0;
+	while(index < numKeys)
+	{
+		memcpy(&key_holder, buffer + ((index + 1)*entryPairNonLeafNodeSize), PAGE_ID_SIZE);
+		//memcpy(&right, buffer + entryPairNonLeafNodeSize + INTEGER_SIZE + (index*entryPairNonLeafNodeSize) , PAGE_ID_SIZE);	//entry pair + key + all previous entry pairs
+		memcpy(&left, buffer + INTEGER_SIZE + (index*entryPairNonLeafNodeSize), PAGE_ID_SIZE);	//entry pair + key + all previous entry pairs
+		memcpy(&right, buffer + entryPairNonLeafNodeSize + (index*entryPairNonLeafNodeSize), INTEGER_SIZE);	//entry pair + all previous entry pairs
+		if (key_holder > searchKey)	//got child ptr
+		{
+			pid = left;
+			return 0;
+		}
 
+		index++;
+	}
+	if (key_holder <= searchKey)	//we reached end of node
+	{
+			pid = right;
+			return 0;
+	}
+	return RC_INVALID_PID;
+}
+*/
 /*
  * Initialize the root node with (pid1, key, pid2).
  * @param pid1[IN] the first PageId to insert
@@ -938,6 +1026,7 @@ RC BTNonLeafNode::locateChildPtr(int searchKey, PageId& pid)
  * @param pid2[IN] the PageId to insert behind the key
  * @return 0 if successful. Return an error code if there is an error.
  */
+ /*
 RC BTNonLeafNode::initializeRoot(PageId pid1, int key, PageId pid2)
 {
 	RC error;
@@ -963,6 +1052,18 @@ RC BTNonLeafNode::initializeRoot(PageId pid1, int key, PageId pid2)
 	//Only need this if we dont use insert to set (key, pid2) pair
 	//numKeys = 1;
 	
+	return 0;
+}*/
+
+RC BTNonLeafNode::initializeRoot(PageId pid1, int key, PageId pid2)	//works!
+{ 
+	char* buffer_ptr = buffer;
+	memcpy(buffer_ptr, &pid1, PAGE_ID_SIZE);
+	buffer_ptr += (PAGE_ID_SIZE+INTEGER_SIZE);
+	memcpy(buffer_ptr, &key, INTEGER_SIZE);
+	buffer_ptr += INTEGER_SIZE;
+	memcpy(buffer_ptr, &pid2, PAGE_ID_SIZE);
+	FLAG_ADDED_NEW_KEY = 1;
 	return 0;
 }
 
