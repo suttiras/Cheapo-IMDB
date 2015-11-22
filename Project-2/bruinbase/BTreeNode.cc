@@ -145,7 +145,7 @@ RC BTLeafNode::insert(int key, const RecordId& rid)
 	else
 	{
 		int eid;
-		RC rc = locate(key, eid);
+		//RC rc = locate(key, eid);
 		int temp_key;
 		RecordId temp_rid;
 		readEntry(eid, temp_key, temp_rid);

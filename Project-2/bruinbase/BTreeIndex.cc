@@ -98,15 +98,16 @@ RC BTreeIndex::close()
 
 RC BTreeIndex::insert_helper(int& key, const RecordId& rid, int height, PageId currentPid, int& ikey, PageId& ipid)
 {
-	if (height = treeHeight)	//currently at a leaf node
+
+	if (height == treeHeight)	//currently at a leaf node
 	{
 		BTLeafNode leaf = BTLeafNode();
 		leaf.read(currentPid, pf);
-		if(leaf.getKeyCount() < IND_MAX_KEYS_LEAF_NODE)	//there is room in the leaf node
+		if(leaf.getKeyCount() < leaf.maxKeyCount())	//there is room in the leaf node
 		{
 			leaf.insert(key, rid);
 			leaf.write(currentPid, pf);
-			return OKAY;
+			return 0;
 		}
 		else	//we have to split
 		{
@@ -117,8 +118,8 @@ RC BTreeIndex::insert_helper(int& key, const RecordId& rid, int height, PageId c
 			leaf.setNextNodePtr(ipid);
 			leaf.write(currentPid, pf);
 			sibling_node.write(ipid, pf);
-			fprintf(stderr, "We have to split due to overflow\n");
-			return IND_OVERFLOW;
+			//fprintf(stderr, "We have to split due to overflow\n");
+			return 1;
 		}
 	}
 	
@@ -131,14 +132,14 @@ RC BTreeIndex::insert_helper(int& key, const RecordId& rid, int height, PageId c
 		non_leaf.locateChildPtr(key, child_pid);
 		
 		int res = insert_helper(key, rid, height + 1, child_pid, ikey, ipid);
-		if(res == IND_OVERFLOW)	//overflow
+		if(res == 1)	//overflow
 		{
-			if(non_leaf.getKeyCount() < IND_MAX_KEYS_NON_LEAF_NODE)
+			if(non_leaf.getKeyCount() < non_leaf.maxKeyCount())
 			{
 				non_leaf.insert(ikey, ipid);
 				non_leaf.write(currentPid, pf);
 				ikey = -1;
-				return OKAY;
+				return 0;
 			}
 			else	//overflow
 			{
@@ -151,7 +152,7 @@ RC BTreeIndex::insert_helper(int& key, const RecordId& rid, int height, PageId c
 				sibling_node.write(ipid, pf);
 				non_leaf.write(currentPid, pf);
 				fprintf(stderr, "Error: insert_helper OVERFLOW\n");
-				return IND_OVERFLOW;
+				return 1;
 			}
 		}
 		
@@ -170,6 +171,7 @@ RC BTreeIndex::insert_helper(int& key, const RecordId& rid, int height, PageId c
  */
 RC BTreeIndex::insert(int key, const RecordId& rid)
 {
+
 	if (treeHeight == 0)	//empty B+ Tree
 	{
 		BTLeafNode leaf = BTLeafNode();
@@ -221,8 +223,9 @@ RC BTreeIndex::insert(int key, const RecordId& rid)
  */
 RC BTreeIndex::locate(int searchKey, IndexCursor& cursor)
 {
+
 	BTLeafNode leaf = BTLeafNode();
-	BTNonLeafNode nonLeaf = BTNonLeafNode();
+	BTNonLeafNode non_leaf = BTNonLeafNode();
 
 	PageId pid = rootPid;
 	int eid = -1;
@@ -233,33 +236,34 @@ RC BTreeIndex::locate(int searchKey, IndexCursor& cursor)
 		int index = 0;
 		while (index < treeHeight - 1)
 		{
-			if (nonLeaf.read(pid, pf) != 0)
+			if (non_leaf.read(pid, pf) != 0)
 			{
-				fprintf(stderr, "Error: could not read nonLeaf\n");
+				fprintf(stderr, "Error: could not read non_leaf\n");
 				return -1;
 			}
 
-			if (nonLeaf.locateChildPtr(searchKey, pid) != 0)
+			if (non_leaf.locateChildPtr(searchKey, pid) != 0)
 			{
-				fprintf(stderr, "Error: could not read nonLeaf child pointer\n");
+				fprintf(stderr, "Error: could not read non_leaf child pointer\n");
 				return -1;
 			}
 			index++;
 		}
 	}
 
-	if (leaf.read(pid, pf) != 0)
+	if (leaf.read(pid, pf) < 0)
 	{
 		return -1;
 	}
 
-	if (leaf.locate(searchKey, pid) != 0)
+	if (leaf.locate(searchKey, eid) < 0)
 	{
 		return -1;
 	}
-
+	else{
 	cursor.pid = pid;
 	cursor.eid = eid;
+	}
 
     return 0;
 }
