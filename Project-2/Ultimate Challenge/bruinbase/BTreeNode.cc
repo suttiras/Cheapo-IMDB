@@ -1106,6 +1106,7 @@ RC BTNonLeafNode::insertAndSplit(int key, PageId pid, BTNonLeafNode& sibling, in
  * @param pid[OUT] the pointer to the child node to follow.
  * @return 0 if successful. Return an error code if there is an error.
  */
+ /*
 RC BTNonLeafNode::locateChildPtr(int searchKey, PageId& pid)
 {
 	//This is the size in bytes of an entry pair
@@ -1144,7 +1145,6 @@ RC BTNonLeafNode::locateChildPtr(int searchKey, PageId& pid)
 	//Remember that temp is now on the next non-existent node's position, so we need to decrement by 4 bytes
 	memcpy(&pid, temp-4, sizeof(PageId));
 	return 0;
-<<<<<<< HEAD
 }*/
 
 RC BTNonLeafNode::locateChildPtr(int searchKey, PageId& pid)	//works!
@@ -1179,8 +1179,6 @@ RC BTNonLeafNode::locateChildPtr(int searchKey, PageId& pid)	//works!
 			return 0;
 	}
 	return 0;
-=======
->>>>>>> origin/The-Ultimate-Challenge-TWO
 }
 
 /*
