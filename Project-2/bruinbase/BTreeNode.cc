@@ -59,8 +59,8 @@ RC BTLeafNode::write(PageId pid, PageFile& pf)
 int BTLeafNode::getKeyCount()	//doesn't work for when key == 0
 { 
 	int previousNumOfKeys = numOfKeys;
-	if (FLAG_ADDED_NEW_KEY == 1)	//a new key(s) was added
-	{
+	//if (FLAG_ADDED_NEW_KEY == 1)	//a new key(s) was added
+	//{
 		numOfKeys = 0;
 		//int index = 0;
 		int indexInBuffer = 0;
@@ -71,41 +71,53 @@ int BTLeafNode::getKeyCount()	//doesn't work for when key == 0
 		memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
 
 		//memcpy(&check_null_key_holder, char_key_holder, INTEGER_SIZE);
-		if (FLAG_ADDED_ZERO == 1 && previousNumOfKeys == 0)
+		//if (FLAG_ADDED_ZERO == 1 && previousNumOfKeys == 0)
+		/*
+		if (previousNumOfKeys == 0)
 		{
 			numOfKeys = 1;
 		}
-		else if (FLAG_ADDED_ZERO == 1 && previousNumOfKeys == 1)
+		//else if (FLAG_ADDED_ZERO == 1 && previousNumOfKeys == 1)
+		if (previousNumOfKeys == 1)
 		{
 			numOfKeys = 2;
 		}
 		else
 		{
-
-			while (numOfKeys < MAX_KEYS_LEAF_NODE && key_holder != '\0' || (FLAG_ADDED_ZERO == 1 && FLAG_UNTIL_POSITIVE == 0 && previousNumOfKeys > 1))
+		*/
+			//while (numOfKeys < MAX_KEYS_LEAF_NODE && key_holder != '\0' || (FLAG_ADDED_ZERO == 1 && FLAG_UNTIL_POSITIVE == 0 && previousNumOfKeys > 1))
 				//while((indexInBuffer < PageFile::PAGE_SIZE - entryPairLeafNodeSize) && key_holder != 0)
+		while (numOfKeys < MAX_KEYS_LEAF_NODE && key_holder != '\0')
+		{
+			/*
+			if (numOfKeys > previousNumOfKeys)
 			{
-				if (numOfKeys > previousNumOfKeys)
+			break;
+			}
+			*/
+			numOfKeys++;
+			indexInBuffer += entryPairLeafNodeSize;
+			char_key_holder += entryPairLeafNodeSize;
+			if (numOfKeys < MAX_KEYS_LEAF_NODE)
+			{
+				memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
+				//memcpy(&key_holder, char_key_holder - INTEGER_SIZE, INTEGER_SIZE);
+				/*
+				if (key_holder > 0)
+				{
+				FLAG_UNTIL_POSITIVE = 1;	//reached a positive number
+				}
+				*/
+				if (key_holder == 0)
 				{
 					break;
 				}
-				numOfKeys++;
-				indexInBuffer += entryPairLeafNodeSize;
-				char_key_holder += entryPairLeafNodeSize;
-				if (numOfKeys < MAX_KEYS_LEAF_NODE)
-				{
-					//memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
-					memcpy(&key_holder, char_key_holder - INTEGER_SIZE, INTEGER_SIZE);
-					if (key_holder > 0)
-					{
-						FLAG_UNTIL_POSITIVE = 1;	//reached a positive number
-					}
-				}
 			}
-			FLAG_ADDED_NEW_KEY = 0;
+			//}
+			//FLAG_ADDED_NEW_KEY = 0;
+			//}
+
 		}
-		
-	}
 	
 	return numOfKeys; 
 }
@@ -125,10 +137,12 @@ RC BTLeafNode::insertPid(PageId pid)
 RC BTLeafNode::insert(int key, const RecordId& rid)
 {
 	numOfKeys = getKeyCount();
+	/*
 	if (key == 0)
 	{
 		FLAG_ADDED_ZERO = 1;
 	}
+	*/
 	//there are no entries in the node
 	if (numOfKeys == 0)
 	{
@@ -145,7 +159,7 @@ RC BTLeafNode::insert(int key, const RecordId& rid)
 	else
 	{
 		int eid;
-		//RC rc = locate(key, eid);
+		RC rc = locate(key, eid);
 		int temp_key;
 		RecordId temp_rid;
 		readEntry(eid, temp_key, temp_rid);
@@ -236,16 +250,19 @@ RC BTLeafNode::insertAndSplit(int key, const RecordId& rid,
 	int maxNumKeys = getKeyCount();
 	double median = ceil((double)maxNumKeys/2);
 
+	/*
 	if (FLAG_ADDED_ZERO == 1)
 	{
 		sibling.set_ZERO_FLAG();
 	}
+	*/
 
 	PageId pointerToSiblingNode;
 	PageId last_pid;
 
 	//memcpy(&last_pid, buffer + (maxNumKeys*entryPairLeafNodeSize), PAGE_ID_SIZE);
 	sibling.setNextNodePtr(getNextNodePtr());
+
 	for(int index = (int) median; index < maxNumKeys; index++)
 	{		
 		int new_key;
@@ -253,27 +270,37 @@ RC BTLeafNode::insertAndSplit(int key, const RecordId& rid,
 		readEntry(index, new_key, new_rid);
 
 		//to keep the pid of the sibling node
-		//if (index == median)
-		//{
-		//	pointerToSiblingNode = new_rid.pid;
-		//}
+		/*
+		if (index == median)
+		{
+			pointerToSiblingNode = new_rid.pid;
+		}
+		*/
 
 		sibling.insert(new_key, new_rid);
 		//new
-		memset(buffer + index*entryPairLeafNodeSize, '\0', entryPairLeafNodeSize);
+		//memset(buffer + index*entryPairLeafNodeSize, '\0', entryPairLeafNodeSize);
 		//end of new
 		if (index == median)
 		{
 			siblingKey = new_key;
 		}
 	}
+
+	for (int index = (int)median; index < maxNumKeys; index++)
+	{
+		memset(buffer + index*entryPairLeafNodeSize, '\0', entryPairLeafNodeSize);
+	}
+
 	FLAG_ADDED_NEW_KEY = 1;
 	sibling.set_FLAG();
 
 	//to set the end page file to point to the sibling node
-	//int currentNumKeys = getKeyCount();
-	//memcpy(buffer + currentNumKeys*entryPairLeafNodeSize, &pointerToSiblingNode, PAGE_ID_SIZE);
-	//sibling.insertPid(last_pid);
+	/*
+	int currentNumKeys = getKeyCount();
+	memcpy(buffer + currentNumKeys*entryPairLeafNodeSize, &pointerToSiblingNode, PAGE_ID_SIZE);
+	sibling.insertPid(last_pid);
+	*/
 	/*
 	int new_eid;
 	if (locate(key, new_eid) != 0)
@@ -480,45 +507,60 @@ int BTNonLeafNode::getKeyCount()
 		memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
 		previous_key_holder = key_holder + 1;
 		//memcpy(&check_null_key_holder, char_key_holder, INTEGER_SIZE);
+		/*
 		if (FLAG_ADDED_ZERO == 1 && previousNumOfKeys == 0)
 		{
-			numOfKeys = 1;
+		numOfKeys = 1;
 		}
 		else if (FLAG_ADDED_ZERO == 1 && previousNumOfKeys == 1)
 		{
-			numOfKeys = 2;
+		numOfKeys = 2;
 		}
 		else
 		{
+		*/
 
-			while (numOfKeys < MAX_KEYS_NON_LEAF_NODE && key_holder != '\0' || (FLAG_ADDED_ZERO == 1 && FLAG_UNTIL_POSITIVE == 0 && previousNumOfKeys > 1))
-				//while((indexInBuffer < PageFile::PAGE_SIZE - entryPairLeafNodeSize) && key_holder != 0)
+		//while (numOfKeys < MAX_KEYS_NON_LEAF_NODE && key_holder != '\0' || (FLAG_ADDED_ZERO == 1 && FLAG_UNTIL_POSITIVE == 0 && previousNumOfKeys > 1))
+		//while((indexInBuffer < PageFile::PAGE_SIZE - entryPairLeafNodeSize) && key_holder != 0)
+		while (numOfKeys < MAX_KEYS_NON_LEAF_NODE && key_holder != '\0')
+		{
+			/*
+			if (numOfKeys > previousNumOfKeys)
 			{
-				if (numOfKeys > previousNumOfKeys)
-				{
-					break;
-				}
-
-				if (previous_key_holder == key_holder)
-				{
-					break;
-				}
-				numOfKeys++;
-				indexInBuffer += entryPairNonLeafNodeSize;
-				char_key_holder += entryPairNonLeafNodeSize;
-				if (numOfKeys < MAX_KEYS_NON_LEAF_NODE)
-				{
-					//memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
-					previous_key_holder = key_holder;
-					memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
-					if (key_holder > 0)
-					{
-						FLAG_UNTIL_POSITIVE = 1;	//reached a positive number
-					}
-				}
+				break;
 			}
-			FLAG_ADDED_NEW_KEY = 0;
+			*/
+			/*
+			if (previous_key_holder == key_holder)
+			{
+				break;
+			}
+			*/
+			numOfKeys++;
+			indexInBuffer += entryPairNonLeafNodeSize;
+			char_key_holder += entryPairNonLeafNodeSize;
+			if (numOfKeys < MAX_KEYS_NON_LEAF_NODE)
+			{
+				//memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
+				previous_key_holder = key_holder;
+				memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
+				/*
+				if (key_holder > 0)
+				{
+					FLAG_UNTIL_POSITIVE = 1;	//reached a positive number
+				}
+				*/
+
+				//new
+				if (key_holder == 0)
+				{
+					break;
+				}
+				//
+			}
 		}
+		FLAG_ADDED_NEW_KEY = 0;
+		//}
 
 	}
 
