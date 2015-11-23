@@ -21,8 +21,6 @@
 
 #include <cstdio>
 #include <vector>
-
-using namespace std;
              
 /**
  * The data structure to point to a particular entry at a b+tree leaf node.
@@ -60,7 +58,6 @@ class BTreeIndex {
    */
   RC close();
     
-  RC insert_helper(int& key, const RecordId& rid, int height, PageId currentPid, int& ikey, PageId& ipid);
   /**
    * Insert (key, RecordId) pair to the index.
    * @param key[IN] the key for the value inserted into the index
@@ -68,26 +65,30 @@ class BTreeIndex {
    * @return error code. 0 if no error
    */
   RC insert(int key, const RecordId& rid);
-
+  RC insert_recursion(int key, const RecordId& rid, int current_height, PageId pid_1, int& key_2, PageId& pid_2);
+  
   /**
-   * Run the standard B+Tree key search algorithm and identify the
-   * leaf node where searchKey may exist. If an index entry with
-   * searchKey exists in the leaf node, set IndexCursor to its location 
-   * (i.e., IndexCursor.pid = PageId of the leaf node, and
-   * IndexCursor.eid = the searchKey index entry number.) and return 0. 
-   * If not, set IndexCursor.pid = PageId of the leaf node and 
-   * IndexCursor.eid = the index entry immediately after the largest 
-   * index key that is smaller than searchKey, and return the error 
-   * code RC_NO_SUCH_RECORD.
+   * Find the leaf-node index entry whose key value is larger than or
+   * equal to searchKey and output its location (i.e., the page id of the node
+   * and the entry number in the node) as "IndexCursor."
+   * IndexCursor consists of pid (page id of the node that contains the 
+   * searchKey) and eid (the entry number inside the node)
+   * to indicate the location of a particular index entry in the B+tree.
+   * Note that, for range queries, we need to scan the B+tree leaf nodes.
+   * For example, if the query is "key > 1000", we should scan the leaf
+   * nodes starting with the key value 1000. For this reason,
+   * this function returns the location of the leaf node entry
+   * for a given searchKey, instead of returning the RecordId
+   * associated with the searchKey.
    * Using the returned "IndexCursor", you will have to call readForward()
    * to retrieve the actual (key, rid) pair from the index.
    * @param key[IN] the key to find
-   * @param cursor[OUT] the cursor pointing to the index entry with 
-   *                    searchKey or immediately behind the largest key 
-   *                    smaller than searchKey.
-   * @return 0 if searchKey is found. Othewise, an error code
+   * @param cursor[OUT] the cursor pointing to the first index entry
+   * with the key value
+   * @return error code. 0 if no error.
    */
   RC locate(int searchKey, IndexCursor& cursor);
+  RC locate_recursion(int searchKey, IndexCursor& cursor, int current_height, PageId& next_pid);
 
   /**
    * Read the (key, rid) pair at the location specified by the index cursor,
@@ -98,21 +99,32 @@ class BTreeIndex {
    * @return error code. 0 if no error
    */
   RC readForward(IndexCursor& cursor, int& key, RecordId& rid);
-
+  
+  /**
+   * Print all the nodes' keys in the tree to cout
+   */
   void print();
+	
+  PageId getRootPid();
+  int getTreeHeight();
   
  private:
   PageFile pf;         /// the PageFile used to store the actual b+tree in disk
   PageId	prev_page;  ///for read_forward()
   BTLeafNode cursor_node;	///for read_forward(); caching info purposes
-  
-  
+
   PageId   rootPid;    /// the PageId of the root node
   int      treeHeight; /// the height of the tree
+  
+  
   /// Note that the content of the above two variables will be gone when
   /// this class is destructed. Make sure to store the values of the two 
   /// variables in disk, so that they can be reconstructed when the index
   /// is opened again later.
+  
+  //buffer with pid=0 to store rootPid and treeHeight in disk
+  char buffer[PageFile::PAGE_SIZE]; 
+  
 };
 
 #endif /* BTREEINDEX_H */
