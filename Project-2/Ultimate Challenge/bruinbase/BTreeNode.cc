@@ -1088,30 +1088,14 @@ RC BTNonLeafNode::locateChildPtr(int searchKey, PageId& pid)	//works!
  * @return 0 if successful. Return an error code if there is an error.
  */
 RC BTNonLeafNode::initializeRoot(PageId pid1, int key, PageId pid2)
-{
-	RC error;
-
-	std::fill(buffer, buffer + PageFile::PAGE_SIZE, 0); //clear the buffer if necessary
-	
-	//This time, don't skip the first 8 offset bytes
-	//We're actually initializing it to something explicitly
-	char* temp = buffer;
-	
-	//Copy over the initial pid into buffer
-	memcpy(temp, &pid1, sizeof(PageId));
-	
-	//Copy the first pair into buffer
-	//memcpy(temp+8, &key, sizeof(int));
-	//memcpy(temp+12, &pid2, sizeof(PageId));
-	error = insert(key, pid2);
-	
-	if(error!=0)
-		return error;
-	
-	//Set number of (key, pid) pairs to 1
-	//Only need this if we dont use insert to set (key, pid2) pair
-	//numKeys = 1;
-	
+{ 
+	char* buffer_ptr = buffer;
+	memcpy(buffer_ptr, &pid1, PAGE_ID_SIZE);
+	buffer_ptr += (2*INTEGER_SIZE);
+	memcpy(buffer_ptr, &key, INTEGER_SIZE);
+	buffer_ptr += INTEGER_SIZE;
+	memcpy(buffer_ptr, &pid2, PAGE_ID_SIZE);
+	FLAG_ADDED_NEW_KEY = 1;
 	return 0;
 }
 
