@@ -234,19 +234,20 @@ RC BTLeafNode::insertAndSplit(int key, const RecordId& rid,
 	BTLeafNode& sibling, int& siblingKey)	//called assuming that leaf node is not full
 {
 	memset(sibling.buffer, 0, PageFile::PAGE_SIZE);
-	insert(key, rid);
+	//insert(key, rid);
 	int maxNumKeys = getKeyCount();
 	double median = ceil((double)maxNumKeys / 2);
 
-	if (FLAG_ADDED_ZERO == 1)
+	/*if (FLAG_ADDED_ZERO == 1)
 	{
 		sibling.set_ZERO_FLAG();
-	}
+	}*/
 
 	PageId pointerToSiblingNode;
 	PageId last_pid;
+	int medianKey;
 
-	memcpy(&last_pid, buffer + (maxNumKeys*entryPairLeafNodeSize), PAGE_ID_SIZE);
+	sibling.setNextNodePtr(getNextNodePtr());
 
 	for (int index = (int)median; index < maxNumKeys; index++)
 	{
@@ -257,25 +258,40 @@ RC BTLeafNode::insertAndSplit(int key, const RecordId& rid,
 		//to keep the pid of the sibling node
 		if (index == median)
 		{
-			pointerToSiblingNode = new_rid.pid;
+			medianKey = new_key;
 		}
 
 		sibling.insert(new_key, new_rid);
 		//new
-		memset(buffer + index*entryPairLeafNodeSize, '\0', entryPairLeafNodeSize);
+		//memset(buffer + index*entryPairLeafNodeSize, '\0', entryPairLeafNodeSize);
 		//end of new
 		if (index == median)
 		{
 			siblingKey = new_key;
 		}
 	}
+
+	for (int index = (int)median; index < maxNumKeys; index++)
+	{
+		memset(buffer + index*entryPairLeafNodeSize, '\0', entryPairLeafNodeSize);
+	}
+
+	if (key >= medianKey)
+	{
+		sibling.insert(key, rid);
+	}
+	else
+	{
+		insert(key, rid);
+	}
+
 	FLAG_ADDED_NEW_KEY = 1;
 	sibling.set_FLAG();
 
 	//to set the end page file to point to the sibling node
-	int currentNumKeys = getKeyCount();
+	/*int currentNumKeys = getKeyCount();
 	memcpy(buffer + currentNumKeys*entryPairLeafNodeSize, &pointerToSiblingNode, PAGE_ID_SIZE);
-	sibling.insertPid(last_pid);
+	sibling.insertPid(last_pid);*/
 	/*
 	int new_eid;
 	if (locate(key, new_eid) != 0)
@@ -307,7 +323,7 @@ RC BTLeafNode::locate(int searchKey, int& eid)
 	for (index = 0; index < maxNumKeys; index++)
 	{
 		readEntry(index, retrieved_key, RID);
-		if (retrieved_key == searchKey)
+		if (retrieved_key >= searchKey)
 		{
 			eid = index;
 			return 0;
@@ -315,13 +331,13 @@ RC BTLeafNode::locate(int searchKey, int& eid)
 		else if (retrieved_key > searchKey)	//couldn't find search key
 		{
 			eid = index;
-			return RC_NO_SUCH_RECORD;
+			return 0;
 		}
 	}
 
-	eid = index - 1;	//set eid to the index entry immediately after the largest index key 
+	eid = index;	//set eid to the index entry immediately after the largest index key 
 	//that is smaller than searchKey
-	return RC_NO_SUCH_RECORD;	//failed to find the searchKey
+	return 0;	//failed to find the searchKey
 }
 
 /*
