@@ -982,6 +982,62 @@ RC BTNonLeafNode::insertAndSplit(int key, PageId pid, BTNonLeafNode& sibling, in
 	return 0;
 }
 
+RC BTNonLeafNode::readEntry(int eid, int& key, PageId& pid)
+{
+	if (eid < 0 || eid >= getKeyCount())
+	{
+		return -1;
+	}
+	else
+	{
+		//if(FLAG_KEY_BEFORE_PID == 1)
+		//{
+		int entryKey;
+		memcpy(&entryKey, buffer + (2 * PAGE_ID_SIZE) + (eid*entryPairNonLeafNodeSize), INTEGER_SIZE);
+		key = entryKey;
+		PageId entryId;
+		memcpy(&entryId, buffer + (2 * PAGE_ID_SIZE) + (eid*entryPairNonLeafNodeSize) + INTEGER_SIZE, sizeof(PageId));
+		pid = entryId;
+		/*}
+		else
+		{
+		int entryKey;
+		memcpy(&entryKey, buffer + PAGE_ID_SIZE + (eid*entryPairNonLeafNodeSize) + INTEGER_SIZE, INTEGER_SIZE);
+		key = entryKey;
+		PageId entryId;
+		memcpy(&entryId, buffer + PAGE_ID_SIZE + (eid*entryPairNonLeafNodeSize), sizeof(PageId));
+		pid = entryId;
+		}*/
+	}
+
+	return 0;
+}
+
+RC BTNonLeafNode::locate(int searchKey, int& eid)
+{
+	int maxNumKeys = getKeyCount();
+	int retrieved_key;
+	int index;
+	for (index = 0; index < maxNumKeys; index++)
+	{
+		memcpy(&retrieved_key, buffer + ((2 * PAGE_ID_SIZE) + index*(entryPairNonLeafNodeSize)), INTEGER_SIZE);
+		//if (retrieved_key >= searchKey)
+		if (retrieved_key == searchKey)
+		{
+			eid = index;
+			return 0;
+		}
+		if (retrieved_key > searchKey)
+		{
+			eid = index;
+			return 0;
+		}
+	}
+	//eid = index - 1;
+	eid = index;
+	return 0;	//failed to find the searchKey
+}
+
 /*
  * Given the searchKey, find the child-node pointer to follow and
  * output it in pid.
