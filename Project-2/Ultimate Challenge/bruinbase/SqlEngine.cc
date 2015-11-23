@@ -44,12 +44,6 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
   string value;
   int    diff;
   int    count = 0;
-  
-  if ((rc = rf.open(table + ".tbl", 'r')) < 0) {
-	fprintf(stderr, "Error: table %s does not exist\n", table.c_str());
-	return rc;
-  }
-  
 	SelCond temp;
 	bool condExists = false;
 	bool isGE = false;
@@ -64,7 +58,11 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 	
 	bool valueConflictExists = false;
 	std::string valueStorage = "";
-
+  
+  if ((rc = rf.open(table + ".tbl", 'r')) < 0) {
+	fprintf(stderr, "Error: table %s does not exist\n", table.c_str());
+	return rc;
+  }
 	for(int i=0; i<cond.size(); i++)
 	{
 		temp = cond[i];
@@ -146,11 +144,11 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 		for (unsigned i = 0; i < cond.size(); i++) {
 		  switch (cond[i].attr) {
 		  case 1:
-		diff = key - atoi(cond[i].value);
-		break;
+			diff = key - atoi(cond[i].value);
+			break;
 		  case 2:
-		diff = strcmp(value.c_str(), cond[i].value);
-		break;
+			diff = strcmp(value.c_str(), cond[i].value);
+			break;
 		  }
 		  switch (cond[i].comp) {
 			  case SelCond::EQ:
@@ -227,7 +225,6 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 				else if(!isGE && key<=minimum)
 					goto exit_select_early;
 			}
-			
 			count++;
 			continue;
 		}
@@ -256,32 +253,32 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 					{
 						if(cond[i].attr==1)
 							goto exit_select_early;
-						goto continue_while;
+						goto while_to_be_continued;
 					}
 					break;
 				case SelCond::NE:
-					if (diff == 0) goto continue_while;
+					if (diff == 0) goto while_to_be_continued;
 					break;
 				case SelCond::GT:
-					if (diff <= 0) goto continue_while;
+					if (diff <= 0) goto while_to_be_continued;
 					break;
 				case SelCond::LT:
 					if (diff >= 0)
 					{
 						if(cond[i].attr==1)
 							goto exit_select_early;
-						goto continue_while;
+						goto while_to_be_continued;
 					}
 					break;
 				case SelCond::GE:
-					if (diff < 0) goto continue_while;
+					if (diff < 0) goto while_to_be_continued;
 					break;
 				case SelCond::LE:
 					if (diff > 0)
 					{
 						if(cond[i].attr==1)
 							goto exit_select_early;
-						goto continue_while;
+						goto while_to_be_continued;
 					}
 					break;
 			}
@@ -301,7 +298,7 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 			  break;
 		}
 		
-		continue_while:
+		while_to_be_continued:
 		cout << "";
 	}
   }
@@ -325,11 +322,11 @@ RC SqlEngine::load(const string& table, const string& loadfile, bool index)
 {
   RecordFile rf; 
   RecordId   rid;
-  RC     rc;
+  RC     	 rc;
   BTreeIndex tree;
-  string line;
-  int    key;
-  string value;
+  string 	 line;
+  int    	 key;
+  string 	 value;
   ifstream tableData(loadfile.c_str());
 
   if(!tableData.is_open())
@@ -339,13 +336,12 @@ RC SqlEngine::load(const string& table, const string& loadfile, bool index)
   if(index)
   {
 	tree.open(table + ".idx", 'w');
-
 	  while(getline(tableData, line))
 	  {
 		parseLoadLine(line, key, value);
-		if(rf.append(key, value, rid)!=0)
+		if(rf.append(key, value, rid) != 0)
 			return RC_FILE_WRITE_FAILED;
-		if(tree.insert(key, rid)!=0)
+		if(tree.insert(key, rid) != 0)
 			return RC_FILE_WRITE_FAILED;
 	  }
 	tree.close();
@@ -360,7 +356,6 @@ RC SqlEngine::load(const string& table, const string& loadfile, bool index)
   }
   rf.close();
   tableData.close();
-  
   return rc;
 }
 
