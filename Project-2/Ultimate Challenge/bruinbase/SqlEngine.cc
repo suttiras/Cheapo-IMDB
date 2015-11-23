@@ -51,7 +51,7 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
   }
   
 	SelCond temp;
-	bool hasCond = false;
+	bool condExists = false;
 	bool isGE = false;
 	bool isLE = false;
 	bool valueCondExists = false;
@@ -72,7 +72,7 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 
 		if(temp.attr == 1 && temp.comp != SelCond::NE)
 		{
-			hasCond = true;
+			condExists = true;
 			
 			if(temp.comp == SelCond::EQ)
 			{
@@ -128,12 +128,12 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 	}
 	
 	if(valueConflictExists || (maximum!=-1 && minimum!=-1 && maximum<minimum))
-		goto end_select_early;
+		goto exit_select_early;
 
 	if(maximum!=-1 && minimum!=-1 && !isGE && !isLE && maximum==minimum)
-		goto end_select_early;
+		goto exit_select_early;
 
-  if(tree.open(table + ".idx", 'r')!=0 || (!hasCond && attr!=4))
+  if(tree.open(table + ".idx", 'r')!=0 || (!condExists && attr!=4))
   {
 	  rid.pid = rid.sid = 0;
 	  count = 0;
@@ -210,22 +210,22 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 		if(!valueCondExists && attr==4)
 		{
 			if(equalValue!=-1 && key!=equalValue)
-				goto end_select_early;
+				goto exit_select_early;
 			
 			if(maximum!=-1)
 			{
 				if(isLE && key>maximum)
-					goto end_select_early;
+					goto exit_select_early;
 				else if(!isLE && key>=maximum)
-					goto end_select_early;
+					goto exit_select_early;
 			}
 			
 			if(minimum!=-1)
 			{
 				if(isGE && key<minimum)
-					goto end_select_early;
+					goto exit_select_early;
 				else if(!isGE && key<=minimum)
-					goto end_select_early;
+					goto exit_select_early;
 			}
 			
 			count++;
@@ -255,7 +255,7 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 					if (diff != 0)
 					{
 						if(cond[i].attr==1)
-							goto end_select_early;
+							goto exit_select_early;
 						goto continue_while;
 					}
 					break;
@@ -269,7 +269,7 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 					if (diff >= 0)
 					{
 						if(cond[i].attr==1)
-							goto end_select_early;
+							goto exit_select_early;
 						goto continue_while;
 					}
 					break;
@@ -280,7 +280,7 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 					if (diff > 0)
 					{
 						if(cond[i].attr==1)
-							goto end_select_early;
+							goto exit_select_early;
 						goto continue_while;
 					}
 					break;
@@ -306,7 +306,7 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 	}
   }
   
-  end_select_early:
+  exit_select_early:
   
   if (attr == 4) {
     fprintf(stdout, "%d\n", count);
