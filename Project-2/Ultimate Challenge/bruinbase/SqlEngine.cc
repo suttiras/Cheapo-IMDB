@@ -42,9 +42,9 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
   RC     rc;
   int    key;     
   string value;
-  int    count = 0;
   int    diff;
-
+  int    count = 0;
+  
   if ((rc = rf.open(table + ".tbl", 'r')) < 0) {
 	fprintf(stderr, "Error: table %s does not exist\n", table.c_str());
 	return rc;
@@ -52,86 +52,85 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
   
 	SelCond temp;
 	bool hasCond = false;
-	bool hasValueCond = false;
-	bool usesIndex = false;
-	
-	bool condGE = false;
-	bool condLE = false;
-	int max = -1;
-	int min = -1;
-	int eqVal = -1;
+	bool isGE = false;
+	bool isLE = false;
+	bool valueCondExists = false;
+	bool reqIndex = false;
+	int maximum = -1;
+	int minimum = -1;
+	int equalValue = -1;
 	
 	int condIndex = -1;
 	
-	bool valueConflict = false;
-	std::string valEq = "";
+	bool valueConflictExists = false;
+	std::string valueStorage = "";
 
 	for(int i=0; i<cond.size(); i++)
 	{
 		temp = cond[i];
 		int tempVal = atoi(temp.value);
 
-		if(temp.attr==1 && temp.comp!=SelCond::NE)
+		if(temp.attr == 1 && temp.comp != SelCond::NE)
 		{
 			hasCond = true;
 			
-			if(temp.comp==SelCond::EQ)
+			if(temp.comp == SelCond::EQ)
 			{
-				eqVal = tempVal;
+				equalValue = tempVal;
 				condIndex = i;
 				break;
 			}
-			else if(temp.comp==SelCond::GE)
+			else if(temp.comp == SelCond::GE)
 			{
-				if(tempVal > min || min==-1)
+				if(tempVal > minimum || minimum == -1)
 				{
-					condGE = true;
-					min = tempVal;
+					isGE = true;
+					minimum = tempVal;
 				}
 			}
-			else if(temp.comp==SelCond::GT)
+			else if(temp.comp == SelCond::GT)
 			{
-				if(tempVal >= min || min==-1)
+				if(tempVal >= minimum || minimum == -1)
 				{
-					condGE = false;
-					min = tempVal;
+					isGE = false;
+					minimum = tempVal;
 				}
 			}
-			else if(temp.comp==SelCond::LE)
+			else if(temp.comp == SelCond::LE)
 			{
-				if(tempVal < max || max==-1)
+				if(tempVal < maximum || maximum == -1)
 				{
-					condLE = true;
-					max = tempVal;
+					isLE = true;
+					maximum = tempVal;
 				}
 			}
-			else if(temp.comp==SelCond::LT)
+			else if(temp.comp == SelCond::LT)
 			{
-				if(tempVal <= max || max==-1)
+				if(tempVal <= maximum || maximum == -1)
 				{
-					condLE = false;
-					max = tempVal;
+					isLE = false;
+					maximum = tempVal;
 				}
 			}
 		}
-		else if(temp.attr==2)
+		else if(temp.attr == 2)
 		{
-			hasValueCond = true;
+			valueCondExists = true;
 			
-			if(temp.comp==SelCond::EQ)
+			if(temp.comp == SelCond::EQ)
 			{
-				if(valEq=="" || strcmp(value.c_str(), cond[i].value)==0)
-					valEq=tempVal;
+				if(valueStorage=="" || strcmp(value.c_str(), cond[i].value)==0)
+					valueStorage=tempVal;
 				else
-					valueConflict = true;
+					valueConflictExists = true;
 			}
 		}
 	}
 	
-	if(valueConflict || (max!=-1 && min!=-1 && max<min))
+	if(valueConflictExists || (maximum!=-1 && minimum!=-1 && maximum<minimum))
 		goto end_select_early;
 
-	if(max!=-1 && min!=-1 && !condGE && !condLE && max==min)
+	if(maximum!=-1 && minimum!=-1 && !isGE && !isLE && maximum==minimum)
 		goto end_select_early;
 
   if(tree.open(table + ".idx", 'r')!=0 || (!hasCond && attr!=4))
@@ -140,7 +139,7 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 	  count = 0;
 	  while (rid < rf.endRid()) {
 		if ((rc = rf.read(rid, key, value)) < 0) {
-		  fprintf(stderr, "Error: while reading a tuple from table %s\n", table.c_str());
+		  fprintf(stderr, "Error: reading a tuple from table %s\n", table.c_str());
 		  goto exit_select;
 		}
 
@@ -174,7 +173,6 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 				break;
 		  }
 		}
-
 		count++;
 
 		switch (attr) {
@@ -196,37 +194,37 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
   {
 	count = 0;
 	rid.pid = rid.sid = 0;
-	usesIndex = true;
+	reqIndex = true;
 	
-	if(eqVal!=-1) 
-		tree.locate(eqVal, c);
-	else if(min!=-1 && !condGE)
-		tree.locate(min+1, c);
-	else if(min!=-1 && condGE)
-		tree.locate(min, c);
+	if(equalValue!=-1) 
+		tree.locate(equalValue, c);
+	else if(minimum!=-1 && !isGE)
+		tree.locate(minimum+1, c);
+	else if(minimum!=-1 && isGE)
+		tree.locate(minimum, c);
 	else
 		tree.locate(0, c);
 	
 	while(tree.readForward(c, key, rid)==0)
 	{
-		if(!hasValueCond && attr==4)
+		if(!valueCondExists && attr==4)
 		{
-			if(eqVal!=-1 && key!=eqVal)
+			if(equalValue!=-1 && key!=equalValue)
 				goto end_select_early;
 			
-			if(max!=-1)
+			if(maximum!=-1)
 			{
-				if(condLE && key>max)
+				if(isLE && key>maximum)
 					goto end_select_early;
-				else if(!condLE && key>=max)
+				else if(!isLE && key>=maximum)
 					goto end_select_early;
 			}
 			
-			if(min!=-1)
+			if(minimum!=-1)
 			{
-				if(condGE && key<min)
+				if(isGE && key<minimum)
 					goto end_select_early;
-				else if(!condGE && key<=min)
+				else if(!isGE && key<=minimum)
 					goto end_select_early;
 			}
 			
@@ -316,7 +314,7 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
   rc = 0;
   exit_select:
   
-  if(usesIndex)
+  if(reqIndex)
 	tree.close();
 	
   rf.close();
