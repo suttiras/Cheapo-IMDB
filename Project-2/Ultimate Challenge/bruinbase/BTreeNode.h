@@ -129,7 +129,17 @@ class BTLeafNode {
  */
 class BTNonLeafNode {
   public:
-  
+	  RC locate(int searchKey, int& eid);
+	  /**
+	  * Insert a (key, pid) pair to the node.
+	  * Remember that all keys inside a B+tree node should be kept sorted.
+	  * @param key[IN] the key to insert
+	  * @param pid[IN] the PageId to insert
+	  * @return 0 if successful. Return an error code if the node is full.
+	  */
+
+	  RC readEntry(int eid, int& key, PageId& pid);
+
 	/**
     * Constructor for nonleaf node; initialize its variables
     */
@@ -199,10 +209,19 @@ class BTNonLeafNode {
     */
     RC write(PageId pid, PageFile& pf);
 
-   /**
-    * Print the keys of the node to cout
-    */
-    void print();
+	void print();	//testing purposes
+
+	RC insertPid(PageId pid);
+
+	void set_FLAG()
+	{
+		FLAG_ADDED_NEW_KEY = 1;
+	}
+
+	void set_ZERO_FLAG()
+	{
+		FLAG_ADDED_NEW_KEY = 1;
+	}
 
   private:
 	//declare the variables that a nonleaf must hold
