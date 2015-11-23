@@ -66,7 +66,7 @@ int BTLeafNode::getKeyCount()	//doesn't work for when key == 0
 	int indexInBuffer = 0;
 	int key_holder;
 	int FLAG_UNTIL_POSITIVE = 0;
-	char* char_key_holder = buffer + sizeof(RecordId);
+	char* char_key_holder = buffer;
 	char check_null_key_holder;
 	memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
 
