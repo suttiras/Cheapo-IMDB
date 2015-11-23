@@ -12,7 +12,15 @@
 
 #include "Bruinbase.h"
 #include "PageFile.h"
+#include "BTreeNode.h"
 #include "RecordFile.h"
+
+#include <stdio.h>
+#include <cstring>
+#include <math.h>
+
+#include <cstdio>
+#include <vector>
              
 /**
  * The data structure to point to a particular entry at a b+tree leaf node.
@@ -57,9 +65,7 @@ class BTreeIndex {
    * @return error code. 0 if no error
    */
   RC insert(int key, const RecordId& rid);
-
-  //Recursive function for inserting key into correct leaf and non-leaf nodes alike
-  RC insertRec(int key, const RecordId& rid, int currHeight, PageId thisPid, int& tempKey, PageId& tempPid);
+  RC insert_recursion(int key, const RecordId& rid, int current_height, PageId pid_1, int& key_2, PageId& pid_2);
   
   /**
    * Find the leaf-node index entry whose key value is larger than or
@@ -82,10 +88,7 @@ class BTreeIndex {
    * @return error code. 0 if no error.
    */
   RC locate(int searchKey, IndexCursor& cursor);
-
-  //Recursive function for determining location where a search key belongs
-  //Runs until we hit the base case of finding the search key's corresponding leaf node
-  RC locateRec(int searchKey, IndexCursor& cursor, int currentHeight, PageId& nextPid);
+  RC locate_recursion(int searchKey, IndexCursor& cursor, int current_height, PageId& next_pid);
 
   /**
    * Read the (key, rid) pair at the location specified by the index cursor,
@@ -107,9 +110,13 @@ class BTreeIndex {
   
  private:
   PageFile pf;         /// the PageFile used to store the actual b+tree in disk
+  PageId	prev_page;  ///for read_forward()
+  BTLeafNode cursor_node;	///for read_forward(); caching info purposes
 
   PageId   rootPid;    /// the PageId of the root node
   int      treeHeight; /// the height of the tree
+  
+  
   /// Note that the content of the above two variables will be gone when
   /// this class is destructed. Make sure to store the values of the two 
   /// variables in disk, so that they can be reconstructed when the index
