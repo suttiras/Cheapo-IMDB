@@ -452,20 +452,20 @@ RC BTNonLeafNode::write(PageId pid, PageFile& pf)
 int BTNonLeafNode::getKeyCount()
 { 
 	int previousNumOfKeys = numOfKeys;
-	if (FLAG_ADDED_NEW_KEY == 1)	//a new key(s) was added
-	{
+	//if (FLAG_ADDED_NEW_KEY == 1)	//a new key(s) was added
+	//{
 		numOfKeys = 0;
 		//int index = 0;
 		int indexInBuffer = 0;
 		int key_holder;
 		int FLAG_UNTIL_POSITIVE = 0;
-		char* char_key_holder = buffer + PAGE_ID_SIZE;
+		char* char_key_holder = buffer + PAGE_ID_SIZE + INTEGER_SIZE;
 		char check_null_key_holder;
 		int previous_key_holder;
 		memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
 		previous_key_holder = key_holder + 1;
 		//memcpy(&check_null_key_holder, char_key_holder, INTEGER_SIZE);
-		if (FLAG_ADDED_ZERO == 1 && previousNumOfKeys == 0)
+		/*if (FLAG_ADDED_ZERO == 1 && previousNumOfKeys == 0)
 		{
 			numOfKeys = 1;
 		}
@@ -475,11 +475,11 @@ int BTNonLeafNode::getKeyCount()
 		}
 		else
 		{
-
-			while (numOfKeys < MAX_KEYS_NON_LEAF_NODE && key_holder != '\0' || (FLAG_ADDED_ZERO == 1 && FLAG_UNTIL_POSITIVE == 0 && previousNumOfKeys > 1))
-				//while((indexInBuffer < PageFile::PAGE_SIZE - entryPairLeafNodeSize) && key_holder != 0)
+*/
+			//while (numOfKeys < MAX_KEYS_NON_LEAF_NODE && key_holder != '\0' || (FLAG_ADDED_ZERO == 1 && FLAG_UNTIL_POSITIVE == 0 && previousNumOfKeys > 1))
+			while((numOfKeys < MAX_KEYS_NON_LEAF_NODE) && key_holder != 0)
 			{
-				if (numOfKeys > previousNumOfKeys)
+				/*if (numOfKeys > previousNumOfKeys)
 				{
 					break;
 				}
@@ -487,7 +487,7 @@ int BTNonLeafNode::getKeyCount()
 				if (previous_key_holder == key_holder)
 				{
 					break;
-				}
+				}*/
 				numOfKeys++;
 				indexInBuffer += entryPairNonLeafNodeSize;
 				char_key_holder += entryPairNonLeafNodeSize;
@@ -496,14 +496,14 @@ int BTNonLeafNode::getKeyCount()
 					//memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
 					previous_key_holder = key_holder;
 					memcpy(&key_holder, char_key_holder, INTEGER_SIZE);
-					if (key_holder > 0)
+					if (key_holder == 0)
 					{
-						FLAG_UNTIL_POSITIVE = 1;	//reached a positive number
+						break;
 					}
 				}
-			}
+			//}
 			FLAG_ADDED_NEW_KEY = 0;
-		}
+		//}
 
 	}
 
