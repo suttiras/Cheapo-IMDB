@@ -17,6 +17,9 @@ int MAX_KEYS_LEAF_NODE = floor((PageFile::PAGE_SIZE - sizeof(PageId))/entryPairL
 int MAX_KEYS_NON_LEAF_NODE = floor((PageFile::PAGE_SIZE - sizeof(PageId))/entryPairNonLeafNodeSize);
 int PAGE_ID_SIZE = sizeof(PageId);
 
+#define SSTR( x ) dynamic_cast< std::ostringstream & >( \
+        ( std::ostringstream() << std::dec << x ) ).str()
+
 //Leaf node constructor
 BTLeafNode::BTLeafNode()	//works!
 {

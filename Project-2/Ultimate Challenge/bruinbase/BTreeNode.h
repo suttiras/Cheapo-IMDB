@@ -7,8 +7,8 @@
  * @date 5/28/2008
  */
 
-#ifndef BTNODE_H
-#define BTNODE_H
+#ifndef BTREENODE_H
+#define BTREENODE_H
 
 #include "RecordFile.h"
 #include "PageFile.h"
@@ -18,12 +18,7 @@
  */
 class BTLeafNode {
   public:
-  
-   /**
-    * Constructor for leaf node; initialize its variables
-    */
 	BTLeafNode();
-	
    /**
     * Insert the (key, rid) pair to the node.
     * Remember that all keys inside a B+tree node should be kept sorted.
@@ -47,13 +42,15 @@ class BTLeafNode {
     RC insertAndSplit(int key, const RecordId& rid, BTLeafNode& sibling, int& siblingKey);
 
    /**
-    * Find the index entry whose key value is larger than or equal to searchKey
-    * and output the eid (entry id) whose key value &gt;= searchKey.
-    * Remember that keys inside a B+tree node are sorted.
+    * If searchKey exists in the node, set eid to the index entry
+    * with searchKey and return 0. If not, set eid to the index entry
+    * immediately after the largest index key that is smaller than searchKey, 
+    * and return the error code RC_NO_SUCH_RECORD.
+    * Remember that keys inside a B+tree node are always kept sorted.
     * @param searchKey[IN] the key to search for.
-    * @param eid[OUT] the entry number that contains a key larger              
-    *                 than or equalty to searchKey.
-    * @return 0 if successful. Return an error code if there is an error.
+    * @param eid[OUT] the index entry number with searchKey or immediately
+                      behind the largest key smaller than searchKey.
+    * @return 0 if searchKey is found. If not, RC_NO_SEARCH_RECORD.
     */
     RC locate(int searchKey, int& eid);
 
@@ -67,7 +64,7 @@ class BTLeafNode {
     RC readEntry(int eid, int& key, RecordId& rid);
 
    /**
-    * Return the pid of the next slibling node.
+    * Return the pid of the next sibling node.
     * @return the PageId of the next sibling node 
     */
     PageId getNextNodePtr();
@@ -101,26 +98,30 @@ class BTLeafNode {
     * @return 0 if successful. Return an error code if there is an error.
     */
     RC write(PageId pid, PageFile& pf);
-	RC insertPid(PageId pid);
+	
+	void print();	//testing purposes
 
-   /**
-    * Print the keys of the node to cout
-    */
-    void print();
+	RC insertPid(PageId pid);
+	
+	void set_FLAG()
+	{
+		FLAG_ADDED_NEW_KEY = 1;
+	}
+
+	void set_ZERO_FLAG()
+	{
+		FLAG_ADDED_NEW_KEY = 1;
+	}
 
   private:
-	//declare the variables that a nonleaf must hold
-	int numKeys;
-	/**
+   /**
     * The main memory buffer for loading the content of the disk page 
     * that contains the node.
     */
-    int numOfKeys;
+	int numOfKeys;
 	int FLAG_ADDED_NEW_KEY;
-	int FLAG_KEY_BEFORE_PID;
 	int FLAG_ADDED_ZERO;
     char buffer[PageFile::PAGE_SIZE];
-   
 }; 
 
 
@@ -129,29 +130,19 @@ class BTLeafNode {
  */
 class BTNonLeafNode {
   public:
-	  RC locate(int searchKey, int& eid);
-	  /**
-	  * Insert a (key, pid) pair to the node.
-	  * Remember that all keys inside a B+tree node should be kept sorted.
-	  * @param key[IN] the key to insert
-	  * @param pid[IN] the PageId to insert
-	  * @return 0 if successful. Return an error code if the node is full.
-	  */
-
-	  RC readEntry(int eid, int& key, PageId& pid);
-
-	/**
-    * Constructor for nonleaf node; initialize its variables
-    */
 	BTNonLeafNode();
-  
-	/**
+
+	RC locate(int searchKey, int& eid);
+   /**
     * Insert a (key, pid) pair to the node.
     * Remember that all keys inside a B+tree node should be kept sorted.
     * @param key[IN] the key to insert
     * @param pid[IN] the PageId to insert
     * @return 0 if successful. Return an error code if the node is full.
     */
+
+	RC readEntry(int eid, int& key, PageId& pid);
+
     RC insert(int key, PageId pid);
 
    /**
@@ -208,11 +199,9 @@ class BTNonLeafNode {
     * @return 0 if successful. Return an error code if there is an error.
     */
     RC write(PageId pid, PageFile& pf);
-
+	
 	void print();	//testing purposes
-
-	RC insertPid(PageId pid);
-
+	
 	void set_FLAG()
 	{
 		FLAG_ADDED_NEW_KEY = 1;
@@ -224,17 +213,15 @@ class BTNonLeafNode {
 	}
 
   private:
-	//declare the variables that a nonleaf must hold
-	int numKeys;
-	/**
+   /**
     * The main memory buffer for loading the content of the disk page 
     * that contains the node.
     */
-    int numOfKeys;
+	int numOfKeys;
 	int FLAG_ADDED_NEW_KEY;
 	int FLAG_KEY_BEFORE_PID;
 	int FLAG_ADDED_ZERO;
     char buffer[PageFile::PAGE_SIZE];
 }; 
 
-#endif /* BTNODE_H */
+#endif /* BTREENODE_H */
