@@ -18,7 +18,6 @@ if ($_GET["query"] != "")
 	
 	mysql_select_db("CS143", $db_connection);
 	
-	//$sanitized_name = mysql_real_escape_string($query, $db_connection);
 	$rs = mysql_query($_GET["query"], $db_connection);
 	
 	if (!$rs) {
